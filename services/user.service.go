@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/gin-gonic/gin"
 	"account/models"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -35,10 +35,11 @@ func (a UserService) Create(user *models.User) (*models.User, error) {
 	return user, nil
 }
 
-func (a UserService) FindAll() ([]models.User, error) {
+func (a UserService) FindAll(appID string) ([]models.User, error) {
 	var result []models.User
 
 	err := a.DB.
+		Where("app_id = ?", appID).
 		Find(&result).
 		Error
 

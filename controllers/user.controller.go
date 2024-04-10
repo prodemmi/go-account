@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	uuid "github.com/satori/go.uuid"
 	"account/models"
 	"account/services"
 	"account/utils"
+	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"net/http"
 )
@@ -24,7 +24,7 @@ type userController interface {
 }
 
 func (c UserController) Index(context *gin.Context) {
-	users, err := c.UserService.FindAll()
+	users, err := c.UserService.FindAll(context.GetHeader("APP-ID"))
 
 	if err == nil {
 		context.JSON(http.StatusOK, gin.H{

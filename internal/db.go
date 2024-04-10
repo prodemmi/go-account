@@ -4,6 +4,8 @@ import (
 	"account/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"io/ioutil"
+	"path/filepath"
 )
 
 func SetupDatabase() (*gorm.DB, error) {
@@ -14,16 +16,13 @@ func SetupDatabase() (*gorm.DB, error) {
 	}
 	// db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 
-	path := filepath.Join("sql",  "prepareDB.sql")
+	path := filepath.Join("sql", "prepareDB.sql")
 	c, ioErr := ioutil.ReadFile(path)
 	if ioErr != nil {
 		// handle error.
 	}
 	sql := string(c)
-	_, err := d.Exec(sql)
-	if err != nil {
-		// handle error.
-	}
+	db.Exec(sql)
 
 	err = db.AutoMigrate(&models.App{}, &models.User{}, &models.Password{}, models.Profile{})
 
