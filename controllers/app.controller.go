@@ -1,22 +1,22 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"account/services"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type AppController struct {
-	App        *gin.Engine
-	AppService services.AppService
-}
-
-type appController interface {
-	Store(context *gin.Context)
-	Single(context *gin.Context)
-	Index(context *gin.Context)
-	DeleteOneApp(context *gin.Context)
-}
+type (
+	AppController struct {
+		AppService services.IAppService
+	}
+	IAppController interface {
+		Store(context *gin.Context)
+		Single(context *gin.Context)
+		Index(context *gin.Context)
+		DeleteOneApp(context *gin.Context)
+	}
+)
 
 type CreateAppBody struct {
 	Name string `json:"name"`
@@ -33,7 +33,7 @@ func (a AppController) Store(context *gin.Context) {
 		return
 	}
 
-	apps, err := a.AppService.Create(payload.Name, payload.Url)
+	apps, err := a.AppService.CreateApp(payload.Name, payload.Url)
 	if err == nil {
 		context.JSON(http.StatusOK, gin.H{
 			"status": "success",
@@ -51,12 +51,13 @@ func (a AppController) Single(context *gin.Context) {
 	appID := context.Param("app")
 
 	if len(appID) != 0 {
-		app, err := a.AppService.FindOne(appID)
+		app, err := a.AppService.GetApp(appID)
 
 		if app == nil {
 			context.JSON(http.StatusNotFound, gin.H{
 				"error": "app not found.",
 			})
+			context.Abort()
 			return
 		}
 
@@ -65,6 +66,7 @@ func (a AppController) Single(context *gin.Context) {
 				"status": "error",
 				"data":   app,
 			})
+			context.Abort()
 			return
 		}
 
@@ -77,9 +79,15 @@ func (a AppController) Single(context *gin.Context) {
 }
 
 func (a AppController) Index(context *gin.Context) {
-	apps, err := a.AppService.FindAll()
+	apps, err := a.AppService.GetAppsList()
 
 	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"data":   err.Error(),
+		})
+		context.Abort()
+		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{
@@ -90,4 +98,10 @@ func (a AppController) Index(context *gin.Context) {
 
 func (a AppController) DeleteOneApp(context *gin.Context) {
 
+}
+
+func NewAppController(appService services.IAppService) AppController {
+	return AppController{
+		appService,
+	}
 }

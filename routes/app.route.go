@@ -1,22 +1,18 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"account/controllers"
+	"account/repositories"
 	"account/services"
-	"gorm.io/gorm"
+	"github.com/gin-gonic/gin"
 )
 
-func RegisterAppRoutes(gin *gin.Engine, db *gorm.DB) {
-	appController := controllers.AppController{
-		App: gin,
-		AppService: services.AppService{
-			DB:  db,
-			App: gin,
-		},
-	}
+func RegisterAppRoutes(app *gin.Engine) {
+	appRepository := repositories.NewAppRepository()
+	appService := services.NewAppService(appRepository)
+	appController := controllers.NewAppController(appService)
 
-	v1 := gin.Group("/v1/apps/")
+	v1 := app.Group("/v1/apps/")
 	{
 		v1.POST("/", appController.Store)
 		v1.GET("/", appController.Index)

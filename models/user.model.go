@@ -6,13 +6,10 @@ type User struct {
 	BaseModel
 
 	App   App       `json:"-"`
-	AppID uuid.UUID `json:"app_id"`
+	AppID uuid.UUID `json:"app_id,omitempty"`
 
 	Reagent   *User      `json:"-"`
 	ReagentID *uuid.UUID `json:"reagent_id" gorm:"foreignKey:User"`
-
-	Token   *Token     `json:"-"`
-	TokenID *uuid.UUID `json:"token_id" gorm:"foreignKey:Token"`
 
 	FirstName    string  `json:"first_name"`
 	LastName     string  `json:"last_name"`
@@ -22,4 +19,6 @@ type User struct {
 	IsActive     *bool   `json:"is_active" gorm:"index;default:true"`
 	SignupIP     string  `json:"signup_ip"`
 	LoginIP      string  `json:"login_ip"`
+	ApiToken     *string `json:"api_token,omitempty"`
+	Password     *string `json:"-"`
 }

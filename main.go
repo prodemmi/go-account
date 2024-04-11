@@ -1,22 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"account/internal"
 	"account/routes"
+	"fmt"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	engine := gin.Default()
-	db, dbErr := internal.SetupDatabase()
+	dbErr := internal.SetupDatabase()
 	if dbErr != nil {
 		fmt.Print(dbErr.Error())
 		return
 	}
 
-	routes.RegisterUserRoutes(engine, db)
-	routes.RegisterAppRoutes(engine, db)
+	routes.RegisterUserRoutes(engine)
+	routes.RegisterAppRoutes(engine)
+	routes.RegisterAuthRoutes(engine)
 
 	serverErr := engine.Run(":8081")
 	if serverErr != nil {

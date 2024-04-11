@@ -2,65 +2,59 @@ package services
 
 import (
 	"account/models"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"account/repositories"
 )
 
 type (
 	UserService struct {
-		App          *gin.Engine
-		DB           *gorm.DB
-		TokenService TokenService
+		UserRepository repositories.IUserRepository
 	}
-	userService interface {
+	IUserService interface {
 		Create(user *models.User) (*models.User, error)
-		FindAll() ([]models.User, error)
-		FindOne(id string) (*models.User, error)
+		GetUsersList(appID string) ([]models.User, error)
+		GetUser(id string) (*models.User, error)
+		GetUserByToken(token string) (*models.User, error)
 	}
 )
 
 func (a UserService) Create(user *models.User) (*models.User, error) {
-	err := a.DB.Create(&user).Error
-
+	user, err := a.UserRepository.Create(*user)
 	if err != nil {
 		return nil, err
-	}
-
-	_, err2 := a.TokenService.Create(user.AppID, user.ID)
-
-	if err2 != nil {
-		return nil, err2
 	}
 
 	return user, nil
 }
 
-func (a UserService) FindAll(appID string) ([]models.User, error) {
-	var result []models.User
-
-	err := a.DB.
-		Where("app_id = ?", appID).
-		Find(&result).
-		Error
-
+func (a UserService) GetUsersList(appID string) ([]models.User, error) {
+	users, err := a.UserRepository.FindAll(appID)
 	if err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return users, nil
 }
 
-func (a UserService) FindOne(id string) (*models.User, error) {
-	var result models.User
-
-	err := a.DB.
-		Where("id = ?", id).
-		First(&result).
-		Error
-
+func (a UserService) GetUser(id string) (*models.User, error) {
+	users, err := a.UserRepository.FindOne(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &result, nil
+	return users, nil
+}
+
+func (a UserService) GetUserByToken(token string) (*models.User, error) {
+	user, err := a.UserRepository.FindByToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func NewUserService(userRepository repositories.IUserRepository) IUserService {
+	return UserService{
+		UserRepository: userRepository,
+	}
 }

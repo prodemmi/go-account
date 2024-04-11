@@ -8,11 +8,13 @@ import (
 	"path/filepath"
 )
 
-func SetupDatabase() (*gorm.DB, error) {
+var DB *gorm.DB
+
+func SetupDatabase() error {
 	dsn := "host=localhost user=root password=root dbname=account-db port=5434 sslmode=disable TimeZone=Asia/Tehran"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	// db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 
@@ -27,8 +29,10 @@ func SetupDatabase() (*gorm.DB, error) {
 	err = db.AutoMigrate(&models.App{}, &models.User{}, &models.Password{}, models.Profile{})
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return db, nil
+	DB = db
+
+	return nil
 }

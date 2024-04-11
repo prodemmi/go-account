@@ -13,9 +13,11 @@
 --
 -- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-DO $$
+DO
+$$
 BEGIN
-PERFORM dblink_exec('', 'CREATE DATABASE account-db');
+PERFORM
+dblink_exec('', 'CREATE DATABASE account-db');
 EXCEPTION WHEN duplicate_database THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
 END
 $$;

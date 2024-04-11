@@ -1,71 +1,54 @@
 package services
 
 import (
-	"github.com/gin-gonic/gin"
 	"account/models"
-	"gorm.io/gorm"
+	"account/repositories"
 )
 
 type (
 	AppService struct {
-		App *gin.Engine
-		DB  *gorm.DB
+		AppRepository repositories.IAppRepository
 	}
-	appService interface {
-		Create(name string, url string) (*models.App, error)
-		FindAll() ([]*models.App, error)
-		FindOne(appID string) (*models.App, error)
-		Exists(appID string) (bool, error)
+	IAppService interface {
+		CreateApp(name string, url string) (*models.App, error)
+		GetAppsList() ([]models.App, error)
+		GetApp(id string) (*models.App, error)
+		CheckExists(id string) (bool, error)
 	}
 )
 
-func (a AppService) Create(name string, url string) (*models.App, error) {
-	var result models.App
-
-	err := a.DB.Model(&result).Create(&models.App{
+func (a AppService) CreateApp(name string, url string) (*models.App, error) {
+	app, err := a.AppRepository.Create(models.App{
 		Name: name,
 		Url:  url,
-	}).Error
-
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &result, nil
+	return app, nil
 }
 
-func (a AppService) FindAll() ([]*models.App, error) {
-	var result []*models.App
-
-	err := a.DB.Find(&result).Error
-
+func (a AppService) GetAppsList() ([]models.App, error) {
+	apps, err := a.AppRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return apps, nil
 }
 
-func (a AppService) FindOne(appID string) (*models.App, error) {
-	var result models.App
-
-	err := a.DB.Where("id = ?", appID).First(&result).Error
-
+func (a AppService) GetApp(id string) (*models.App, error) {
+	app, err := a.AppRepository.FindOne(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &result, nil
+	return app, nil
 }
 
-func (a AppService) Exists(appID string) (bool, error) {
-	var exists bool
-	err := a.DB.Model(&models.App{}).
-		Select("count(*) > 0").
-		Where("id = ?", appID).
-		Find(&exists).
-		Error
-
+func (a AppService) CheckExists(id string) (bool, error) {
+	exists, err := a.AppRepository.Exists(id)
 	if err != nil {
 		return false, err
 	}
@@ -73,9 +56,8 @@ func (a AppService) Exists(appID string) (bool, error) {
 	return exists, nil
 }
 
-func CreateNewAppService(app *gin.Engine, db *gorm.DB) *AppService {
-	return &AppService{
-		App: app,
-		DB:  db,
+func NewAppService(appRepository repositories.IAppRepository) IAppService {
+	return AppService{
+		AppRepository: appRepository,
 	}
 }

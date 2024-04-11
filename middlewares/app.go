@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"account/repositories"
 	"account/services"
 	"account/utils"
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,7 @@ type AppHeader struct {
 	AppID string `header:"APP-ID" binding:"required"`
 }
 
-func App(appService services.AppService) gin.HandlerFunc {
+func App(appService services.IAppService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := &AppHeader{}
 		if err := c.BindHeader(header); err != nil {
@@ -30,7 +31,7 @@ func App(appService services.AppService) gin.HandlerFunc {
 			return
 		}
 
-		app, err := appService.Exists(header.AppID)
+		app, err := appService.CheckExists(header.AppID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
@@ -39,6 +40,7 @@ func App(appService services.AppService) gin.HandlerFunc {
 			return
 		}
 		if app {
+			c.Set("App", app)
 			c.Next()
 		} else {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -48,4 +50,11 @@ func App(appService services.AppService) gin.HandlerFunc {
 		c.Abort()
 		return
 	}
+}
+
+func NewAppMiddleware() gin.HandlerFunc {
+	appRepository := repositories.NewAppRepository()
+	appService := services.NewAppService(appRepository)
+
+	return App(appService)
 }

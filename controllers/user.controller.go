@@ -6,31 +6,31 @@ import (
 	"account/utils"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
-	"gorm.io/gorm"
 	"net/http"
 )
 
-type UserController struct {
-	App         *gin.Engine
-	DB          *gorm.DB
-	UserService services.UserService
-	AppService  services.AppService
-}
+type (
+	UserController struct {
+		UserService services.IUserService
+	}
 
-type userController interface {
-	Index(context *gin.Context)
-	Store(context *gin.Context)
-	Single(context *gin.Context)
-}
+	IUserController interface {
+		Index(context *gin.Context)
+		Store(context *gin.Context)
+		Single(context *gin.Context)
+	}
+)
 
 func (c UserController) Index(context *gin.Context) {
-	users, err := c.UserService.FindAll(context.GetHeader("APP-ID"))
+	appID := context.GetHeader("APP-ID")
+	users, err := c.UserService.GetUsersList(appID)
 
 	if err == nil {
 		context.JSON(http.StatusOK, gin.H{
 			"status": "success",
 			"data":   users,
 		})
+		context.Abort()
 		return
 	}
 
@@ -58,6 +58,7 @@ func (c UserController) Store(context *gin.Context) {
 			"status": "error",
 			"error":  err.Error(),
 		})
+		context.Abort()
 		return
 	}
 
@@ -74,6 +75,7 @@ func (c UserController) Store(context *gin.Context) {
 	}
 
 	user, err := c.UserService.Create(&createUser)
+
 	if err == nil {
 		context.JSON(http.StatusOK, gin.H{
 			"status": "success",
@@ -86,7 +88,6 @@ func (c UserController) Store(context *gin.Context) {
 		"status": "error",
 		"error":  err.Error(),
 	})
-	return
 }
 
 func (c UserController) Single(context *gin.Context) {
@@ -97,16 +98,17 @@ func (c UserController) Single(context *gin.Context) {
 			"status": "error",
 			"error":  "id is not a valid uuid.",
 		})
-
+		context.Abort()
 		return
 	}
 
-	user, err := c.UserService.FindOne(id)
+	user, err := c.UserService.GetUser(id)
 
 	if user == nil {
 		context.JSON(http.StatusNotFound, gin.H{
 			"error": "user not found.",
 		})
+		context.Abort()
 		return
 	}
 
@@ -115,6 +117,7 @@ func (c UserController) Single(context *gin.Context) {
 			"status": "success",
 			"data":   user,
 		})
+		context.Abort()
 		return
 	}
 
@@ -122,4 +125,10 @@ func (c UserController) Single(context *gin.Context) {
 		"status": "error",
 		"error":  err.Error(),
 	})
+}
+
+func NewUserController(uerService services.IUserService) IUserController {
+	return UserController{
+		UserService: uerService,
+	}
 }

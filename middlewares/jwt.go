@@ -1,50 +1,62 @@
 package middlewares
 
 import (
+	"account/repositories"
+	"account/services"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"net/http"
+	"strings"
 )
 
-type Header struct {
-	Token string `header:"TOKEN" binding:"required"`
-	AppID string `header:"APP-ID" binding:"required"`
-}
+func JWT(userService services.IUserService) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		authHeader := ctx.GetHeader("API-TOKEN")
+		if authHeader == "" {
+			ctx.JSON(http.StatusUnauthorized, gin.H{
+				"error": "unauthorized.",
+			})
+			ctx.Abort()
+			return
+		}
 
-func JWT() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		header := &Header{}
-		if err := c.BindHeader(header); err != nil {
-			c.JSON(http.StatusForbidden, gin.H{
+		tokenString := strings.TrimSpace(strings.Replace(authHeader, "Bearer ", "", 1))
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, jwt.ErrSignatureInvalid
+			}
+			return []byte("config.Auth.JWT.Secret"), nil
+		})
+		fmt.Print("err ", err)
+
+		if err != nil || !token.Valid {
+			ctx.JSON(http.StatusUnauthorized, gin.H{
 				"error": err.Error(),
 			})
+			ctx.Abort()
 			return
 		}
 
-		token, err := jwt.Parse(header.Token, func(token *jwt.Token) (interface{}, error) {
-			_, ok := token.Method.(*jwt.SigningMethodECDSA)
-			if !ok {
-				c.JSON(http.StatusUnauthorized, gin.H{
-					"error": "Unauthorized.",
-				})
-			}
+		user, errUser := userService.GetUserByToken(token.Raw)
 
-			return nil, nil
-		})
-
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "You're Unauthorized due to error parsing the JWT.",
+		if errUser != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": errUser.Error(),
 			})
+			ctx.Abort()
 			return
 		}
 
-		if token.Valid {
-			c.Next()
-		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "token is invalid.",
-			})
-		}
+		ctx.Set("Token", token.Raw)
+		ctx.Set("User", user)
+		ctx.Next()
 	}
+}
+
+func NewJWTMiddleware() gin.HandlerFunc {
+	userRepository := repositories.NewUserRepository()
+	userService := services.NewUserService(userRepository)
+
+	return JWT(userService)
 }
