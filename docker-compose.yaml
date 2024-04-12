@@ -1,0 +1,26 @@
+version: '2.2'
+
+services:
+  account-go:
+    build: .
+    ports:
+      - "80:8081"
+  account-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/:/data/postgres
+    ports:
+      - "5435:5432"
+    restart: unless-stopped
+  account-nginx:
+    image: nginx:latest
+    container_name: account-nginx
+    ports:
+      - "9999:80"
+    volumes:
+      - /var/www/html:/usr/share/nginx/html
+    restart: always
