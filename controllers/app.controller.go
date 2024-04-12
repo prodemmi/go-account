@@ -14,7 +14,7 @@ type (
 		Store(context *gin.Context)
 		Single(context *gin.Context)
 		Index(context *gin.Context)
-		DeleteOneApp(context *gin.Context)
+		Delete(context *gin.Context)
 	}
 )
 
@@ -95,8 +95,21 @@ func (a AppController) Index(context *gin.Context) {
 	})
 }
 
-func (a AppController) DeleteOneApp(context *gin.Context) {
+func (a AppController) Delete(context *gin.Context) {
+	apps, err := a.AppService.DeleteApp(context.Param("id"))
 
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"data":   err.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   apps,
+	})
 }
 
 func NewAppController(appService services.IAppService) AppController {

@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add repository layer">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix relations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/app.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user.controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/password.model.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/profile.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/profile.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/user.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/valid_uuid.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/uuid.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/app.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/app.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/app.service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,7 +140,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fix app middleware" />
     <MESSAGE value="add repository layer" />
-    <option name="LAST_COMMIT_MESSAGE" value="add repository layer" />
+    <MESSAGE value="fix relations" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix relations" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

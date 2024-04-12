@@ -14,6 +14,7 @@ type (
 		GetAppsList() ([]models.App, error)
 		GetApp(id string) (*models.App, error)
 		CheckExists(id string) (bool, error)
+		DeleteApp(id string) (bool, error)
 	}
 )
 
@@ -49,6 +50,15 @@ func (a AppService) GetApp(id string) (*models.App, error) {
 
 func (a AppService) CheckExists(id string) (bool, error) {
 	exists, err := a.AppRepository.Exists(id)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func (a AppService) DeleteApp(id string) (bool, error) {
+	exists, err := a.AppRepository.DeleteOne(id)
 	if err != nil {
 		return false, err
 	}
