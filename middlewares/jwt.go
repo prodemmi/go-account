@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -26,7 +27,7 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, jwt.ErrSignatureInvalid
 			}
-			return []byte("config.Auth.JWT.Secret"), nil
+			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 		fmt.Print("err ", err)
 

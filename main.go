@@ -5,11 +5,18 @@ import (
 	"account/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"log"
 )
 
 // @title Account API
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	engine := gin.Default()
 	dbErr := internal.SetupDatabase()
 	if dbErr != nil {

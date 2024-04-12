@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/golang-jwt/jwt"
+	"os"
 	"time"
 )
 
@@ -11,7 +12,7 @@ func CreateToken(appID string, userID string) (string, error) {
 		"a": appID,
 		"u": userID,
 	})
-	tokenString, err := token.SignedString([]byte("config.Auth.JWT.Secret"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return "", err
 	}
