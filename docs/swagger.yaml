@@ -1,0 +1,376 @@
+definitions:
+  controllers.CreateAppBody:
+    properties:
+      name:
+        example: fotomi
+        type: string
+      url:
+        example: https://fotomi.net/
+        type: string
+    required:
+    - name
+    - url
+    type: object
+  controllers.StoreUserBody:
+    properties:
+      email:
+        example: prodemmi@gmail.com
+        type: string
+      first_name:
+        example: Emad
+        type: string
+      last_name:
+        example: Malekpour
+        type: string
+      mobile:
+        example: "+989130243519"
+        type: string
+      national_code:
+        example: "1279856451"
+        type: string
+      reagent_id:
+        example: 6513270e-269e-4d37-b2a7-4de452e6b438
+        type: string
+    type: object
+  models.App:
+    description: App information
+    properties:
+      created_at:
+        example: "1973-11-06 14:12:31"
+        type: string
+      deleted_at:
+        example: "null"
+        type: string
+      id:
+        example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
+        type: string
+      name:
+        description: name
+        example: Fotomi
+        type: string
+      updated_at:
+        example: "1973-11-06 14:12:31"
+        type: string
+      url:
+        description: url
+        example: https://fotomi.net/
+        type: string
+    type: object
+  models.User:
+    description: User information
+    properties:
+      api_token:
+        description: Stored API Token
+        example: eyJjbGl...
+        type: string
+      app_id:
+        description: App id
+        example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
+        type: string
+      created_at:
+        example: "1973-11-06 14:12:31"
+        type: string
+      deleted_at:
+        example: "null"
+        type: string
+      id:
+        example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
+        type: string
+      ip:
+        description: Current user ip
+        example: 197.240.172.234
+        type: string
+      login_ip:
+        description: First user ip
+        example: 197.240.172.234
+        type: string
+      profile_id:
+        description: Profile id
+        example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
+        type: string
+      updated_at:
+        example: "1973-11-06 14:12:31"
+        type: string
+    type: object
+  swagger.ErrorJSONResult:
+    properties:
+      error:
+        example: example error message.
+        type: string
+      status:
+        example: error
+        type: string
+    type: object
+  swagger.SuccessJSONResult:
+    properties:
+      data: {}
+      status:
+        example: success
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Account API
+paths:
+  /v1/apps:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateAppBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Store new app
+      tags:
+      - App
+  /v1/apps/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.App'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Get apps detail
+      tags:
+      - App
+  /v1/apps/:id:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Delete app
+      tags:
+      - App
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: app id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.App'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Get app detail
+      tags:
+      - App
+  /v1/auth/me:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: "null"
+        in: header
+        name: API-TOKEN
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Get authenticated user
+      tags:
+      - Auth
+  /v1/users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.StoreUserBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Store new user
+      tags:
+      - User
+  /v1/users/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.User'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Get users detail
+      tags:
+      - User
+  /v1/users/:id:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: user id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Get user detail
+      tags:
+      - User
+swagger: "2.0"

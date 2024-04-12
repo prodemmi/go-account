@@ -64,6 +64,7 @@ type StoreUserBody struct {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Param APP-ID header string true "null"
 // @Param payload body StoreUserBody true "payload"
 // @Success 200 {object} swagger.SuccessJSONResult{data=models.User}
 // @failure 500 {object} swagger.ErrorJSONResult{}

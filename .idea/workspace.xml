@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add swagger">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/app.controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/app.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/app.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/base.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/profile.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/profile.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/app.route.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +140,8 @@
     <MESSAGE value="add repository layer" />
     <MESSAGE value="fix relations" />
     <MESSAGE value="add delete app api" />
-    <option name="LAST_COMMIT_MESSAGE" value="add delete app api" />
+    <MESSAGE value="add swagger" />
+    <option name="LAST_COMMIT_MESSAGE" value="add swagger" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
