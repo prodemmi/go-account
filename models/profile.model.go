@@ -5,39 +5,40 @@ import (
 	"time"
 )
 
+// Profile model info
+// @Description Profile information
 type Profile struct {
 	BaseModel
 
-	AppID  uuid.UUID `json:"app_id" gorm:"index"`
-	UserID uuid.UUID `json:"user_id"`
-
-	Type                           *string    `json:"type"`
-	Avatar                         string     `json:"avatar"`
-	AvatarStatus                   *string    `json:"avatar_status"`
-	Province                       *string    `json:"province"`
-	City                           *string    `json:"city"`
-	Country                        *string    `json:"country" gorm:"index"`
-	PostalCode                     *string    `json:"postal_code"`
-	Timezone                       *string    `json:"timezone+"`
-	Bio                            *string    `json:"bio"`
-	Mobile                         *string    `json:"mobile"`
-	FirstName                      string     `json:"first_name"`
-	LastName                       string     `json:"last_name"`
-	Email                          *string    `json:"email"`
+	AppID                          uuid.UUID  `json:"app_id" gorm:"index" example:"14a03569-d26b-4496-92e5-dfe8cb1855fe"`
+	UserID                         uuid.UUID  `json:"user_id" example:"14a03569-d26b-4496-92e5-dfe8cb1855fe"`
+	Type                           *string    `json:"type" example:"admin"`
+	Avatar                         string     `json:"avatar" example:"https://avatars.githubusercontent.com/u/55631515?v=4"`
+	AvatarStatus                   *string    `json:"avatar_status" example:"at work"`
+	Province                       *string    `json:"province" example:"Isfahan"`
+	City                           *string    `json:"city" example:"Isfahan"`
+	Country                        *string    `json:"country" gorm:"index" example:"Iran"`
+	PostalCode                     *string    `json:"postal_code" example:"8457954212"`
+	Timezone                       *string    `json:"timezone+" example:"Indian/Antananarivo"`
+	Bio                            *string    `json:"bio" example:"Hello my name is emad."`
+	Mobile                         *string    `json:"mobile" example:"+989130243519"`
+	FirstName                      string     `json:"first_name" example:"Emad"`
+	LastName                       string     `json:"last_name" example:"Malekpour"`
+	Email                          *string    `json:"email" example:"prodemmi@gmail.com"`
 	Password                       *string    `json:"-"`
-	Address                        *string    `json:"address"`
-	NationalCode                   *string    `json:"national_code"`
-	IsActive                       *bool      `json:"is_active" gorm:"index;default:true"`
+	Address                        *string    `json:"address" example:"417 Kennedy Isle Apt. 706"`
+	NationalCode                   *string    `json:"national_code" example:"1273039045"`
+	IsActive                       *bool      `json:"is_active" gorm:"index;default:true" example:"true"`
 	Reagent                        *User      `json:"-"`
-	ReagentID                      *uuid.UUID `json:"reagent_id" gorm:"foreignKey:User"`
-	Gender                         *string    `json:"gender" gorm:"index"`
-	Language                       *string    `json:"language" gorm:"index"`
-	Birthday                       *time.Time `json:"birthday"`
-	Score                          *uint      `json:"score" gorm:"default:0"`
-	Theme                          *string    `json:"theme"`
-	UserAgent                      *string    `json:"user_agent"`
-	LoginCount                     *uint      `json:"login_count"`
-	TwoFactorAuthenticationEnabled bool       `json:"two_factor_authentication_enabled"`
-	EmailVerifiedAt                *time.Time `json:"email_verified_at"`
-	LastActivity                   *time.Time `json:"last_activity"`
+	ReagentID                      *uuid.UUID `json:"reagent_id" gorm:"foreignKey:User" example:"14a03569-d26b-4496-92e5-dfe8cb1855fe"`
+	Gender                         *string    `json:"gender" gorm:"index" example:"Male"`
+	Language                       *string    `json:"language" gorm:"index" example:"fa"`
+	Birthday                       *time.Time `json:"birthday" example:"2012-05-22 07:20:02"`
+	Score                          *uint      `json:"score" gorm:"default:0" example:"12"`
+	Theme                          *string    `json:"theme" example:"dracula"`
+	UserAgent                      *string    `json:"user_agent" example:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_6) AppleWebKit/5311 (KHTML, like Gecko) Chrome/40.0.877.0 Safari/5311"`
+	LoginCount                     *uint      `json:"login_count" example:"24"`
+	TwoFactorAuthenticationEnabled bool       `json:"two_factor_authentication_enabled" example:"false"`
+	EmailVerifiedAt                *time.Time `json:"email_verified_at" example:"1986-01-24 00:10:19"`
+	LastActivity                   *time.Time `json:"last_activity" example:"1986-01-24 00:10:19"`
 }

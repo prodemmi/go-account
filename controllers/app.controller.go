@@ -19,10 +19,20 @@ type (
 )
 
 type CreateAppBody struct {
-	Name string `form:"name" json:"name" binding:"required"`
-	Url  string `form:"url" json:"url" binding:"required"`
+	Name string `form:"name" json:"name" binding:"required" example:"fotomi"`
+	Url  string `form:"url" json:"url" binding:"required" example:"https://fotomi.net/"`
 }
 
+// Store
+// @Summary Store new app
+// @Tags App
+// @Accept json
+// @Produce json
+// @Param payload body CreateAppBody true "payload"
+// @Success 200 {object} swagger.SuccessJSONResult{data=models.App}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/apps [post]
 func (a AppController) Store(context *gin.Context) {
 	var payload CreateAppBody
 	if err := context.BindJSON(&payload); err != nil {
@@ -46,8 +56,18 @@ func (a AppController) Store(context *gin.Context) {
 	}
 }
 
+// Single
+// @Summary Get app detail
+// @Tags App
+// @Accept json
+// @Produce json
+// @Param id query string true "app id"
+// @Success 200 {object} swagger.SuccessJSONResult{data=models.App}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/apps/:id [get]
 func (a AppController) Single(context *gin.Context) {
-	appID := context.Param("app")
+	appID := context.Param("id")
 
 	if len(appID) != 0 {
 		app, err := a.AppService.GetApp(appID)
@@ -77,6 +97,15 @@ func (a AppController) Single(context *gin.Context) {
 
 }
 
+// Index
+// @Summary Get apps detail
+// @Tags App
+// @Accept json
+// @Produce json
+// @Success 200 {object} swagger.SuccessJSONResult{data=[]models.App}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/apps/ [get]
 func (a AppController) Index(context *gin.Context) {
 	apps, err := a.AppService.GetAppsList()
 
@@ -95,6 +124,15 @@ func (a AppController) Index(context *gin.Context) {
 	})
 }
 
+// Delete
+// @Summary Delete app
+// @Tags App
+// @Accept json
+// @Produce json
+// @Success 200 {object} swagger.SuccessJSONResult{data=boolean}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/apps/:id [delete]
 func (a AppController) Delete(context *gin.Context) {
 	apps, err := a.AppService.DeleteApp(context.Param("id"))
 

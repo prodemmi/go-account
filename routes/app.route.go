@@ -16,7 +16,7 @@ func RegisterAppRoutes(app *gin.Engine) {
 	{
 		v1.POST("/", appController.Store)
 		v1.GET("/", appController.Index)
-		v1.GET("/:app", appController.Single)
+		v1.GET("/:id", appController.Single)
 		v1.DELETE("/:id", appController.Delete)
 	}
 }

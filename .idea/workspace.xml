@@ -4,12 +4,18 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix relations">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/app.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/app.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/app.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/base.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/profile.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/profile.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/app.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/app.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/app.service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +69,7 @@
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/go-account/repositories&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/go-account/routes&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
@@ -78,13 +84,14 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/routes" />
       <recent name="$PROJECT_DIR$/repositories" />
       <recent name="$PROJECT_DIR$/services" />
       <recent name="$PROJECT_DIR$/controllers" />
-      <recent name="$PROJECT_DIR$/routes" />
       <recent name="$PROJECT_DIR$/middlewares" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/swagger" />
       <recent name="$PROJECT_DIR$/internal" />
     </key>
   </component>
@@ -141,7 +148,8 @@
     <MESSAGE value="fix app middleware" />
     <MESSAGE value="add repository layer" />
     <MESSAGE value="fix relations" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix relations" />
+    <MESSAGE value="add delete app api" />
+    <option name="LAST_COMMIT_MESSAGE" value="add delete app api" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
