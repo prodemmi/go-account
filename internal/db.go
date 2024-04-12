@@ -26,10 +26,17 @@ func SetupDatabase() error {
 	sql := string(c)
 	db.Exec(sql)
 
-	err = db.AutoMigrate(&models.App{}, &models.User{}, &models.Password{}, models.Profile{})
-
-	if err != nil {
-		return err
+	err1 := db.AutoMigrate(&models.App{})
+	if err1 != nil {
+		return err1
+	}
+	err2 := db.AutoMigrate(&models.User{})
+	if err2 != nil {
+		return err2
+	}
+	err3 := db.AutoMigrate(&models.Profile{})
+	if err3 != nil {
+		return err3
 	}
 
 	DB = db

@@ -4,22 +4,16 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix app middleware">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add repository layer">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/app.controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user.controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/jwt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/token.model.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/password.model.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/profile.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/profile.model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/app.route.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/user.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/app.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/app.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/token.service.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/user.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/prepareDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/prepareDB.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/valid_uuid.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/uuid.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +72,12 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
@@ -93,7 +92,12 @@
       <recent name="$PROJECT_DIR$/internal" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build go-account">
+    <configuration name="dropAllTables.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$PROJECT_DIR$/sql/dropAllTables.sql" />
+      <script-mode>FILE</script-mode>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-account" />
       <working_directory value="$PROJECT_DIR$" />
@@ -120,6 +124,11 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Database Script.dropAllTables.sql" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -134,7 +143,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fix app middleware" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix app middleware" />
+    <MESSAGE value="add repository layer" />
+    <option name="LAST_COMMIT_MESSAGE" value="add repository layer" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

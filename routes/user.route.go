@@ -9,9 +9,11 @@ import (
 )
 
 func RegisterUserRoutes(app *gin.Engine) {
+	profileRepository := repositories.NewProfileRepository()
 	userRepository := repositories.NewUserRepository()
 	userService := services.NewUserService(userRepository)
-	userController := controllers.NewUserController(userService)
+	profileService := services.NewProfileService(profileRepository)
+	userController := controllers.NewUserController(userService, profileService)
 
 	v1 := app.Group("/v1/users/").Use(middlewares.NewAppMiddleware())
 	{

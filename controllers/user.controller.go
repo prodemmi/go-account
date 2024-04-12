@@ -11,7 +11,8 @@ import (
 
 type (
 	UserController struct {
-		UserService services.IUserService
+		UserService    services.IUserService
+		ProfileService services.IProfileService
 	}
 
 	IUserController interface {
@@ -64,14 +65,18 @@ func (c UserController) Store(context *gin.Context) {
 
 	app, _ := uuid.FromString(appID)
 
-	createUser := models.User{
-		AppID:        app,
-		Email:        payload.Email,
-		Mobile:       payload.Mobile,
+	profile, _ := c.ProfileService.Create(models.Profile{
+		Email:        &payload.Email,
+		Mobile:       &payload.Mobile,
 		FirstName:    payload.FirstName,
 		LastName:     payload.LastName,
 		NationalCode: payload.NationalCode,
 		//ReagentID:    &reagentUUID,
+	})
+
+	createUser := models.User{
+		AppID:     app,
+		ProfileID: profile.ID,
 	}
 
 	user, err := c.UserService.Create(&createUser)
@@ -127,8 +132,9 @@ func (c UserController) Single(context *gin.Context) {
 	})
 }
 
-func NewUserController(uerService services.IUserService) IUserController {
+func NewUserController(userService services.IUserService, profileService services.IProfileService) IUserController {
 	return UserController{
-		UserService: uerService,
+		UserService:    userService,
+		ProfileService: profileService,
 	}
 }

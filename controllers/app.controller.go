@@ -19,22 +19,21 @@ type (
 )
 
 type CreateAppBody struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
+	Name string `form:"name" json:"name" binding:"required"`
+	Url  string `form:"url" json:"url" binding:"required"`
 }
 
 func (a AppController) Store(context *gin.Context) {
 	var payload CreateAppBody
 	if err := context.BindJSON(&payload); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
 			"error":  err.Error(),
 		})
 		return
 	}
 
-	apps, err := a.AppService.CreateApp(payload.Name, payload.Url)
-	if err == nil {
+	if apps, err := a.AppService.CreateApp(payload.Name, payload.Url); err == nil {
 		context.JSON(http.StatusOK, gin.H{
 			"status": "success",
 			"data":   apps,
