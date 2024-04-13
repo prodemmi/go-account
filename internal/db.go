@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func SetupDatabase() error {
-	dsn := "host=localhost user=root password=root dbname=account-db port=5435 sslmode=disable TimeZone=Asia/Tehran"
+	dsn := "host=localhost user=root password=root dbname=account-db port=5434 sslmode=disable TimeZone=Asia/Tehran"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
@@ -26,17 +26,9 @@ func SetupDatabase() error {
 	sql := string(c)
 	db.Exec(sql)
 
-	err1 := db.AutoMigrate(&models.App{})
-	if err1 != nil {
-		return err1
-	}
-	err2 := db.AutoMigrate(&models.User{})
-	if err2 != nil {
-		return err2
-	}
-	err3 := db.AutoMigrate(&models.Profile{})
-	if err3 != nil {
-		return err3
+	errMigrate := db.AutoMigrate(&models.App{}, models.User{}, models.Profile{})
+	if errMigrate != nil {
+		return errMigrate
 	}
 
 	DB = db
