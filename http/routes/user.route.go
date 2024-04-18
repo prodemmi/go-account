@@ -1,12 +1,12 @@
 package routes
 
 import (
+	"account/http/container"
 	"account/http/middlewares"
-	"account/internal"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRoutes(app *gin.Engine, container *internal.Container) {
+func RegisterUserRoutes(app *gin.Engine, container *container.Container) {
 
 	v1 := app.Group("/v1/users/").Use(middlewares.NewAppMiddleware(container.AppService))
 	{

@@ -1,12 +1,12 @@
 package routes
 
 import (
+	"account/http/container"
 	"account/http/middlewares"
-	"account/internal"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAuthRoutes(app *gin.Engine, container *internal.Container) {
+func RegisterAuthRoutes(app *gin.Engine, container *container.Container) {
 	appMiddleware := middlewares.NewAppMiddleware(container.AppService)
 	jwtMiddleware := middlewares.NewJWTMiddleware(container.UserService)
 

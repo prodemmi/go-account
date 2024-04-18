@@ -4,48 +4,16 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add utils unit tests">
-      <change afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="refactor project structure">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/user.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/controllers/app.controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/app.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/routes/auth.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/user.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/test_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/test_server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/container.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/container/container.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/jwt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/app.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/app.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/base.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/otp.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/otp.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/user.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/app.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/app.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/auth.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/auth.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/otp.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/otp.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/app.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/auth.route.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/swagger.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/swagger.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/user.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/app.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/app.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/auth.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/auth.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/otp.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/otp.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/user.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/dropAllTables.sql.dis" beforeDir="false" afterPath="$PROJECT_DIR$/database/sql/dropAllTables.sql.dis" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/insertTestData.sql.dis" beforeDir="false" afterPath="$PROJECT_DIR$/database/sql/insertTestData.sql.dis" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/prepareDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/sql/prepareDB.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/hash.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/hash.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/hash_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/hash_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,11 +106,11 @@
       <recent name="$PROJECT_DIR$/repositories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/internal" />
-      <recent name="$PROJECT_DIR$/utils" />
-      <recent name="$PROJECT_DIR$/database" />
+      <recent name="$PROJECT_DIR$/http/server" />
+      <recent name="$PROJECT_DIR$/http/container" />
       <recent name="$PROJECT_DIR$/http" />
-      <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/internal" />
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build go-account">
@@ -278,7 +246,8 @@
     <MESSAGE value="fix migration and database port" />
     <MESSAGE value="complete auth api's" />
     <MESSAGE value="add utils unit tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="add utils unit tests" />
+    <MESSAGE value="refactor project structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor project structure" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

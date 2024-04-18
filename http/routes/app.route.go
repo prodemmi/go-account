@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"account/internal"
+	"account/http/container"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAppRoutes(app *gin.Engine, container *internal.Container) {
+func RegisterAppRoutes(app *gin.Engine, container *container.Container) {
 	v1 := app.Group("/v1/apps/")
 	{
 		v1.POST("/", container.AppController.Store)

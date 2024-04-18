@@ -1,17 +1,14 @@
 package main
 
 import (
-	"account/http"
-	"account/internal"
+	"account/http/server"
 	"log"
 	"os"
 )
 
 // @title Account API
 func main() {
-	container := internal.NewContainer()
-
-	engine, err := http.SetupServer(container)
+	engine, err := server.SetupServer()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
