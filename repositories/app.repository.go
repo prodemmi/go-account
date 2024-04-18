@@ -8,7 +8,7 @@ import (
 type (
 	AppRepository  struct{}
 	IAppRepository interface {
-		Create(app models.App) (*models.App, error)
+		Create(app models.App) (models.App, error)
 		FindAll() ([]models.App, error)
 		FindOne(appID string) (*models.App, error)
 		Exists(appID string) (bool, error)
@@ -16,14 +16,14 @@ type (
 	}
 )
 
-func (a AppRepository) Create(app models.App) (*models.App, error) {
+func (a AppRepository) Create(app models.App) (models.App, error) {
 	err := internal.DB.Create(&app).Error
 
 	if err != nil {
-		return nil, err
+		return models.App{}, err
 	}
 
-	return &app, nil
+	return app, nil
 }
 
 func (a AppRepository) FindAll() ([]models.App, error) {

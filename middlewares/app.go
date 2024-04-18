@@ -40,7 +40,11 @@ func App(appService services.IAppService) gin.HandlerFunc {
 			return
 		}
 		if app {
-			c.Set("App", app)
+			appEntity, _ := appService.GetApp(header.AppID)
+			c.Set("App", appEntity)
+			c.Set("AppID", appEntity.ID)
+			c.Set("AppUrl", appEntity.Url)
+			c.Set("AppOtpType", appEntity.OtpType)
 			c.Next()
 		} else {
 			c.JSON(http.StatusNotFound, gin.H{

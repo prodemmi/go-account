@@ -1,26 +1,40 @@
-version: '2.2'
+version: '3.9'
 
 services:
-  account-go:
-    build: .
-    ports:
-      - "80:8081"
   account-db:
     image: postgres
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      PGDATA: /data/postgres
+    container_name: account-db
     volumes:
       - ./data/:/data/postgres
+      - ./sql/:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+    hostname: account-db
+    networks:
+      - account-network
+
+  account-go:
+    build: "."
+    container_name: account-go
     ports:
-      - "5435:5432"
-    restart: unless-stopped
-  account-nginx:
-    image: nginx:latest
-    container_name: account-nginx
-    ports:
-      - "9999:80"
+      - "9090:9090"
+    networks:
+      - account-network
     volumes:
-      - /var/www/html:/usr/share/nginx/html
-    restart: always
+      - .:/app
+    depends_on:
+      - account-db
+    environment:
+      - APP_PORT=${APP_PORT}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - APP_SECRET=${APP_SECRET}
+    restart: unless-stopped
+
+networks:
+  account-network:
+    driver: bridge

@@ -3,7 +3,6 @@ package middlewares
 import (
 	"account/repositories"
 	"account/services"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"net/http"
@@ -27,9 +26,8 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, jwt.ErrSignatureInvalid
 			}
-			return []byte(os.Getenv("JWT_SECRET")), nil
+			return []byte(os.Getenv("APP_SECRET")), nil
 		})
-		fmt.Print("err ", err)
 
 		if err != nil || !token.Valid {
 			ctx.JSON(http.StatusUnauthorized, gin.H{
@@ -42,8 +40,8 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 		user, errUser := userService.GetUserByToken(token.Raw)
 
 		if errUser != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"error": errUser.Error(),
+			ctx.JSON(http.StatusUnauthorized, gin.H{
+				"error": "unauthorized",
 			})
 			ctx.Abort()
 			return
@@ -51,6 +49,7 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 
 		ctx.Set("Token", token.Raw)
 		ctx.Set("User", user)
+		ctx.Set("UserID", user.ID)
 		ctx.Next()
 	}
 }

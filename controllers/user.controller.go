@@ -5,14 +5,13 @@ import (
 	"account/services"
 	"account/utils"
 	"github.com/gin-gonic/gin"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"net/http"
 )
 
 type (
 	UserController struct {
-		UserService    services.IUserService
-		ProfileService services.IProfileService
+		UserService services.IUserService
 	}
 
 	IUserController interface {
@@ -83,23 +82,17 @@ func (c UserController) Store(context *gin.Context) {
 		return
 	}
 
-	app, _ := uuid.FromString(appID)
-
-	profile, _ := c.ProfileService.Create(models.Profile{
+	app, _ := uuid.FromBytes([]byte(appID))
+	createUser := models.User{
+		AppID:        app,
 		Email:        &payload.Email,
 		Mobile:       &payload.Mobile,
 		FirstName:    payload.FirstName,
 		LastName:     payload.LastName,
 		NationalCode: payload.NationalCode,
-		//ReagentID:    &reagentUUID,
-	})
-
-	createUser := models.User{
-		AppID:     app,
-		ProfileID: profile.ID,
 	}
 
-	user, err := c.UserService.Create(&createUser)
+	user, err := c.UserService.Create(createUser)
 
 	if err == nil {
 		context.JSON(http.StatusOK, gin.H{
@@ -162,9 +155,8 @@ func (c UserController) Single(context *gin.Context) {
 	})
 }
 
-func NewUserController(userService services.IUserService, profileService services.IProfileService) IUserController {
+func NewUserController(userService services.IUserService) IUserController {
 	return UserController{
-		UserService:    userService,
-		ProfileService: profileService,
+		UserService: userService,
 	}
 }

@@ -10,7 +10,7 @@ type (
 		AppRepository repositories.IAppRepository
 	}
 	IAppService interface {
-		CreateApp(name string, url string) (*models.App, error)
+		CreateApp(app models.App) (models.App, error)
 		GetAppsList() ([]models.App, error)
 		GetApp(id string) (*models.App, error)
 		CheckExists(id string) (bool, error)
@@ -18,16 +18,13 @@ type (
 	}
 )
 
-func (a AppService) CreateApp(name string, url string) (*models.App, error) {
-	app, err := a.AppRepository.Create(models.App{
-		Name: name,
-		Url:  url,
-	})
+func (a AppService) CreateApp(app models.App) (models.App, error) {
+	result, err := a.AppRepository.Create(app)
 	if err != nil {
-		return nil, err
+		return models.App{}, err
 	}
 
-	return app, nil
+	return result, nil
 }
 
 func (a AppService) GetAppsList() ([]models.App, error) {

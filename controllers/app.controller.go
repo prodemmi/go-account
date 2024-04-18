@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"account/models"
 	"account/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -19,8 +20,9 @@ type (
 )
 
 type CreateAppBody struct {
-	Name string `form:"name" json:"name" binding:"required" example:"fotomi"`
-	Url  string `form:"url" json:"url" binding:"required" example:"https://fotomi.net/"`
+	Name    string `form:"name" json:"name" binding:"required" example:"fotomi"`
+	Url     string `form:"url" json:"url" binding:"required" example:"https://fotomi.net/"`
+	OtpType string `json:"otp_type" binding:"required" example:"email"`
 }
 
 // Store
@@ -43,7 +45,11 @@ func (a AppController) Store(context *gin.Context) {
 		return
 	}
 
-	if apps, err := a.AppService.CreateApp(payload.Name, payload.Url); err == nil {
+	if apps, err := a.AppService.CreateApp(models.App{
+		Name:    payload.Name,
+		Url:     payload.Url,
+		OtpType: payload.OtpType,
+	}); err == nil {
 		context.JSON(http.StatusOK, gin.H{
 			"status": "success",
 			"data":   apps,

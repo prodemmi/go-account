@@ -3,38 +3,38 @@ package repositories
 import (
 	"account/internal"
 	"account/models"
-	"account/utils"
+	"fmt"
 )
 
 type (
 	UserRepository  struct{}
 	IUserRepository interface {
-		Create(user models.User) (*models.User, error)
+		Create(user models.User) (models.User, error)
 		FindAll(appID string) ([]models.User, error)
 		FindOne(id string) (*models.User, error)
+		FindOneBy(where map[string]interface{}) (models.User, error)
 		FindByToken(token string) (*models.User, error)
+		CheckAuthenticated(email string, mobile string) (bool, error)
+		Update(id string, where map[string]interface{}) (models.User, error)
 	}
 )
 
-func (u UserRepository) Create(user models.User) (*models.User, error) {
-	err := internal.DB.Model(user).Create(&user).Error
+func (u UserRepository) Create(user models.User) (models.User, error) {
+	exists, errExists := u.CheckAuthenticated(*user.Email, *user.Mobile)
+	if errExists != nil {
+		return models.User{}, errExists
+	}
+
+	if exists {
+		return models.User{}, fmt.Errorf("user exists please try sign in")
+	}
+	err := internal.DB.FirstOrCreate(&user).Error
 
 	if err != nil {
-		return nil, err
+		return models.User{}, err
 	}
 
-	token, errToken := utils.CreateToken(user.AppID.String(), user.ID.String())
-	if errToken != nil {
-		return nil, errToken
-	}
-
-	updateErr := internal.DB.Model(&user).
-		Update("api_token", token).
-		Error
-	if updateErr != nil {
-		return nil, updateErr
-	}
-	return &user, nil
+	return user, nil
 }
 
 func (u UserRepository) FindAll(appID string) ([]models.User, error) {
@@ -80,6 +80,50 @@ func (u UserRepository) FindByToken(token string) (*models.User, error) {
 	}
 
 	return &result, nil
+}
+
+func (u UserRepository) CheckAuthenticated(email string, mobile string) (bool, error) {
+	var exists bool
+	err := internal.DB.Model(&models.User{}).
+		Select("count(*) > 0").
+		Where("signed_up", true).
+		Where(internal.DB.Where("email = ?", email).Or(internal.DB.Where("mobile = ?", mobile))).
+		Find(&exists).
+		Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func (u UserRepository) Update(id string, where map[string]interface{}) (models.User, error) {
+	var result models.User
+	err := internal.DB.
+		Model(&result).
+		Updates(where).
+		Error
+
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return result, nil
+}
+
+func (u UserRepository) FindOneBy(where map[string]interface{}) (models.User, error) {
+	var user models.User
+	err := internal.DB.
+		Where(where).
+		First(&user).
+		Error
+
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
 }
 
 func NewUserRepository() IUserRepository {

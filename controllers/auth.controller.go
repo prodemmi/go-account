@@ -1,13 +1,19 @@
 package controllers
 
 import (
+	"account/models"
 	"account/services"
+	"account/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 )
 
 type AuthController struct {
 	AuthService services.IAuthService
+	UserService services.IUserService
+	OtpService  services.IOTPService
 }
 
 type IAuthController interface {
@@ -16,11 +22,152 @@ type IAuthController interface {
 	Me(context *gin.Context)
 	OAuth2(context *gin.Context)
 	OAuth2Fallback(context *gin.Context)
+	VerifyOtp(context *gin.Context)
 }
 
-func (c AuthController) SignUp(context *gin.Context) {}
+type SignUpBody struct {
+	FirstName string `json:"first_name" binding:"required" example:"Emad"`
+	LastName  string `json:"last_name" binding:"required" example:"Malekpour"`
+	Email     string `json:"email" binding:"required" example:"prodemmi@gmail.com"`
+	Mobile    string `json:"mobile" binding:"required" example:"+989130243519"`
+	Password  string `json:"password" binding:"required" example:"secure"`
+}
 
-func (c AuthController) SignIn(context *gin.Context) {}
+func (c AuthController) SignUp(context *gin.Context) {
+	var payload SignUpBody
+	appID, _ := context.Get("AppID")
+
+	if err := context.ShouldBindJSON(&payload); err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  err.Error(),
+		})
+		return
+	}
+	appUUID, _ := uuid.ParseBytes([]byte(fmt.Sprintf("%v", appID)))
+	passwordHash := utils.HashPassword(payload.Password)
+	user := models.User{
+		AppID:     appUUID,
+		FirstName: payload.FirstName,
+		LastName:  payload.LastName,
+		Email:     &payload.Email,
+		Mobile:    &payload.Mobile,
+		SignedUp:  false,
+		Password:  passwordHash,
+	}
+
+	user, errSignUp := c.AuthService.SignUp(user)
+	if errSignUp != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  errSignUp.Error(),
+		})
+		return
+	}
+
+	otpType, _ := context.Get("AppOtpType")
+	otpHash := utils.CreateAuthHash(user)
+	_, errOtp := c.OtpService.CreateOTP(user.ID, user.AppID, fmt.Sprintf("%v", otpType), otpHash)
+	if errSignUp != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  errOtp.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data": gin.H{
+			"user_id":  user.ID,
+			"otp_hash": otpHash,
+		},
+	})
+}
+
+type SignInBody struct {
+	Email    string `json:"email" example:"prodemmi@gmail.com"`
+	Mobile   string `json:"mobile" example:"+989130243519"`
+	Password string `json:"password" binding:"required" example:"secure"`
+}
+
+func (c AuthController) SignIn(context *gin.Context) {
+	var payload SignInBody
+
+	if err := context.ShouldBindJSON(&payload); err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  err.Error(),
+		})
+		return
+	}
+	appOtpType, _ := context.Get("AppOtpType")
+	appOtpType = fmt.Sprintf("%v", appOtpType)
+
+	if appOtpType == "email" && payload.Email == "" {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  "please enter the email",
+		})
+		return
+	}
+
+	if appOtpType == "mobile" && payload.Mobile == "" {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  "please enter the mobile number",
+		})
+		return
+	}
+
+	var user models.User
+	var errSignInE error
+	var errSignInM error
+	if appOtpType == "email" {
+		user, errSignInE = c.UserService.GetUserWithEmail(payload.Email)
+		if errSignInE != nil {
+			context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"status": "error",
+				"error":  errSignInE.Error(),
+			})
+			return
+		}
+
+	} else if appOtpType == "mobile" {
+		user, errSignInM = c.UserService.GetUserWithMobile(payload.Mobile)
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  errSignInM.Error(),
+		})
+		return
+	}
+
+	if !utils.CheckPasswordHash(payload.Password, user.Password) {
+		context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"status": "error",
+			"error":  "password is wrong",
+		})
+		return
+	}
+
+	otpHash := utils.CreateAuthHash(user)
+	_, errOtp := c.OtpService.CreateOTP(user.ID, user.AppID, fmt.Sprintf("%v", appOtpType), otpHash)
+	if errOtp != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  errOtp.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data": gin.H{
+			"user_id":  user.ID,
+			"otp_hash": otpHash,
+		},
+	})
+}
 
 // Me
 // @Summary Get authenticated user
@@ -42,7 +189,7 @@ func (c AuthController) Me(context *gin.Context) {
 		})
 		return
 	} else {
-		context.JSON(http.StatusUnauthorized, gin.H{
+		context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"status": "error",
 			"error":  "user not authorized.",
 		})
@@ -54,8 +201,67 @@ func (c AuthController) OAuth2(context *gin.Context) {}
 
 func (c AuthController) OAuth2Fallback(context *gin.Context) {}
 
-func NewAuthController(authService services.IAuthService) IAuthController {
+type VerifyOTPBody struct {
+	UserID  string `json:"user_id" binding:"required" example:"21636369-8b52-4b4a-97b7-50923ceb3ffd"`
+	OtpCode string `json:"otp_code" binding:"required" example:"12345"`
+	OtpType string `json:"otp_type" binding:"required" example:"email"`
+	OtpHash string `json:"otp_hash" binding:"required" example:"fabecfb8ad5895a6a6309e5a7d1b5c48601d1f9e"`
+}
+
+func (c AuthController) VerifyOtp(context *gin.Context) {
+	var payload VerifyOTPBody
+
+	if err := context.ShouldBindJSON(&payload); err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  err.Error(),
+		})
+		return
+	}
+	user, _ := c.UserService.GetUser(payload.UserID)
+
+	if utils.VerifyAuthHash(payload.OtpHash, *user) {
+		verify, err := c.OtpService.CheckOTP(user.ID, user.AppID, payload.OtpCode, payload.OtpType, payload.OtpHash)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"status": "error",
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		if verify {
+			appUrl, _ := context.Get("AppUrl")
+			token, errToken := c.UserService.CreateUserToken(user.ID.String())
+			if errToken != nil {
+				context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+					"status": "error",
+					"error":  err.Error(),
+				})
+				return
+			}
+			context.AbortWithStatusJSON(http.StatusOK, gin.H{
+				"status": "success",
+				"data": gin.H{
+					"api_token":   token,
+					"redirect_to": appUrl,
+				},
+			})
+			return
+		}
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		"status": "error",
+		"error":  "cannot verify otp hash",
+	})
+}
+
+func NewAuthController(authService services.IAuthService, userService services.IUserService, otpService services.IOTPService) IAuthController {
 	return AuthController{
 		AuthService: authService,
+		UserService: userService,
+		OtpService:  otpService,
 	}
 }

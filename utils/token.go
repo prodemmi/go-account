@@ -7,12 +7,12 @@ import (
 )
 
 func CreateToken(appID string, userID string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"e": time.Now().Add(5 * time.Minute).Unix(),
-		"a": appID,
-		"u": userID,
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
+		Id:        userID,
+		Subject:   appID,
 	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenString, err := token.SignedString([]byte(os.Getenv("APP_SECRET")))
 	if err != nil {
 		return "", err
 	}

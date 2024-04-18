@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
+	"os"
 )
 
 // @title Account API
@@ -29,7 +30,9 @@ func main() {
 	routes.RegisterAuthRoutes(engine)
 	routes.RegisterSwaggerRoutes(engine)
 
-	serverErr := engine.Run(":8081")
+	port := os.Getenv("APP_PORT")
+
+	serverErr := engine.Run(":" + port)
 	if serverErr != nil {
 		fmt.Print(serverErr.Error())
 		return

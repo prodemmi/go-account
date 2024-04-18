@@ -1,9 +1,13 @@
 FROM golang:1.22.2
 
+ENV HTTPS_PROXY http://fodev.org:8118
+
+# Create and change to the app directory.
 WORKDIR /app
 
-COPY . .
+# Copy local code to the container image.
+COPY ./server ./
 
-RUN HTTPS_PROXY=http://fodev.org:8118 go build -o app main.go
+EXPOSE 9090
 
-CMD ["./app"]
+CMD ["./server"]

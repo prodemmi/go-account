@@ -1,8 +1,10 @@
 package services
 
 import (
+	"account/internal"
 	"account/models"
 	"account/repositories"
+	"account/utils"
 )
 
 type (
@@ -10,20 +12,44 @@ type (
 		UserRepository repositories.IUserRepository
 	}
 	IUserService interface {
-		Create(user *models.User) (*models.User, error)
+		Create(user models.User) (models.User, error)
 		GetUsersList(appID string) ([]models.User, error)
+		CreateUserToken(id string) (string, error)
 		GetUser(id string) (*models.User, error)
+		GetUserWithEmail(email string) (models.User, error)
+		GetUserWithMobile(mobile string) (models.User, error)
 		GetUserByToken(token string) (*models.User, error)
 	}
 )
 
-func (a UserService) Create(user *models.User) (*models.User, error) {
-	user, err := a.UserRepository.Create(*user)
+func (a UserService) Create(user models.User) (models.User, error) {
+	createdUser, err := a.UserRepository.Create(user)
 	if err != nil {
-		return nil, err
+		return models.User{}, err
 	}
 
-	return user, nil
+	return createdUser, nil
+}
+
+func (a UserService) CreateUserToken(id string) (string, error) {
+	user, err := a.GetUser(id)
+	if err != nil {
+		return "", err
+	}
+
+	token, errToken := utils.CreateToken(user.AppID.String(), user.ID.String())
+	if errToken != nil {
+		return "", errToken
+	}
+
+	user.ApiToken = &token
+	user.SignedUp = true
+	errSave := internal.DB.Save(&user).Error
+	if errSave != nil {
+		return "", errSave
+	}
+
+	return token, nil
 }
 
 func (a UserService) GetUsersList(appID string) ([]models.User, error) {
@@ -48,6 +74,30 @@ func (a UserService) GetUserByToken(token string) (*models.User, error) {
 	user, err := a.UserRepository.FindByToken(token)
 	if err != nil {
 		return nil, err
+	}
+
+	return user, nil
+}
+
+func (a UserService) GetUserWithEmail(email string) (models.User, error) {
+	user, err := a.UserRepository.FindOneBy(map[string]interface{}{
+		"email": email,
+	})
+
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
+
+func (a UserService) GetUserWithMobile(mobile string) (models.User, error) {
+	user, err := a.UserRepository.FindOneBy(map[string]interface{}{
+		"mobile": mobile,
+	})
+
+	if err != nil {
+		return models.User{}, err
 	}
 
 	return user, nil
