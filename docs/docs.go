@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "App"
                 ],
-                "summary": "Store new app",
+                "summary": "Store new server",
                 "parameters": [
                     {
                         "description": "payload",
@@ -132,11 +132,11 @@ const docTemplate = `{
                 "tags": [
                     "App"
                 ],
-                "summary": "Get app detail",
+                "summary": "Get server detail",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "app id",
+                        "description": "server id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -185,7 +185,7 @@ const docTemplate = `{
                 "tags": [
                     "App"
                 ],
-                "summary": "Delete app",
+                "summary": "Delete server",
                 "responses": {
                     "200": {
                         "description": "OK",

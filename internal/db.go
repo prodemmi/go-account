@@ -1,12 +1,13 @@
 package internal
 
 import (
-	"account/models"
+	"account/database/models"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 var DB *gorm.DB
@@ -42,6 +43,12 @@ func SetupDatabase() error {
 	errMigrate := db.AutoMigrate(&models.App{}, models.User{}, models.Otp{})
 	if errMigrate != nil {
 		return errMigrate
+	}
+
+	if sqlDB, _ := db.DB(); err == nil {
+		sqlDB.SetMaxIdleConns(2)
+		sqlDB.SetMaxOpenConns(3)
+		sqlDB.SetConnMaxLifetime(time.Hour)
 	}
 
 	DB = db

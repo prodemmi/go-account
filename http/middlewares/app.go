@@ -1,8 +1,7 @@
 package middlewares
 
 import (
-	"account/repositories"
-	"account/services"
+	"account/http/services"
 	"account/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -17,7 +16,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 		header := &AppHeader{}
 		if err := c.BindHeader(header); err != nil {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error": "app id is not set.",
+				"error": "server id is not set.",
 			})
 			c.Abort()
 			return
@@ -25,7 +24,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 
 		if !utils.IsUUID(header.AppID) {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error": "app id is not valid uuid.",
+				"error": "server id is not valid uuid.",
 			})
 			c.Abort()
 			return
@@ -48,7 +47,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 			c.Next()
 		} else {
 			c.JSON(http.StatusNotFound, gin.H{
-				"error": "app not found,",
+				"error": "server not found,",
 			})
 		}
 		c.Abort()
@@ -56,9 +55,6 @@ func App(appService services.IAppService) gin.HandlerFunc {
 	}
 }
 
-func NewAppMiddleware() gin.HandlerFunc {
-	appRepository := repositories.NewAppRepository()
-	appService := services.NewAppService(appRepository)
-
+func NewAppMiddleware(appService services.IAppService) gin.HandlerFunc {
 	return App(appService)
 }

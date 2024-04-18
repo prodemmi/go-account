@@ -4,16 +4,48 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="complete auth api's">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4.xml" afterDir="false" />
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add utils unit tests">
+      <change afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/auth.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/user.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/jwt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/otp.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/otp.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/password.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/password.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/app.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/app.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/base.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/otp.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/otp.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/user.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repositories/app.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/app.repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repositories/auth.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/auth.repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repositories/otp.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/otp.repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/app.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/auth.route.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/swagger.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/swagger.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/user.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/app.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/app.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/auth.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/otp.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/otp.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/user.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/dropAllTables.sql.dis" beforeDir="false" afterPath="$PROJECT_DIR$/database/sql/dropAllTables.sql.dis" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/insertTestData.sql.dis" beforeDir="false" afterPath="$PROJECT_DIR$/database/sql/insertTestData.sql.dis" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/prepareDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/sql/prepareDB.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/hash.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/hash.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/hash_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/hash_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +101,7 @@
     "Go Build.go build account.executor": "DlvRecordAndDebug",
     "Go Build.go build go-account.executor": "Run",
     "Go Test.TestGenerateOTP in account/utils.executor": "Run",
+    "Go Test.TestStoreApp in account/http/controllers.executor": "Run",
     "Go Test.Test_auth_hash_creates in account/utils.executor": "Run",
     "Go Test.go test account/utils.executor": "Run",
     "Go Test.hash_test.go.executor": "Run",
@@ -80,7 +113,7 @@
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "git-widget-placeholder": "master",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/emad/Documents/Projects/go-account/internal",
+    "last_opened_file_path": "/home/emad/Documents/Projects/go-account/server",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -98,21 +131,21 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/server" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/controllers" />
       <recent name="$PROJECT_DIR$/internal" />
       <recent name="$PROJECT_DIR$/repositories" />
-      <recent name="$PROJECT_DIR$/services" />
-      <recent name="$PROJECT_DIR$/models" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/postgres" />
-      <recent name="$PROJECT_DIR$/nginx" />
-      <recent name="$PROJECT_DIR$/swagger" />
       <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$/utils" />
+      <recent name="$PROJECT_DIR$/database" />
+      <recent name="$PROJECT_DIR$/http" />
+      <recent name="$PROJECT_DIR$/app" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.go test account/utils">
+  <component name="RunManager" selected="Go Build.go build go-account">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-account" />
       <working_directory value="$PROJECT_DIR$" />
@@ -140,6 +173,18 @@
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
       <pattern value="^\QTestGenerateOTP\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestStoreApp in account/http/controllers" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-account" />
+      <working_directory value="$PROJECT_DIR$/http/controllers" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="account/http/controllers" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestStoreApp\E$" />
       <method v="2" />
     </configuration>
     <configuration name="Test_auth_hash_creates in account/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -184,14 +229,6 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
-    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
-      <deployment type="dockerfile">
-        <settings>
-          <option name="sourceFilePath" value="Dockerfile" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <configuration name="docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml">
       <deployment type="docker-compose.yml">
         <settings>
@@ -202,11 +239,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestStoreApp in account/http/controllers" />
         <item itemvalue="Go Test.go test account/utils" />
         <item itemvalue="Go Test.TestGenerateOTP in account/utils" />
         <item itemvalue="Go Test.Test_auth_hash_creates in account/utils" />
         <item itemvalue="Go Test.hash_test.go" />
-        <item itemvalue="Docker.Dockerfile" />
       </list>
     </recent_temporary>
   </component>
@@ -240,7 +277,8 @@
     <MESSAGE value="add dotenv" />
     <MESSAGE value="fix migration and database port" />
     <MESSAGE value="complete auth api's" />
-    <option name="LAST_COMMIT_MESSAGE" value="complete auth api's" />
+    <MESSAGE value="add utils unit tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="add utils unit tests" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

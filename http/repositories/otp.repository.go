@@ -1,8 +1,8 @@
 package repositories
 
 import (
+	"account/database/models"
 	"account/internal"
-	"account/models"
 	"account/utils"
 	"fmt"
 	uuid "github.com/google/uuid"

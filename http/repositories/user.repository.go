@@ -1,8 +1,8 @@
 package repositories
 
 import (
+	"account/database/models"
 	"account/internal"
-	"account/models"
 	"fmt"
 )
 

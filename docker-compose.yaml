@@ -22,7 +22,7 @@ services:
     networks:
       - account-network
     volumes:
-      - .:/app
+      - .:/server
     depends_on:
       - account-db
     environment:

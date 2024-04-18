@@ -1,9 +1,9 @@
 package services
 
 import (
+	"account/database/models"
+	"account/http/repositories"
 	"account/internal"
-	"account/models"
-	"account/repositories"
 	"account/utils"
 )
 

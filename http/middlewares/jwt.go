@@ -1,8 +1,7 @@
 package middlewares
 
 import (
-	"account/repositories"
-	"account/services"
+	"account/http/services"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"net/http"
@@ -51,9 +50,6 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 	}
 }
 
-func NewJWTMiddleware() gin.HandlerFunc {
-	userRepository := repositories.NewUserRepository()
-	userService := services.NewUserService(userRepository)
-
+func NewJWTMiddleware(userService services.IUserService) gin.HandlerFunc {
 	return JWT(userService)
 }

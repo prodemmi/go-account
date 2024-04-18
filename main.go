@@ -1,24 +1,23 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
+	"account/http"
+	"account/internal"
 	"log"
 	"os"
 )
 
 // @title Account API
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err.Error())
-	}
+	container := internal.NewContainer()
 
-	server, err := SetupServer()
+	engine, err := http.SetupServer(container)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	port := os.Getenv("APP_PORT")
 
-	serverErr := server.Run(":" + port)
+	serverErr := engine.Run(":" + port)
 	if serverErr != nil {
 		log.Fatal(serverErr.Error())
 	}

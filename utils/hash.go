@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"account/models"
+	"account/database/models"
 	"crypto/sha1"
 	"encoding/hex"
 )

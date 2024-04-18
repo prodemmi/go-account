@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"account/models"
+	"account/database/models"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"

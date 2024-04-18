@@ -1,8 +1,8 @@
 package services
 
 import (
-	"account/models"
-	"account/repositories"
+	"account/database/models"
+	"account/http/repositories"
 )
 
 type (

@@ -143,7 +143,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/swagger.ErrorJSONResult'
-      summary: Store new app
+      summary: Store new server
       tags:
       - App
   /v1/apps/:
@@ -199,14 +199,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/swagger.ErrorJSONResult'
-      summary: Delete app
+      summary: Delete server
       tags:
       - App
     get:
       consumes:
       - application/json
       parameters:
-      - description: app id
+      - description: server id
         in: query
         name: id
         required: true
@@ -231,7 +231,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/swagger.ErrorJSONResult'
-      summary: Get app detail
+      summary: Get server detail
       tags:
       - App
   /v1/auth/me:

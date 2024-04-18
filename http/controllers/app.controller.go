@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"account/models"
-	"account/services"
+	"account/database/models"
+	"account/http/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -26,7 +26,7 @@ type CreateAppBody struct {
 }
 
 // Store
-// @Summary Store new app
+// @Summary Store new server
 // @Tags App
 // @Accept json
 // @Produce json
@@ -63,11 +63,11 @@ func (a AppController) Store(context *gin.Context) {
 }
 
 // Single
-// @Summary Get app detail
+// @Summary Get server detail
 // @Tags App
 // @Accept json
 // @Produce json
-// @Param id query string true "app id"
+// @Param id query string true "server id"
 // @Success 200 {object} swagger.SuccessJSONResult{data=models.App}
 // @failure 500 {object} swagger.ErrorJSONResult{}
 // @failure 400 {object} swagger.ErrorJSONResult{}
@@ -80,7 +80,7 @@ func (a AppController) Single(context *gin.Context) {
 
 		if app == nil {
 			context.JSON(http.StatusNotFound, gin.H{
-				"error": "app not found.",
+				"error": "server not found.",
 			})
 			context.Abort()
 			return
@@ -131,7 +131,7 @@ func (a AppController) Index(context *gin.Context) {
 }
 
 // Delete
-// @Summary Delete app
+// @Summary Delete server
 // @Tags App
 // @Accept json
 // @Produce json

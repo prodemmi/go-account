@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"account/models"
-	"account/services"
+	"account/database/models"
+	"account/http/services"
 	"account/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
