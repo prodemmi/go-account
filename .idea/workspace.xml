@@ -4,50 +4,16 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix migration and database port">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="complete auth api's">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/account-db.HmAd0A/schema/information_schema.FNRwLQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/account-db.HmAd0A/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/account-db.HmAd0A/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/account-db.HmAd0A/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/account-db.HmAd0A/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/account-db.HmAd0A/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/information_schema.FNRwLQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/pg_catalog.0S1ZNQ.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7fdb2437-9acc-47db-82de-441704cb35b4/storage_v2/_src_/database/root.4oA1AA/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/app.controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/auth.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/user.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middlewares/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/jwt.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/app.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/app.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/base.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/profile.model.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/app.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/repositories/app.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/profile.repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/repositories/user.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/auth.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/routes/user.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/app.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/app.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/auth.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/profile.service.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/user.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/dropAllTables.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/dropAllTables.sql.dis" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/prepareDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/prepareDB.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/token.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/token.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/otp.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/otp.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/password.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/password.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +25,7 @@
       <list>
         <option value="Dockerfile" />
         <option value="Go Application" />
+        <option value="Go File" />
       </list>
     </option>
   </component>
@@ -95,43 +62,47 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go Application&quot;,
-    &quot;Docker.Dockerfile.executor&quot;: &quot;Run&quot;,
-    &quot;Go Build.go build account.executor&quot;: &quot;DlvRecordAndDebug&quot;,
-    &quot;Go Build.go build go-account.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/go-account/repositories&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Docker.Dockerfile.executor": "Run",
+    "Go Build.go build account.executor": "DlvRecordAndDebug",
+    "Go Build.go build go-account.executor": "Run",
+    "Go Test.TestGenerateOTP in account/utils.executor": "Run",
+    "Go Test.Test_auth_hash_creates in account/utils.executor": "Run",
+    "Go Test.go test account/utils.executor": "Run",
+    "Go Test.hash_test.go.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "master",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "/home/emad/Documents/Projects/go-account/internal",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ],
-    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
-      &quot;PostgreSQL&quot;
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect": [
+      "PostgreSQL"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal" />
       <recent name="$PROJECT_DIR$/repositories" />
       <recent name="$PROJECT_DIR$/services" />
       <recent name="$PROJECT_DIR$/models" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/routes" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -141,12 +112,7 @@
       <recent name="$PROJECT_DIR$/internal" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build go-account">
-    <configuration name="dropAllTables.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
-      <script-file value="$PROJECT_DIR$/sql/dropAllTables.sql" />
-      <script-mode>FILE</script-mode>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Go Test.go test account/utils">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-account" />
       <working_directory value="$PROJECT_DIR$" />
@@ -164,12 +130,57 @@
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
+    <configuration name="TestGenerateOTP in account/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-account" />
+      <working_directory value="$PROJECT_DIR$/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="account/utils" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestGenerateOTP\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_auth_hash_creates in account/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-account" />
+      <working_directory value="$PROJECT_DIR$/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="account/utils" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTest_auth_hash_creates\E$" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
       <module name="go-account" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="DIRECTORY" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test account/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-account" />
+      <working_directory value="$PROJECT_DIR$/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="account/utils" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="hash_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-account" />
+      <working_directory value="$PROJECT_DIR$/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/utils/hash_test.go" />
       <framework value="gotest" />
       <method v="2" />
     </configuration>
@@ -191,8 +202,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.go test account/utils" />
+        <item itemvalue="Go Test.TestGenerateOTP in account/utils" />
+        <item itemvalue="Go Test.Test_auth_hash_creates in account/utils" />
+        <item itemvalue="Go Test.hash_test.go" />
         <item itemvalue="Docker.Dockerfile" />
-        <item itemvalue="Database Script.dropAllTables.sql" />
       </list>
     </recent_temporary>
   </component>
@@ -225,7 +239,8 @@
     <MESSAGE value="add swagger" />
     <MESSAGE value="add dotenv" />
     <MESSAGE value="fix migration and database port" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix migration and database port" />
+    <MESSAGE value="complete auth api's" />
+    <option name="LAST_COMMIT_MESSAGE" value="complete auth api's" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

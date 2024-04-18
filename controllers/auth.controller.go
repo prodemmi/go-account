@@ -45,7 +45,7 @@ func (c AuthController) SignUp(context *gin.Context) {
 		return
 	}
 	appUUID, _ := uuid.ParseBytes([]byte(fmt.Sprintf("%v", appID)))
-	passwordHash := utils.HashPassword(payload.Password)
+	passwordHash, _ := utils.HashPassword(payload.Password)
 	user := models.User{
 		AppID:     appUUID,
 		FirstName: payload.FirstName,

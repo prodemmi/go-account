@@ -4,13 +4,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func HashPassword(password string) string {
+func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
 	if err != nil {
-		panic(err)
+		return HashPassword(password)
 	}
 
-	return string(hashedPassword)
+	return string(hashedPassword), err
 }
 
 func CheckPasswordHash(password string, hash string) bool {

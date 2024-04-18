@@ -14,10 +14,9 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authHeader := ctx.GetHeader("API-TOKEN")
 		if authHeader == "" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "unauthorized.",
 			})
-			ctx.Abort()
 			return
 		}
 
@@ -30,20 +29,18 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{
-				"error": err.Error(),
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "token is expired",
 			})
-			ctx.Abort()
 			return
 		}
 
 		user, errUser := userService.GetUserByToken(token.Raw)
 
 		if errUser != nil {
-			ctx.JSON(http.StatusUnauthorized, gin.H{
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "unauthorized",
 			})
-			ctx.Abort()
 			return
 		}
 
