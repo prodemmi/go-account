@@ -1,7 +1,7 @@
 package routes
 
 import (
-	docs "account/docs"
+	"account/docs"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

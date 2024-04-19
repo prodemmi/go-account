@@ -1,6 +1,10 @@
+//go:build unit_tests
+// +build unit_tests
+
 package utils
 
 import (
+	"account/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -8,15 +12,15 @@ import (
 const passwordString = "123456"
 
 func TestHashPassword(t *testing.T) {
-	hash, err := HashPassword(passwordString)
+	hash, err := utils.HashPassword(passwordString)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, hash)
 }
 
 func TestCheckPasswordHash(t *testing.T) {
-	hash, _ := HashPassword(passwordString)
-	result := CheckPasswordHash(passwordString, hash)
+	hash, _ := utils.HashPassword(passwordString)
+	result := utils.CheckPasswordHash(passwordString, hash)
 
 	assert.True(t, result)
 }

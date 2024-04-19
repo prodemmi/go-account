@@ -8,8 +8,8 @@ definitions:
         example: https://fotomi.net/
         type: string
     required:
-    - name
-    - url
+      - name
+      - url
     type: object
   controllers.StoreUserBody:
     properties:
@@ -103,38 +103,38 @@ definitions:
     type: object
   swagger.SuccessJSONResult:
     properties:
-      data: {}
+      data: { }
       status:
         example: success
         type: string
     type: object
 info:
-  contact: {}
+  contact: { }
   title: Account API
 paths:
   /v1/apps:
     post:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: payload
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.CreateAppBody'
+        - description: payload
+          in: body
+          name: payload
+          required: true
+          schema:
+            $ref: '#/definitions/controllers.CreateAppBody'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.App'
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    $ref: '#/definitions/models.App'
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -145,25 +145,25 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Store new server
       tags:
-      - App
+        - App
   /v1/apps/:
     get:
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/models.App'
-                  type: array
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/models.App'
+                    type: array
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -174,23 +174,23 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get apps detail
       tags:
-      - App
+        - App
   /v1/apps/:id:
     delete:
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  type: boolean
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    type: boolean
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -201,28 +201,28 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Delete server
       tags:
-      - App
+        - App
     get:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: server id
-        in: query
-        name: id
-        required: true
-        type: string
+        - description: server id
+          in: query
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.App'
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    $ref: '#/definitions/models.App'
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -233,34 +233,34 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get server detail
       tags:
-      - App
+        - App
   /v1/auth/me:
     get:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: "null"
-        in: header
-        name: APP-ID
-        required: true
-        type: string
-      - description: "null"
-        in: header
-        name: API-TOKEN
-        required: true
-        type: string
+        - description: "null"
+          in: header
+          name: APP-ID
+          required: true
+          type: string
+        - description: "null"
+          in: header
+          name: API-TOKEN
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.User'
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    $ref: '#/definitions/models.User'
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -271,35 +271,35 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get authenticated user
       tags:
-      - Auth
+        - Auth
   /v1/users:
     post:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: "null"
-        in: header
-        name: APP-ID
-        required: true
-        type: string
-      - description: payload
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.StoreUserBody'
+        - description: "null"
+          in: header
+          name: APP-ID
+          required: true
+          type: string
+        - description: payload
+          in: body
+          name: payload
+          required: true
+          schema:
+            $ref: '#/definitions/controllers.StoreUserBody'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.User'
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    $ref: '#/definitions/models.User'
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -310,25 +310,25 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Store new user
       tags:
-      - User
+        - User
   /v1/users/:
     get:
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/models.User'
-                  type: array
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    items:
+                      $ref: '#/definitions/models.User'
+                    type: array
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -339,29 +339,29 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get users detail
       tags:
-      - User
+        - User
   /v1/users/:id:
     get:
       consumes:
-      - application/json
+        - application/json
       parameters:
-      - description: user id
-        in: query
-        name: id
-        required: true
-        type: string
+        - description: user id
+          in: query
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/swagger.SuccessJSONResult'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.User'
-              type: object
+              - $ref: '#/definitions/swagger.SuccessJSONResult'
+              - properties:
+                  data:
+                    $ref: '#/definitions/models.User'
+                type: object
         "400":
           description: Bad Request
           schema:
@@ -372,5 +372,5 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get user detail
       tags:
-      - User
+        - User
 swagger: "2.0"

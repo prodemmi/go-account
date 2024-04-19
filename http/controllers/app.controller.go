@@ -50,7 +50,7 @@ func (a AppController) Store(context *gin.Context) {
 		Url:     payload.Url,
 		OtpType: payload.OtpType,
 	}); err == nil {
-		context.JSON(http.StatusOK, gin.H{
+		context.JSON(http.StatusCreated, gin.H{
 			"status": "success",
 			"data":   apps,
 		})
@@ -79,19 +79,17 @@ func (a AppController) Single(context *gin.Context) {
 		app, err := a.AppService.GetApp(appID)
 
 		if app == nil {
-			context.JSON(http.StatusNotFound, gin.H{
-				"error": "server not found.",
+			context.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+				"error": "app not found.",
 			})
-			context.Abort()
 			return
 		}
 
 		if err != nil {
-			context.JSON(http.StatusOK, gin.H{
+			context.AbortWithStatusJSON(http.StatusOK, gin.H{
 				"status": "error",
 				"data":   app,
 			})
-			context.Abort()
 			return
 		}
 
@@ -116,11 +114,10 @@ func (a AppController) Index(context *gin.Context) {
 	apps, err := a.AppService.GetAppsList()
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
 			"data":   err.Error(),
 		})
-		context.Abort()
 		return
 	}
 

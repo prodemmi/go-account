@@ -4,16 +4,31 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="refactor project structure">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix import cycle not allowed">
+      <change beforePath="$PROJECT_DIR$/.env.test" beforeDir="false" afterPath="$PROJECT_DIR$/.env.test" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/app.controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/routes/app.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/app.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/base.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/user.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/repositories/otp.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/otp.repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/routes/auth.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/routes/swagger.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/swagger.route.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/user.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/test_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/test_server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/container.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/container/container.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/server/test_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/test_server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dockertest.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dockertest.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/hash_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/hash_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/otp.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/otp.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/otp_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/otp_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/password_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/password_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/token_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/token_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/uuid_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/uuid_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +63,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -73,20 +88,24 @@
     "Go Test.Test_auth_hash_creates in account/utils.executor": "Run",
     "Go Test.go test account/utils.executor": "Run",
     "Go Test.hash_test.go.executor": "Run",
+    "Makefile Target.integration.executor": "Run",
+    "Makefile Target.unit.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "code.cleanup.on.save": "true",
     "git-widget-placeholder": "master",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/emad/Documents/Projects/go-account/server",
+    "last_opened_file_path": "/home/emad/Documents/Projects/go-account/integration",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "rearrange.code.on.save": "true",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "settings.editor.selected.configurable": "settings.sync"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -97,23 +116,28 @@
     ]
   }
 }]]></component>
+  <component name="QodanaReportsService">
+    <option name="descriptions">
+      <ReportDescription localRun="true" path="/tmp/qodana_output/qodana.sarif.json" reportGuid="3be0306e-bb65-4303-904a-cdd2f6a14bcf" reportId="go-account/qodana/2024-04-19" />
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/integration" />
+      <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/server" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/controllers" />
-      <recent name="$PROJECT_DIR$/internal" />
-      <recent name="$PROJECT_DIR$/repositories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tests/integration" />
+      <recent name="$PROJECT_DIR$/tests/unit/utils" />
+      <recent name="$PROJECT_DIR$/utils" />
+      <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/http/server" />
-      <recent name="$PROJECT_DIR$/http/container" />
-      <recent name="$PROJECT_DIR$/http" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/internal" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build go-account">
+  <component name="RunManager" selected="Makefile Target.integration">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go-account" />
       <working_directory value="$PROJECT_DIR$" />
@@ -155,18 +179,6 @@
       <pattern value="^\QTestStoreApp\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="Test_auth_hash_creates in account/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-account" />
-      <working_directory value="$PROJECT_DIR$/utils" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="account/utils" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTest_auth_hash_creates\E$" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
       <module name="go-account" />
       <working_directory value="$PROJECT_DIR$" />
@@ -187,14 +199,16 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
-    <configuration name="hash_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="go-account" />
-      <working_directory value="$PROJECT_DIR$/utils" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/utils/hash_test.go" />
-      <framework value="gotest" />
+    <configuration name="integration" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="integration" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="unit" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="unit" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
       <method v="2" />
     </configuration>
     <configuration name="docker-compose.yaml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml">
@@ -207,11 +221,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.integration" />
+        <item itemvalue="Makefile Target.unit" />
         <item itemvalue="Go Test.TestStoreApp in account/http/controllers" />
         <item itemvalue="Go Test.go test account/utils" />
         <item itemvalue="Go Test.TestGenerateOTP in account/utils" />
-        <item itemvalue="Go Test.Test_auth_hash_creates in account/utils" />
-        <item itemvalue="Go Test.hash_test.go" />
       </list>
     </recent_temporary>
   </component>
@@ -247,7 +261,8 @@
     <MESSAGE value="complete auth api's" />
     <MESSAGE value="add utils unit tests" />
     <MESSAGE value="refactor project structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor project structure" />
+    <MESSAGE value="fix import cycle not allowed" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix import cycle not allowed" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

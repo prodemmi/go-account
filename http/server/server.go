@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
+	"net/http"
 )
 
 func SetupServer() (*gin.Engine, error) {
@@ -17,6 +18,10 @@ func SetupServer() (*gin.Engine, error) {
 	engine := gin.Default()
 
 	container := c.NewContainer()
+
+	engine.GET("/ping", func(context *gin.Context) {
+		context.JSON(http.StatusOK, "ok")
+	})
 
 	routes.RegisterUserRoutes(engine, container)
 	routes.RegisterAppRoutes(engine, container)

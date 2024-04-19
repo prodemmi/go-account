@@ -1,7 +1,11 @@
+//go:build unit_tests
+// +build unit_tests
+
 package utils
 
 import (
 	"account/database/models"
+	"account/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -22,14 +26,14 @@ func getUser() models.User {
 }
 
 func TestAuthHashCreates(t *testing.T) {
-	hash := CreateAuthHash(getUser())
+	hash := utils.CreateAuthHash(getUser())
 
 	assert.IsType(t, "", hash)
 	assert.Equal(t, hashE, hash)
 }
 
 func TestAuthHashVerify(t *testing.T) {
-	verify := VerifyAuthHash(hashE, getUser())
+	verify := utils.VerifyAuthHash(hashE, getUser())
 
 	assert.Equal(t, true, verify)
 }

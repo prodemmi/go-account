@@ -47,7 +47,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 			c.Next()
 		} else {
 			c.JSON(http.StatusNotFound, gin.H{
-				"error": "server not found,",
+				"error": "app not found,",
 			})
 		}
 		c.Abort()

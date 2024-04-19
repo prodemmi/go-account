@@ -5,7 +5,7 @@ import (
 	"account/internal"
 	"account/utils"
 	"fmt"
-	uuid "github.com/google/uuid"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -15,6 +15,7 @@ type (
 		Create(userID uuid.UUID, appID uuid.UUID, otpType string, otpHash string) (models.Otp, error)
 		CheckOTP(userID uuid.UUID, appID uuid.UUID, otpCode string, otpType string, otpHash string) (bool, error)
 		OTPActive(otpHash string) (models.Otp, error)
+		FindByCodeAndHash(otpCode string, otpHash string) (models.Otp, error)
 	}
 )
 
@@ -79,12 +80,26 @@ func (O OTPRepository) OTPActive(otpHash string) (models.Otp, error) {
 		Where("expire_at > ?", time.Now()).
 		Where("hash = ?", otpHash).
 		Where("used = ?", false).
+		Order("created_at DESC").
 		First(&otp).
 		Error
 	if err != nil {
 		return models.Otp{}, fmt.Errorf("no active otp exists")
 	}
-	fmt.Println("otp ", otp)
+
+	return otp, nil
+}
+
+func (O OTPRepository) FindByCodeAndHash(otpCode string, otpHash string) (models.Otp, error) {
+	var otp models.Otp
+	err := internal.DB.
+		Where("code = ?", otpCode).
+		Where("hash = ?", otpHash).
+		Find(&otp).
+		Error
+	if err != nil {
+		return models.Otp{}, err
+	}
 
 	return otp, nil
 }

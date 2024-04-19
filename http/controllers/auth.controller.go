@@ -44,7 +44,7 @@ func (c AuthController) SignUp(context *gin.Context) {
 		})
 		return
 	}
-	appUUID, _ := uuid.ParseBytes([]byte(fmt.Sprintf("%v", appID)))
+	appUUID, _ := uuid.Parse(fmt.Sprintf("%v", appID))
 	passwordHash, _ := utils.HashPassword(payload.Password)
 	user := models.User{
 		AppID:     appUUID,
@@ -68,7 +68,7 @@ func (c AuthController) SignUp(context *gin.Context) {
 	otpType, _ := context.Get("AppOtpType")
 	otpHash := utils.CreateAuthHash(user)
 	_, errOtp := c.OtpService.CreateOTP(user.ID, user.AppID, fmt.Sprintf("%v", otpType), otpHash)
-	if errSignUp != nil {
+	if errOtp != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
 			"error":  errOtp.Error(),

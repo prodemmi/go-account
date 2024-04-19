@@ -42,6 +42,7 @@ func (u UserRepository) FindAll(appID string) ([]models.User, error) {
 
 	err := internal.DB.
 		Where("app_id = ?", appID).
+		Order("created_at desc").
 		Find(&result).
 		Error
 

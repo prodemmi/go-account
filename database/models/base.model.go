@@ -1,7 +1,7 @@
 package models
 
 import (
-	uuid "github.com/google/uuid"
+	"github.com/google/uuid"
 	"time"
 )
 

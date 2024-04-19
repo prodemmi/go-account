@@ -32,7 +32,7 @@ func SetupDatabase() error {
 		return err
 	}
 
-	path := filepath.Join("sql", "prepareDB.sql")
+	path, _ := filepath.Abs("../database/sql/prepareDB.sql")
 	c, ioErr := os.ReadFile(path)
 	if ioErr != nil {
 		// handle error.

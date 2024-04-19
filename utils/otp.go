@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"math/rand"
+	"crypto/rand"
 )
 
 const OtpChars = "1234567890"
