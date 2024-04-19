@@ -4,31 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix import cycle not allowed">
-      <change beforePath="$PROJECT_DIR$/.env.test" beforeDir="false" afterPath="$PROJECT_DIR$/.env.test" afterDir="false" />
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="stable tests">
+      <change beforePath="$PROJECT_DIR$/.Dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.Dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/models/base.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/base.model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/user.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/user.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/repositories/otp.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/otp.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/routes/auth.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/routes/swagger.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/swagger.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/routes/user.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/user.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/server/test_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/test_server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/dockertest.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dockertest.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/hash_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/hash_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/otp.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/otp.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/otp_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/otp_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/password_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/password_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/token_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/token_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/uuid_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/utils/uuid_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +78,7 @@
     "code.cleanup.on.save": "true",
     "git-widget-placeholder": "master",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/emad/Documents/Projects/go-account/integration",
+    "last_opened_file_path": "/home/emad/Documents/Projects/go-account",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -116,17 +95,12 @@
     ]
   }
 }]]></component>
-  <component name="QodanaReportsService">
-    <option name="descriptions">
-      <ReportDescription localRun="true" path="/tmp/qodana_output/qodana.sarif.json" reportGuid="3be0306e-bb65-4303-904a-cdd2f6a14bcf" reportId="go-account/qodana/2024-04-19" />
-    </option>
-  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/integration" />
       <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/server" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -262,7 +236,8 @@
     <MESSAGE value="add utils unit tests" />
     <MESSAGE value="refactor project structure" />
     <MESSAGE value="fix import cycle not allowed" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix import cycle not allowed" />
+    <MESSAGE value="stable tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="stable tests" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
