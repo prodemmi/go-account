@@ -28,7 +28,12 @@ func TestIntegration(t *testing.T) {
 	t.Run("user get users", UserGetUsers)
 
 	t.Run("auth sign up", AuthSignUp)
-	t.Run("auth verify sign up", AuthVerifySignUp)
+	t.Run("auth verify sign up", AuthVerifyOtp)
+	t.Run("auth logout after sign up", AuthLogout)
+
+	t.Run("auth sign in", AuthSigIn)
+	t.Run("auth verify sign in", AuthVerifyOtp)
+	t.Run("auth logout after sign in", AuthLogout)
 
 	t.Run("App delete one app", TestAppDeleteOneApp)
 

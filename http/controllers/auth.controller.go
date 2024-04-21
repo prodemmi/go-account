@@ -19,6 +19,7 @@ type AuthController struct {
 type IAuthController interface {
 	SignUp(context *gin.Context)
 	SignIn(context *gin.Context)
+	Logout(context *gin.Context)
 	Me(context *gin.Context)
 	OAuth2(context *gin.Context)
 	OAuth2Fallback(context *gin.Context)
@@ -163,7 +164,7 @@ func (c AuthController) SignIn(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data": gin.H{
-			"user_id":  user.ID,
+			"user_id":  user.ID.String(),
 			"otp_hash": otpHash,
 		},
 	})
@@ -255,6 +256,31 @@ func (c AuthController) VerifyOtp(context *gin.Context) {
 	context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 		"status": "error",
 		"error":  "cannot verify otp hash",
+	})
+}
+
+func (c AuthController) Logout(context *gin.Context) {
+	appID, _ := context.Get("AppID")
+	userID, _ := context.Get("UserID")
+
+	result, err := c.UserService.DeleteToken(utils.AnyToString(appID), utils.AnyToString(userID))
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	if result {
+		appUrl, _ := context.Get("AppUrl")
+		context.JSON(http.StatusPermanentRedirect, utils.AnyToString(appUrl))
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+		"status": "error",
+		"error":  "cannot logout",
 	})
 }
 

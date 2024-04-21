@@ -52,7 +52,6 @@ func SetupDockerTestDB() (*dockertest.Pool, *dockertest.Resource) {
 	}
 
 	hostAndPort := resource.GetHostPort("5432/tcp")
-	fmt.Println("hostAndPort ", hostAndPort)
 	databaseUrl := fmt.Sprintf("postgres://%v:%v@%s/%v?sslmode=disable",
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
@@ -68,7 +67,7 @@ func SetupDockerTestDB() (*dockertest.Pool, *dockertest.Resource) {
 	}
 
 	var testDB *gorm.DB
-	pool.MaxWait = 10 * time.Second
+	pool.MaxWait = 120 * time.Second
 	time.Sleep(2 * time.Second)
 	if err = pool.Retry(func() error {
 		testDB, err = gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})

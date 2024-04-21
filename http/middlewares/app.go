@@ -16,7 +16,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 		header := &AppHeader{}
 		if err := c.BindHeader(header); err != nil {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error": "server id is not set.",
+				"error": "app id is not set.",
 			})
 			c.Abort()
 			return

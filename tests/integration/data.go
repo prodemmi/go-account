@@ -39,4 +39,13 @@ func (t *testData) SetAuthUserToken(token string) {
 	t.AuthUserToken = token
 }
 
+func (t *testData) Reset() {
+	t.AuthUserToken = ""
+	t.OtpHash = ""
+	t.OtpCode = ""
+	t.AuthUserID = ""
+	t.App = models.App{}
+	t.User = models.User{}
+}
+
 var TestData = testData{}

@@ -4,10 +4,18 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="stable tests">
-      <change beforePath="$PROJECT_DIR$/.Dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.Dockerignore" afterDir="false" />
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add .env.example">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/routes/auth.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/user.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/data.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/data.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/main_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/integration_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dockertest.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dockertest.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +46,18 @@
       <scroll-view-position x="0" y="0" />
     </layout>
   </component>
+  <component name="KubernetesApiProvider">{
+  &quot;contexts&quot;: [
+    {
+      &quot;name&quot;: &quot;minikube&quot;,
+      &quot;originalNamespace&quot;: &quot;default&quot;
+    }
+  ],
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="KubernetesSettings">
+    <option name="contextName" value="minikube" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -56,45 +76,46 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "Docker.Dockerfile.executor": "Run",
-    "Go Build.go build account.executor": "DlvRecordAndDebug",
-    "Go Build.go build go-account.executor": "Run",
-    "Go Test.TestGenerateOTP in account/utils.executor": "Run",
-    "Go Test.TestStoreApp in account/http/controllers.executor": "Run",
-    "Go Test.Test_auth_hash_creates in account/utils.executor": "Run",
-    "Go Test.go test account/utils.executor": "Run",
-    "Go Test.hash_test.go.executor": "Run",
-    "Makefile Target.integration.executor": "Run",
-    "Makefile Target.unit.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "code.cleanup.on.save": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/emad/Documents/Projects/go-account",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "rearrange.code.on.save": "true",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "settings.sync"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Docker.Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build account.executor&quot;: &quot;DlvRecordAndDebug&quot;,
+    &quot;Go Build.go build go-account.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestGenerateOTP in account/utils.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestStoreApp in account/http/controllers.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.Test_auth_hash_creates in account/utils.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.go test account/utils.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.hash_test.go.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.integration.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.unit.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/go-account&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ],
-    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect": [
-      "PostgreSQL"
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;PostgreSQL&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />

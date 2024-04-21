@@ -16,8 +16,24 @@ type (
 		FindByToken(token string) (*models.User, error)
 		CheckAuthenticated(email string, mobile string) (bool, error)
 		Update(id string, where map[string]interface{}) (models.User, error)
+		DeleteToken(appID string, userID string) (bool, error)
 	}
 )
+
+func (u UserRepository) DeleteToken(appID string, userID string) (bool, error) {
+	err := internal.DB.
+		Model(&models.User{}).
+		Where("app_id = ?", appID).
+		Where("id = ?", userID).
+		Update("api_token", nil).
+		Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
 
 func (u UserRepository) Create(user models.User) (models.User, error) {
 	exists, errExists := u.CheckAuthenticated(*user.Email, *user.Mobile)
@@ -28,7 +44,7 @@ func (u UserRepository) Create(user models.User) (models.User, error) {
 	if exists {
 		return models.User{}, fmt.Errorf("user exists please try sign in")
 	}
-	err := internal.DB.FirstOrCreate(&user).Error
+	err := internal.DB.Create(&user).Error
 
 	if err != nil {
 		return models.User{}, err
