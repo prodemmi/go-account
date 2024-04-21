@@ -1,9 +1,23 @@
 {
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "title": "Account API",
-        "contact": {}
+        "contact": {
+            "email": "prodemmi@gmail.com"
+        },
+        "version": "0.5.0"
     },
+    "basePath": "/api/v1",
     "paths": {
         "/v1/apps": {
             "post": {

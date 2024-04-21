@@ -7,6 +7,12 @@ import (
 )
 
 // @title Account API
+// @version 0.5.0
+// @contact.email prodemmi@gmail.com
+// @BasePath /api/v1
+// @accept json
+// @produce json
+// @schemes http https
 func main() {
 	engine, err := server.SetupServer()
 	if err != nil {

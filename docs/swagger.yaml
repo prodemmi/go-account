@@ -1,3 +1,6 @@
+basePath: /api/v1
+consumes:
+- application/json
 definitions:
   controllers.CreateAppBody:
     properties:
@@ -278,8 +281,10 @@ definitions:
         type: string
     type: object
 info:
-  contact: {}
+  contact:
+    email: prodemmi@gmail.com
   title: Account API
+  version: 0.5.0
 paths:
   /v1/apps:
     post:
@@ -651,4 +656,9 @@ paths:
       summary: Get user detail
       tags:
       - User
+produces:
+- application/json
+schemes:
+- http
+- https
 swagger: "2.0"

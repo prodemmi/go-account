@@ -5,11 +5,19 @@ import "github.com/swaggo/swag"
 
 const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "email": "prodemmi@gmail.com"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -1008,10 +1016,10 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "0.5.0",
 	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
+	BasePath:         "/api/v1",
+	Schemes:          []string{"http", "https"},
 	Title:            "Account API",
 	Description:      "",
 	InfoInstanceName: "swagger",
