@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add .env.example">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix all tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/routes/auth.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/auth.route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/user.service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/integration/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/auth.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/integration/data.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/data.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/integration/main_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/integration_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/integration_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/dockertest.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dockertest.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,10 +117,10 @@
       <recent name="$PROJECT_DIR$/controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/tests/integration" />
       <recent name="$PROJECT_DIR$/tests/unit/utils" />
       <recent name="$PROJECT_DIR$/utils" />
-      <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/http/server" />
     </key>
   </component>
@@ -258,7 +250,8 @@
     <MESSAGE value="refactor project structure" />
     <MESSAGE value="fix import cycle not allowed" />
     <MESSAGE value="stable tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="stable tests" />
+    <MESSAGE value="fix all tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix all tests" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

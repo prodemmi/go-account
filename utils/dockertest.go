@@ -16,7 +16,7 @@ import (
 )
 
 func SetupDockerTestDB() (*dockertest.Pool, *dockertest.Resource) {
-	absPath, _ := filepath.Abs("../../.env.test")
+	absPath, _ := filepath.Abs("../.env.test")
 
 	if err := godotenv.Load(absPath); err != nil {
 		log.Fatal(err.Error())
