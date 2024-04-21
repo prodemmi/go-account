@@ -4,12 +4,72 @@ definitions:
       name:
         example: fotomi
         type: string
+      otp_type:
+        example: email
+        type: string
       url:
         example: https://fotomi.net/
         type: string
     required:
-      - name
-      - url
+    - name
+    - otp_type
+    - url
+    type: object
+  controllers.SignInBody:
+    properties:
+      email:
+        example: prodemmi@gmail.com
+        type: string
+      mobile:
+        example: "+989130243519"
+        type: string
+      password:
+        example: secure
+        type: string
+    required:
+    - password
+    type: object
+  controllers.SignInRes:
+    properties:
+      otp_hash:
+        example: 7a8c54bf6913a65e19c6cf24d5a2bd5c843b031f
+        type: string
+      user_id:
+        example: 4462ebfc-5f91-4ef0-9cfb-ac6e7687a66e
+        type: string
+    type: object
+  controllers.SignUpBody:
+    properties:
+      email:
+        example: prodemmi@gmail.com
+        type: string
+      first_name:
+        example: Emad
+        type: string
+      last_name:
+        example: Malekpour
+        type: string
+      mobile:
+        example: "+989130243519"
+        type: string
+      password:
+        example: secure
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - mobile
+    - password
+    type: object
+  controllers.SignUpRes:
+    properties:
+      otp_hash:
+        example: 7a8c54bf6913a65e19c6cf24d5a2bd5c843b031f
+        type: string
+      user_id:
+        example: 4462ebfc-5f91-4ef0-9cfb-ac6e7687a66e
+        type: string
     type: object
   controllers.StoreUserBody:
     properties:
@@ -32,6 +92,35 @@ definitions:
         example: 6513270e-269e-4d37-b2a7-4de452e6b438
         type: string
     type: object
+  controllers.VerifyOTPBody:
+    properties:
+      otp_code:
+        example: "12345"
+        type: string
+      otp_hash:
+        example: fabecfb8ad5895a6a6309e5a7d1b5c48601d1f9e
+        type: string
+      otp_type:
+        example: email
+        type: string
+      user_id:
+        example: 21636369-8b52-4b4a-97b7-50923ceb3ffd
+        type: string
+    required:
+    - otp_code
+    - otp_hash
+    - otp_type
+    - user_id
+    type: object
+  controllers.VerifyOTPRes:
+    properties:
+      api_token:
+        example: eyJhbGciOiJ...
+        type: string
+      redirect_to:
+        example: https://google.com
+        type: string
+    type: object
   models.App:
     description: App information
     properties:
@@ -48,6 +137,10 @@ definitions:
         description: name
         example: Fotomi
         type: string
+      otp_type:
+        description: url
+        example: email
+        type: string
       updated_at:
         example: "1973-11-06 14:12:31"
         type: string
@@ -59,19 +152,49 @@ definitions:
   models.User:
     description: User information
     properties:
-      api_token:
-        description: Stored API Token
-        example: eyJjbGl...
+      address:
+        example: 417 Kennedy Isle Apt. 706
         type: string
       app_id:
         description: App id
         example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
+        type: string
+      avatar:
+        description: User avatar url
+        example: https://avatars.githubusercontent.com/u/55631515?v=4
+        type: string
+      avatar_status:
+        example: at work
+        type: string
+      bio:
+        example: Hello my name is emad.
+        type: string
+      birthday:
+        example: "2012-05-22 07:20:02"
+        type: string
+      city:
+        example: Isfahan
+        type: string
+      country:
+        example: Iran
         type: string
       created_at:
         example: "1973-11-06 14:12:31"
         type: string
       deleted_at:
         example: "null"
+        type: string
+      email:
+        example: prodemmi@gmail.com
+        type: string
+      email_verified_at:
+        example: "1986-01-24 00:10:19"
+        type: string
+      first_name:
+        example: Emad
+        type: string
+      gender:
+        example: Male
         type: string
       id:
         example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
@@ -80,16 +203,62 @@ definitions:
         description: Current user ip
         example: 197.240.172.234
         type: string
+      is_active:
+        example: true
+        type: boolean
+      language:
+        example: fa
+        type: string
+      last_activity:
+        example: "1986-01-24 00:10:19"
+        type: string
+      last_name:
+        example: Malekpour
+        type: string
+      login_count:
+        example: 24
+        type: integer
       login_ip:
         description: First user ip
         example: 197.240.172.234
         type: string
-      profile_id:
-        description: Profile id
+      mobile:
+        example: "+989130243519"
+        type: string
+      national_code:
+        example: "1273039045"
+        type: string
+      postal_code:
+        example: "8457954212"
+        type: string
+      province:
+        example: Isfahan
+        type: string
+      reagent_id:
         example: 14a03569-d26b-4496-92e5-dfe8cb1855fe
+        type: string
+      score:
+        example: 12
+        type: integer
+      theme:
+        example: dracula
+        type: string
+      timezone+:
+        example: Indian/Antananarivo
+        type: string
+      two_factor_authentication_enabled:
+        example: false
+        type: boolean
+      type:
+        description: User type for example admin, guest, vip ...
+        example: admin
         type: string
       updated_at:
         example: "1973-11-06 14:12:31"
+        type: string
+      user_agent:
+        example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_6) AppleWebKit/5311 (KHTML,
+          like Gecko) Chrome/40.0.877.0 Safari/5311
         type: string
     type: object
   swagger.ErrorJSONResult:
@@ -103,38 +272,38 @@ definitions:
     type: object
   swagger.SuccessJSONResult:
     properties:
-      data: { }
+      data: {}
       status:
         example: success
         type: string
     type: object
 info:
-  contact: { }
+  contact: {}
   title: Account API
 paths:
   /v1/apps:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: payload
-          in: body
-          name: payload
-          required: true
-          schema:
-            $ref: '#/definitions/controllers.CreateAppBody'
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateAppBody'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    $ref: '#/definitions/models.App'
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.App'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -145,25 +314,25 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Store new server
       tags:
-        - App
+      - App
   /v1/apps/:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    items:
-                      $ref: '#/definitions/models.App'
-                    type: array
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.App'
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -174,23 +343,23 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get apps detail
       tags:
-        - App
+      - App
   /v1/apps/:id:
     delete:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    type: boolean
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  type: boolean
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -201,28 +370,28 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Delete server
       tags:
-        - App
+      - App
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: server id
-          in: query
-          name: id
-          required: true
-          type: string
+      - description: server id
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    $ref: '#/definitions/models.App'
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.App'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -233,34 +402,65 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get server detail
       tags:
-        - App
+      - App
+  /v1/auth/logout:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: "null"
+        in: header
+        name: API-TOKEN
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "308":
+          description: Permanent Redirect
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Logout user
+      tags:
+      - Auth
   /v1/auth/me:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: "null"
-          in: header
-          name: APP-ID
-          required: true
-          type: string
-        - description: "null"
-          in: header
-          name: API-TOKEN
-          required: true
-          type: string
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: "null"
+        in: header
+        name: API-TOKEN
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    $ref: '#/definitions/models.User'
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.User'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -271,35 +471,113 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get authenticated user
       tags:
-        - Auth
-  /v1/users:
+      - Auth
+  /v1/auth/sign-up:
     post:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: "null"
-          in: header
-          name: APP-ID
-          required: true
-          type: string
-        - description: payload
-          in: body
-          name: payload
-          required: true
-          schema:
-            $ref: '#/definitions/controllers.StoreUserBody'
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.SignInBody'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    $ref: '#/definitions/models.User'
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/controllers.SignInRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: SignIn an exist user
+      tags:
+      - Auth
+  /v1/auth/verify-otp:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.VerifyOTPBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/controllers.VerifyOTPRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.ErrorJSONResult'
+      summary: Verify otp
+      tags:
+      - Auth
+  /v1/users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: "null"
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.StoreUserBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.User'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -310,25 +588,25 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Store new user
       tags:
-        - User
+      - User
   /v1/users/:
     get:
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    items:
-                      $ref: '#/definitions/models.User'
-                    type: array
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.User'
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -339,29 +617,29 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get users detail
       tags:
-        - User
+      - User
   /v1/users/:id:
     get:
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - description: user id
-          in: query
-          name: id
-          required: true
-          type: string
+      - description: user id
+        in: query
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-              - $ref: '#/definitions/swagger.SuccessJSONResult'
-              - properties:
-                  data:
-                    $ref: '#/definitions/models.User'
-                type: object
+            - $ref: '#/definitions/swagger.SuccessJSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.User'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -372,5 +650,5 @@ paths:
             $ref: '#/definitions/swagger.ErrorJSONResult'
       summary: Get user detail
       tags:
-        - User
+      - User
 swagger: "2.0"

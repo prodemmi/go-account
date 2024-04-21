@@ -220,6 +220,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/auth/logout": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "null",
+                        "name": "APP-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "null",
+                        "name": "API-TOKEN",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "308": {
+                        "description": "Permanent Redirect"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorJSONResult"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorJSONResult"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth/me": {
             "get": {
                 "consumes": [
@@ -261,6 +308,134 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/models.User"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorJSONResult"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorJSONResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/sign-up": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "SignIn an exist user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "null",
+                        "name": "APP-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.SignInBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/swagger.SuccessJSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controllers.SignInRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorJSONResult"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/swagger.ErrorJSONResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/verify-otp": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify otp",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "null",
+                        "name": "APP-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.VerifyOTPBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/swagger.SuccessJSONResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/controllers.VerifyOTPRes"
                                         }
                                     }
                                 }
@@ -456,6 +631,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "name",
+                "otp_type",
                 "url"
             ],
             "properties": {
@@ -463,9 +639,91 @@ const docTemplate = `{
                     "type": "string",
                     "example": "fotomi"
                 },
+                "otp_type": {
+                    "type": "string",
+                    "example": "email"
+                },
                 "url": {
                     "type": "string",
                     "example": "https://fotomi.net/"
+                }
+            }
+        },
+        "controllers.SignInBody": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "prodemmi@gmail.com"
+                },
+                "mobile": {
+                    "type": "string",
+                    "example": "+989130243519"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "secure"
+                }
+            }
+        },
+        "controllers.SignInRes": {
+            "type": "object",
+            "properties": {
+                "otp_hash": {
+                    "type": "string",
+                    "example": "7a8c54bf6913a65e19c6cf24d5a2bd5c843b031f"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "4462ebfc-5f91-4ef0-9cfb-ac6e7687a66e"
+                }
+            }
+        },
+        "controllers.SignUpBody": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "mobile",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "prodemmi@gmail.com"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Emad"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Malekpour"
+                },
+                "mobile": {
+                    "type": "string",
+                    "example": "+989130243519"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "secure"
+                }
+            }
+        },
+        "controllers.SignUpRes": {
+            "type": "object",
+            "properties": {
+                "otp_hash": {
+                    "type": "string",
+                    "example": "7a8c54bf6913a65e19c6cf24d5a2bd5c843b031f"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "4462ebfc-5f91-4ef0-9cfb-ac6e7687a66e"
                 }
             }
         },
@@ -498,6 +756,46 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.VerifyOTPBody": {
+            "type": "object",
+            "required": [
+                "otp_code",
+                "otp_hash",
+                "otp_type",
+                "user_id"
+            ],
+            "properties": {
+                "otp_code": {
+                    "type": "string",
+                    "example": "12345"
+                },
+                "otp_hash": {
+                    "type": "string",
+                    "example": "fabecfb8ad5895a6a6309e5a7d1b5c48601d1f9e"
+                },
+                "otp_type": {
+                    "type": "string",
+                    "example": "email"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "21636369-8b52-4b4a-97b7-50923ceb3ffd"
+                }
+            }
+        },
+        "controllers.VerifyOTPRes": {
+            "type": "object",
+            "properties": {
+                "api_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJ..."
+                },
+                "redirect_to": {
+                    "type": "string",
+                    "example": "https://google.com"
+                }
+            }
+        },
         "models.App": {
             "description": "App information",
             "type": "object",
@@ -519,6 +817,11 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Fotomi"
                 },
+                "otp_type": {
+                    "description": "url",
+                    "type": "string",
+                    "example": "email"
+                },
                 "updated_at": {
                     "type": "string",
                     "example": "1973-11-06 14:12:31"
@@ -534,15 +837,39 @@ const docTemplate = `{
             "description": "User information",
             "type": "object",
             "properties": {
-                "api_token": {
-                    "description": "Stored API Token",
+                "address": {
                     "type": "string",
-                    "example": "eyJjbGl..."
+                    "example": "417 Kennedy Isle Apt. 706"
                 },
                 "app_id": {
                     "description": "App id",
                     "type": "string",
                     "example": "14a03569-d26b-4496-92e5-dfe8cb1855fe"
+                },
+                "avatar": {
+                    "description": "User avatar url",
+                    "type": "string",
+                    "example": "https://avatars.githubusercontent.com/u/55631515?v=4"
+                },
+                "avatar_status": {
+                    "type": "string",
+                    "example": "at work"
+                },
+                "bio": {
+                    "type": "string",
+                    "example": "Hello my name is emad."
+                },
+                "birthday": {
+                    "type": "string",
+                    "example": "2012-05-22 07:20:02"
+                },
+                "city": {
+                    "type": "string",
+                    "example": "Isfahan"
+                },
+                "country": {
+                    "type": "string",
+                    "example": "Iran"
                 },
                 "created_at": {
                     "type": "string",
@@ -551,6 +878,22 @@ const docTemplate = `{
                 "deleted_at": {
                     "type": "string",
                     "example": "null"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "prodemmi@gmail.com"
+                },
+                "email_verified_at": {
+                    "type": "string",
+                    "example": "1986-01-24 00:10:19"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Emad"
+                },
+                "gender": {
+                    "type": "string",
+                    "example": "Male"
                 },
                 "id": {
                     "type": "string",
@@ -561,19 +904,79 @@ const docTemplate = `{
                     "type": "string",
                     "example": "197.240.172.234"
                 },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "language": {
+                    "type": "string",
+                    "example": "fa"
+                },
+                "last_activity": {
+                    "type": "string",
+                    "example": "1986-01-24 00:10:19"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Malekpour"
+                },
+                "login_count": {
+                    "type": "integer",
+                    "example": 24
+                },
                 "login_ip": {
                     "description": "First user ip",
                     "type": "string",
                     "example": "197.240.172.234"
                 },
-                "profile_id": {
-                    "description": "Profile id",
+                "mobile": {
+                    "type": "string",
+                    "example": "+989130243519"
+                },
+                "national_code": {
+                    "type": "string",
+                    "example": "1273039045"
+                },
+                "postal_code": {
+                    "type": "string",
+                    "example": "8457954212"
+                },
+                "province": {
+                    "type": "string",
+                    "example": "Isfahan"
+                },
+                "reagent_id": {
                     "type": "string",
                     "example": "14a03569-d26b-4496-92e5-dfe8cb1855fe"
+                },
+                "score": {
+                    "type": "integer",
+                    "example": 12
+                },
+                "theme": {
+                    "type": "string",
+                    "example": "dracula"
+                },
+                "timezone+": {
+                    "type": "string",
+                    "example": "Indian/Antananarivo"
+                },
+                "two_factor_authentication_enabled": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "type": {
+                    "description": "User type for example admin, guest, vip ...",
+                    "type": "string",
+                    "example": "admin"
                 },
                 "updated_at": {
                     "type": "string",
                     "example": "1973-11-06 14:12:31"
+                },
+                "user_agent": {
+                    "type": "string",
+                    "example": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_5_6) AppleWebKit/5311 (KHTML, like Gecko) Chrome/40.0.877.0 Safari/5311"
                 }
             }
         },

@@ -34,6 +34,22 @@ type SignUpBody struct {
 	Password  string `json:"password" binding:"required" example:"secure"`
 }
 
+type SignUpRes struct {
+	UserId  string `json:"user_id" example:"4462ebfc-5f91-4ef0-9cfb-ac6e7687a66e"`
+	OtpHash string `json:"otp_hash" example:"7a8c54bf6913a65e19c6cf24d5a2bd5c843b031f"`
+}
+
+// SignUp
+// @Summary SignUp a new user
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param APP-ID header string true "null"
+// @Param payload body SignUpBody true "payload"
+// @Success 200 {object} swagger.SuccessJSONResult{data=SignUpRes}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/auth/sign-up [post]
 func (c AuthController) SignUp(context *gin.Context) {
 	var payload SignUpBody
 	appID, _ := context.Get("AppID")
@@ -92,6 +108,22 @@ type SignInBody struct {
 	Password string `json:"password" binding:"required" example:"secure"`
 }
 
+type SignInRes struct {
+	UserId  string `json:"user_id" example:"4462ebfc-5f91-4ef0-9cfb-ac6e7687a66e"`
+	OtpHash string `json:"otp_hash" example:"7a8c54bf6913a65e19c6cf24d5a2bd5c843b031f"`
+}
+
+// SignIn
+// @Summary SignIn an exist user
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param APP-ID header string true "null"
+// @Param payload body SignInBody true "payload"
+// @Success 200 {object} swagger.SuccessJSONResult{data=SignInRes}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/auth/sign-up [post]
 func (c AuthController) SignIn(context *gin.Context) {
 	var payload SignInBody
 
@@ -209,6 +241,22 @@ type VerifyOTPBody struct {
 	OtpHash string `json:"otp_hash" binding:"required" example:"fabecfb8ad5895a6a6309e5a7d1b5c48601d1f9e"`
 }
 
+type VerifyOTPRes struct {
+	ApiToken   string `json:"api_token" example:"eyJhbGciOiJ..."`
+	RedirectTo string `json:"redirect_to" example:"https://google.com"`
+}
+
+// VerifyOtp
+// @Summary Verify otp
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param APP-ID header string true "null"
+// @Param payload body VerifyOTPBody true "payload"
+// @Success 200 {object} swagger.SuccessJSONResult{data=VerifyOTPRes}
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/auth/verify-otp [post]
 func (c AuthController) VerifyOtp(context *gin.Context) {
 	var payload VerifyOTPBody
 
@@ -259,6 +307,18 @@ func (c AuthController) VerifyOtp(context *gin.Context) {
 	})
 }
 
+// Logout
+// @Summary Logout user
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param APP-ID header string true "null"
+// @Param API-TOKEN header string true "null"
+// @Header 308 {string} Location "https://google.com"
+// @Success 308
+// @failure 500 {object} swagger.ErrorJSONResult{}
+// @failure 400 {object} swagger.ErrorJSONResult{}
+// @Router /v1/auth/logout [delete]
 func (c AuthController) Logout(context *gin.Context) {
 	appID, _ := context.Get("AppID")
 	userID, _ := context.Get("UserID")
