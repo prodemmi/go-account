@@ -1,4 +1,4 @@
-FROM golang:1.22.2
+FROM golang:1.22.2-alpine3.19
 
 ENV HTTPS_PROXY http://fodev.org:8118
 
