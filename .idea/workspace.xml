@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="remove k8s">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-    </list>
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add main.go swag comments" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -257,7 +250,8 @@
     <MESSAGE value="change integration_test.go location" />
     <MESSAGE value="complete api docs" />
     <MESSAGE value="remove k8s" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove k8s" />
+    <MESSAGE value="add main.go swag comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="add main.go swag comments" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
