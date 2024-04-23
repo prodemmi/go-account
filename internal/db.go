@@ -6,7 +6,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -32,13 +31,8 @@ func SetupDatabase() error {
 		return err
 	}
 
-	path, _ := filepath.Abs("../database/sql/prepareDB.sql")
-	c, ioErr := os.ReadFile(path)
-	if ioErr != nil {
-		// handle error.
-	}
-	sql := string(c)
-	db.Exec(sql)
+	db.Exec("CREATE DATABASE" + " " + os.Getenv("POSTGRES_DB") + ";")
+	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 
 	errMigrate := db.AutoMigrate(&models.App{}, models.User{}, models.Otp{})
 	if errMigrate != nil {

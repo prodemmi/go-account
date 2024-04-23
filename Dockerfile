@@ -17,4 +17,7 @@ COPY . ./
 # Build the binary.
 RUN go build -v -o server
 
+# Expose port
+EXPOSE 9090
+
 CMD ["./server"]
