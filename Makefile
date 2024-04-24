@@ -14,3 +14,16 @@ test:
 	$(MAKE) unit
 	$(MAKE) smoke
 	$(MAKE) integration
+
+build:
+	go build -v -o server
+
+dev:
+	APP_ENV=development
+	$(MAKE) build
+	./server
+
+prod:
+	APP_ENV=production
+	$(MAKE) build
+	./server
