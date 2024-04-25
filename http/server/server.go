@@ -26,7 +26,7 @@ func SetupServer() (*gin.Engine, error) {
 	})
 
 	engine.GET("/version", func(context *gin.Context) {
-		context.JSON(http.StatusOK, "0.6.2")
+		context.JSON(http.StatusOK, "0.7.0")
 	})
 
 	engine.Use(cors.Default())
