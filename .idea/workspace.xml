@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add postgressql init database sql to code">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="add env and prod to Makefile">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slim.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/slim.report.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +259,8 @@
     <MESSAGE value="remove docker-compose.yaml" />
     <MESSAGE value="change docker base image to an alpine base image" />
     <MESSAGE value="add postgressql init database sql to code" />
-    <option name="LAST_COMMIT_MESSAGE" value="add postgressql init database sql to code" />
+    <MESSAGE value="add env and prod to Makefile" />
+    <option name="LAST_COMMIT_MESSAGE" value="add env and prod to Makefile" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

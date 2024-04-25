@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+	"os"
 )
 
 func SetupServer() (*gin.Engine, error) {
@@ -21,6 +22,10 @@ func SetupServer() (*gin.Engine, error) {
 
 	engine.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, "ok")
+	})
+
+	engine.GET("/version", func(context *gin.Context) {
+		context.JSON(http.StatusOK, os.Getenv("APP_VERSION"))
 	})
 
 	routes.RegisterUserRoutes(engine, container)
