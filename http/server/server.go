@@ -4,10 +4,12 @@ import (
 	c "account/http/container"
 	"account/http/routes"
 	"account/internal"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func SetupServer() (*gin.Engine, error) {
@@ -24,8 +26,10 @@ func SetupServer() (*gin.Engine, error) {
 	})
 
 	engine.GET("/version", func(context *gin.Context) {
-		context.JSON(http.StatusOK, "0.6.1")
+		context.JSON(http.StatusOK, "0.6.2")
 	})
+
+	engine.Use(cors.Default())
 
 	routes.RegisterUserRoutes(engine, container)
 	routes.RegisterAppRoutes(engine, container)

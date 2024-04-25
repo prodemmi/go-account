@@ -5,7 +5,9 @@ IMAGE_FULL_NAME=ghcr.io/prodemmi/go-account:${IMAGE_TAG}
 
 build-image:
 	@echo ":::building image"
-	docker build . -t ${IMAGE_NAME}
+	HTTPS_PROXY=http://fodev.org:8118/
+	echo ${CR_PAT} | docker login ghcr.io -u prodemmi --password-stdin
+	docker build . -t ${IMAGE_FULL_NAME}
 	slim build --http-probe-off --tag ${IMAGE_NAME}.slim:${IMAGE_TAG} ${IMAGE_FULL_NAME}
 	docker rmi ${IMAGE_FULL_NAME}
 
