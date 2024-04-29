@@ -95,7 +95,7 @@ func AuthVerifyOtp(t *testing.T) {
 		TestData.SetAuthUserToken(jsonRes.Data.ApiToken)
 
 		assert.True(t, strings.HasPrefix(jsonRes.Data.ApiToken, "ey"))
-		assert.Equal(t, TestData.App.Url, jsonRes.Data.RedirectTo)
+		assert.Equal(t, TestData.App.AuthUrl, jsonRes.Data.RedirectTo)
 		assert.Equal(t, "success", jsonRes.Status)
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 	}

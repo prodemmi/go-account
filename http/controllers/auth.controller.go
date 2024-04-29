@@ -29,8 +29,8 @@ type IAuthController interface {
 type SignUpBody struct {
 	FirstName string `json:"first_name" binding:"required" example:"Emad"`
 	LastName  string `json:"last_name" binding:"required" example:"Malekpour"`
-	Email     string `json:"email" binding:"required" example:"prodemmi@gmail.com"`
-	Mobile    string `json:"mobile" binding:"required" example:"+989130243519"`
+	Email     string `json:"email" example:"prodemmi@gmail.com"`
+	Mobile    string `json:"mobile" example:"+989130243519"`
 	Password  string `json:"password" binding:"required" example:"secure"`
 }
 
@@ -280,7 +280,7 @@ func (c AuthController) VerifyOtp(context *gin.Context) {
 		}
 
 		if verify {
-			appUrl, _ := context.Get("AppUrl")
+			appUrl, _ := context.Get("AppAuthUrl")
 			token, errToken := c.UserService.CreateUserToken(user.ID.String())
 			if errToken != nil {
 				context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{

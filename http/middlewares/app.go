@@ -43,6 +43,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 			c.Set("App", appEntity)
 			c.Set("AppID", appEntity.ID)
 			c.Set("AppUrl", appEntity.Url)
+			c.Set("AppAuthUrl", appEntity.AuthUrl)
 			c.Set("AppOtpType", appEntity.OtpType)
 			c.Next()
 		} else {

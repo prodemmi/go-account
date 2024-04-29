@@ -24,8 +24,9 @@ type Container struct {
 	AuthService    services.IAuthService
 	AuthController controllers.IAuthController
 
-	AppMiddleware gin.HandlerFunc
-	JWTMiddleware gin.HandlerFunc
+	AppMiddleware  gin.HandlerFunc
+	JWTMiddleware  gin.HandlerFunc
+	CORSMiddleware gin.HandlerFunc
 }
 
 func NewContainer() *Container {
@@ -46,6 +47,7 @@ func NewContainer() *Container {
 
 	appMiddleware := middlewares.NewAppMiddleware(appServ)
 	jwtMiddleware := middlewares.NewJWTMiddleware(userServ)
+	corsMiddleware := middlewares.NewCORSMiddleware()
 
 	return &Container{
 		AppRepository: appRepo,
@@ -63,7 +65,8 @@ func NewContainer() *Container {
 		AuthService:    authServ,
 		AuthController: authCont,
 
-		AppMiddleware: appMiddleware,
-		JWTMiddleware: jwtMiddleware,
+		AppMiddleware:  appMiddleware,
+		JWTMiddleware:  jwtMiddleware,
+		CORSMiddleware: corsMiddleware,
 	}
 }

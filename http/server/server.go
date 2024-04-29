@@ -4,10 +4,11 @@ import (
 	c "account/http/container"
 	"account/http/routes"
 	"account/internal"
+	"github.com/gin-contrib/cors"
 	"log"
 	"net/http"
+	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -21,6 +22,16 @@ func SetupServer() (*gin.Engine, error) {
 
 	container := c.NewContainer()
 
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"POST", "GET", "PUT", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "APP-ID", "API-TOKEN", "Content-Type", "Access-Control-Allow-Origin", "Authorization", "Accept", "User-Agent", "Cache-Control", "Pragma"}
+	config.ExposeHeaders = []string{"Content-Length"}
+	config.AllowCredentials = true
+	config.MaxAge = 12 * time.Hour
+
+	engine.Use(cors.New(config))
+
 	engine.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, "ok")
 	})
@@ -28,8 +39,6 @@ func SetupServer() (*gin.Engine, error) {
 	engine.GET("/version", func(context *gin.Context) {
 		context.JSON(http.StatusOK, "0.7.0")
 	})
-
-	engine.Use(cors.Default())
 
 	routes.RegisterUserRoutes(engine, container)
 	routes.RegisterAppRoutes(engine, container)

@@ -22,6 +22,7 @@ type (
 type CreateAppBody struct {
 	Name    string `form:"name" json:"name" binding:"required" example:"fotomi"`
 	Url     string `form:"url" json:"url" binding:"required" example:"https://fotomi.net/"`
+	AuthUrl string `form:"auth_url" json:"auth_url" binding:"required" example:"https://fotomi.net/auth/callback"`
 	OtpType string `json:"otp_type" binding:"required" example:"email"`
 }
 
@@ -48,6 +49,7 @@ func (a AppController) Store(context *gin.Context) {
 	if apps, err := a.AppService.CreateApp(models.App{
 		Name:    payload.Name,
 		Url:     payload.Url,
+		AuthUrl: payload.AuthUrl,
 		OtpType: payload.OtpType,
 	}); err == nil {
 		context.JSON(http.StatusCreated, gin.H{

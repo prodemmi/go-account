@@ -20,6 +20,7 @@ func TestAppStoreAppWithTrueBody(t *testing.T) {
 	body := controllers.CreateAppBody{
 		Name:    "Test App",
 		Url:     "https://test-app.com/",
+		AuthUrl: "https://test-app.com/auth/callback",
 		OtpType: "email",
 	}
 	res, err := http.Post(utils.GetTestBaseUrl("apps"), "application/json", utils.StructToJsonBody(body))
@@ -36,6 +37,7 @@ func TestAppStoreAppWithTrueBody(t *testing.T) {
 
 		assert.Equal(t, "Test App", jsonRes.Data.Name)
 		assert.Equal(t, "https://test-app.com/", jsonRes.Data.Url)
+		assert.Equal(t, "https://test-app.com/auth/callback", jsonRes.Data.AuthUrl)
 		assert.Equal(t, "email", jsonRes.Data.OtpType)
 		assert.Equal(t, "success", jsonRes.Status)
 		assert.Equal(t, http.StatusCreated, res.StatusCode)

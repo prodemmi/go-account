@@ -10,5 +10,7 @@ type App struct {
 	// url
 	Url string `json:"url" example:"https://fotomi.net/"`
 	// url
+	AuthUrl string `json:"auth_url" example:"https://fotomi.net/auth/callback"`
+	// url
 	OtpType string `json:"otp_type" gorm:"email" example:"email"`
 }
