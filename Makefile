@@ -9,7 +9,7 @@ build-image:
 	echo ${CR_PAT} | docker login ghcr.io -u prodemmi --password-stdin
 	docker build . -t ${IMAGE_FULL_NAME}
 	slim build --http-probe-exit-on-failure=false --tag ${IMAGE_NAME}.slim:${IMAGE_TAG} ${IMAGE_FULL_NAME}
-	docker push ${IMAGE_FULL_NAME}
+	docker push ${IMAGE_NAME}.slim:${IMAGE_TAG}
 	docker rmi ${IMAGE_FULL_NAME}
 
 unit:

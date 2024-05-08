@@ -9,7 +9,7 @@
   },
   "type": "build",
   "state": "done",
-  "target_reference": "ghcr.io/prodemmi/go-account:0.7.2",
+  "target_reference": "ghcr.io/prodemmi/go-account:0.7.4",
   "system": {
     "type": "Linux",
     "release": "6.2.0-39-generic",
@@ -21,17 +21,17 @@
   },
   "source_image": {
     "identity": {
-      "id": "sha256:f7a44d598738c4faa4e69efe3dc66a20b7d43a00a5295dc30c073d361b57686b",
+      "id": "sha256:c0c0c70e2a7e5cb0ca8683ab417b4f7edf621a41e82a9a56eb4d113aa2b9b094",
       "tags": [
-        "0.7.2"
+        "0.7.4"
       ],
       "names": [
-        "ghcr.io/prodemmi/go-account:0.7.2"
+        "ghcr.io/prodemmi/go-account:0.7.4"
       ]
     },
-    "size": 961782812,
-    "size_human": "962 MB",
-    "create_time": "2024-04-29T19:10:05Z",
+    "size": 949092135,
+    "size_human": "949 MB",
+    "create_time": "2024-05-08T15:14:39Z",
     "docker_version": "",
     "architecture": "amd64",
     "exposed_ports": [
@@ -49,30 +49,30 @@
       "exe_path": ""
     }
   },
-  "minified_image_size": 36616653,
+  "minified_image_size": 37090254,
   "minified_image_size_human": "37 MB",
-  "minified_image": "ghcr.io/prodemmi/go-account.slim:0.7.2",
-  "minified_image_id": "sha256:f4adb83fc280b62ca08839f7a21aef58568115d4f2e803435bf51541041c78db",
-  "minified_image_digest": "sha256:119b61fd082ad62b3a4c8ab2cad72bc3a9c291a31697bf712882f9c25195aaac",
+  "minified_image": "ghcr.io/prodemmi/go-account.slim:0.7.4",
+  "minified_image_id": "sha256:484b3e984d7b8633f08f85d46870b270d75908b876382a66c7e090553af691d4",
+  "minified_image_digest": "sha256:9a40f2c6dcafac15afa375790d4a70f636a8eb86c671e5783312ca5510f1fd9b",
   "minified_image_has_data": true,
-  "minified_by": 26.266267755275177,
-  "artifact_location": "/tmp/slim-state/.slim-state/images/f7a44d598738c4faa4e69efe3dc66a20b7d43a00a5295dc30c073d361b57686b/artifacts",
+  "minified_by": 25.58872028754508,
+  "artifact_location": "/tmp/slim-state/.slim-state/images/c0c0c70e2a7e5cb0ca8683ab417b4f7edf621a41e82a9a56eb4d113aa2b9b094/artifacts",
   "container_report_name": "creport.json",
   "seccomp_profile_name": "ghcr.io-prodemmi-go-account-seccomp.json",
   "apparmor_profile_name": "ghcr.io-prodemmi-go-account-apparmor-profile",
   "image_stack": [
     {
       "is_top_image": true,
-      "id": "sha256:f7a44d598738c4faa4e69efe3dc66a20b7d43a00a5295dc30c073d361b57686b",
-      "full_name": "ghcr.io/prodemmi/go-account:0.7.2",
+      "id": "sha256:c0c0c70e2a7e5cb0ca8683ab417b4f7edf621a41e82a9a56eb4d113aa2b9b094",
+      "full_name": "ghcr.io/prodemmi/go-account:0.7.4",
       "repo_name": "ghcr.io/prodemmi/go-account",
-      "version_tag": "0.7.2",
+      "version_tag": "0.7.4",
       "raw_tags": [
-        "ghcr.io/prodemmi/go-account:0.7.2"
+        "ghcr.io/prodemmi/go-account:0.7.4"
       ],
-      "create_time": "2024-04-29T19:10:05Z",
-      "new_size": 961782812,
-      "new_size_human": "962 MB",
+      "create_time": "2024-05-08T15:14:39Z",
+      "new_size": 949092135,
+      "new_size_human": "949 MB",
       "instructions": [
         {
           "type": "ADD",
@@ -89,7 +89,7 @@
           "source_type": "file",
           "inst_set_time_bucket": "2024-01-27T04:00:00+03:30",
           "inst_set_time_index": 0,
-          "inst_set_time_reverse_index": 4
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "CMD",
@@ -104,7 +104,7 @@
           "command_all": "CMD [\"/bin/sh\"]\n",
           "inst_set_time_bucket": "2024-01-27T04:00:00+03:30",
           "inst_set_time_index": 0,
-          "inst_set_time_reverse_index": 4
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "RUN",
@@ -123,7 +123,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "ENV",
@@ -139,7 +139,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "ENV",
@@ -155,7 +155,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "ENV",
@@ -171,7 +171,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "ENV",
@@ -187,7 +187,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "COPY",
@@ -204,7 +204,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "RUN",
@@ -223,7 +223,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "WORKDIR",
@@ -242,7 +242,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "ENV",
@@ -258,7 +258,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-22T15:45:00+03:30",
           "inst_set_time_index": 2,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 1
         },
         {
           "type": "WORKDIR",
@@ -277,69 +277,33 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-22T15:45:00+03:30",
           "inst_set_time_index": 2,
-          "inst_set_time_reverse_index": 2
-        },
-        {
-          "type": "COPY",
-          "time": "2024-04-25T20:02:13Z",
-          "is_nop": false,
-          "local_image_exists": false,
-          "layer_index": 0,
-          "size": 28945,
-          "size_human": "29 kB",
-          "params": "go.* ./",
-          "command_snippet": "COPY go.* ./",
-          "command_all": "COPY go.* ./",
-          "comment": "buildkit.dockerfile.v0",
-          "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
-          "inst_set_time_index": 3,
-          "inst_set_time_reverse_index": 1
-        },
-        {
-          "type": "RUN",
-          "time": "2024-04-25T20:07:08Z",
-          "is_nop": false,
-          "local_image_exists": false,
-          "layer_index": 0,
-          "size": 352349528,
-          "size_human": "352 MB",
-          "command_snippet": "RUN go mod download",
-          "command_all": "RUN go mod download",
-          "system_commands": [
-            "go mod download"
-          ],
-          "comment": "buildkit.dockerfile.v0",
-          "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
-          "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 1
         },
         {
           "type": "COPY",
-          "time": "2024-04-29T19:09:52Z",
+          "time": "2024-05-08T15:11:40Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
-          "size": 111137937,
-          "size_human": "111 MB",
+          "size": 128889383,
+          "size_human": "129 MB",
           "params": ". ./",
           "command_snippet": "COPY . ./",
           "command_all": "COPY . ./",
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
-          "inst_set_time_index": 4,
+          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "RUN",
-          "time": "2024-04-29T19:10:05Z",
+          "time": "2024-05-08T15:14:39Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
-          "size": 268121045,
-          "size_human": "268 MB",
+          "size": 590057395,
+          "size_human": "590 MB",
           "command_snippet": "RUN go build -v -o server",
           "command_all": "RUN go build -v -o server",
           "system_commands": [
@@ -347,13 +311,13 @@
           ],
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
-          "inst_set_time_index": 4,
+          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "EXPOSE",
-          "time": "2024-04-29T19:10:05Z",
+          "time": "2024-05-08T15:14:39Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
@@ -363,13 +327,13 @@
           "command_all": "EXPOSE 9090/tcp",
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
-          "inst_set_time_index": 4,
+          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "CMD",
-          "time": "2024-04-29T19:10:05Z",
+          "time": "2024-05-08T15:14:39Z",
           "is_last_instruction": true,
           "is_nop": false,
           "is_exec_form": true,
@@ -381,11 +345,11 @@
           "command_all": "CMD [\"./server\"]\n",
           "comment": "buildkit.dockerfile.v0",
           "raw_tags": [
-            "ghcr.io/prodemmi/go-account:0.7.2"
+            "ghcr.io/prodemmi/go-account:0.7.4"
           ],
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
-          "inst_set_time_index": 4,
+          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         }
       ]
