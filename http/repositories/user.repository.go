@@ -15,6 +15,7 @@ type (
 		FindOneBy(where map[string]interface{}) (models.User, error)
 		FindByToken(token string) (*models.User, error)
 		CheckAuthenticated(email string, mobile string) (bool, error)
+		ExistsByToken(appID string, token string) (bool, error)
 		Update(id string, where map[string]interface{}) (models.User, error)
 		DeleteToken(appID string, userID string) (bool, error)
 	}
@@ -141,6 +142,22 @@ func (u UserRepository) FindOneBy(where map[string]interface{}) (models.User, er
 	}
 
 	return user, nil
+}
+
+func (u UserRepository) ExistsByToken(app string, token string) (bool, error) {
+	var exists bool
+	err := internal.DB.Model(&models.User{}).
+		Select("count(*) > 0").
+		Where("app_id = ?", app).
+		Where("api_token = ?", token).
+		Find(&exists).
+		Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
 }
 
 func NewUserRepository() IUserRepository {

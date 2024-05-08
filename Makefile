@@ -8,7 +8,8 @@ build-image:
 	HTTPS_PROXY=http://fodev.org:8118/
 	echo ${CR_PAT} | docker login ghcr.io -u prodemmi --password-stdin
 	docker build . -t ${IMAGE_FULL_NAME}
-	slim build --http-probe-off --tag ${IMAGE_NAME}.slim:${IMAGE_TAG} ${IMAGE_FULL_NAME}
+	slim build --http-probe-exit-on-failure=false --tag ${IMAGE_NAME}.slim:${IMAGE_TAG} ${IMAGE_FULL_NAME}
+	docker push ${IMAGE_FULL_NAME}
 	docker rmi ${IMAGE_FULL_NAME}
 
 unit:
@@ -24,12 +25,11 @@ integration:
 	go test -failfast -count 1 ./... -tags integration_tests | ${GREP_NOT_TESTS}
 
 test:
-	@echo ":::full testing"
+	@echo ":::full testing"information_schema
 	clear
 	$(MAKE) unit
 	$(MAKE) smoke
 	$(MAKE) integration
-	@echo ":::tests passed"
 
 build:
 	@echo ":::building"

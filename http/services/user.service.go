@@ -19,6 +19,7 @@ type (
 		GetUserWithEmail(email string) (models.User, error)
 		GetUserWithMobile(mobile string) (models.User, error)
 		GetUserByToken(token string) (*models.User, error)
+		ExistsByToken(appID string, token string) (bool, error)
 		DeleteToken(appID string, userID string) (bool, error)
 	}
 )
@@ -113,6 +114,21 @@ func (a UserService) DeleteToken(appID string, userID string) (bool, error) {
 
 	return result, nil
 }
+
+func (a UserService) ExistsByToken(appID string, token string) (bool, error) {
+	userExists, err := a.UserRepository.ExistsByToken(appID, token)
+	if err != nil {
+		return false, err
+	}
+
+	if userExists == false {
+		return false, nil
+	}
+
+	return userExists, nil
+
+}
+
 func NewUserService(userRepository repositories.IUserRepository) IUserService {
 	return UserService{
 		UserRepository: userRepository,

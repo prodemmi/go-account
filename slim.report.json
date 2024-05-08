@@ -9,7 +9,7 @@
   },
   "type": "build",
   "state": "done",
-  "target_reference": "ghcr.io/prodemmi/go-account:0.7.0",
+  "target_reference": "ghcr.io/prodemmi/go-account:0.7.2",
   "system": {
     "type": "Linux",
     "release": "6.2.0-39-generic",
@@ -21,17 +21,17 @@
   },
   "source_image": {
     "identity": {
-      "id": "sha256:371d1b68e1833090e7d5f349676d08cded66912a0ec942b16697ac2b07862a31",
+      "id": "sha256:f7a44d598738c4faa4e69efe3dc66a20b7d43a00a5295dc30c073d361b57686b",
       "tags": [
-        "0.7.0"
+        "0.7.2"
       ],
       "names": [
-        "ghcr.io/prodemmi/go-account:0.7.0"
+        "ghcr.io/prodemmi/go-account:0.7.2"
       ]
     },
-    "size": 980103130,
-    "size_human": "980 MB",
-    "create_time": "2024-04-25T20:07:23Z",
+    "size": 961782812,
+    "size_human": "962 MB",
+    "create_time": "2024-04-29T19:10:05Z",
     "docker_version": "",
     "architecture": "amd64",
     "exposed_ports": [
@@ -49,30 +49,30 @@
       "exe_path": ""
     }
   },
-  "minified_image_size": 36624796,
+  "minified_image_size": 36616653,
   "minified_image_size_human": "37 MB",
-  "minified_image": "ghcr.io/prodemmi/go-account.slim:0.7.0",
-  "minified_image_id": "sha256:257c2908fcfad8bf001a04f2a7d5d6a4478d245d891e6f4a2adfd4b44bf3037a",
-  "minified_image_digest": "sha256:226e1eb7db7a91e4b86152f77f6c397143dcf84cc6c1bd6fc07fba492157878a",
+  "minified_image": "ghcr.io/prodemmi/go-account.slim:0.7.2",
+  "minified_image_id": "sha256:f4adb83fc280b62ca08839f7a21aef58568115d4f2e803435bf51541041c78db",
+  "minified_image_digest": "sha256:119b61fd082ad62b3a4c8ab2cad72bc3a9c291a31697bf712882f9c25195aaac",
   "minified_image_has_data": true,
-  "minified_by": 26.760644072939,
-  "artifact_location": "/tmp/slim-state/.slim-state/images/371d1b68e1833090e7d5f349676d08cded66912a0ec942b16697ac2b07862a31/artifacts",
+  "minified_by": 26.266267755275177,
+  "artifact_location": "/tmp/slim-state/.slim-state/images/f7a44d598738c4faa4e69efe3dc66a20b7d43a00a5295dc30c073d361b57686b/artifacts",
   "container_report_name": "creport.json",
   "seccomp_profile_name": "ghcr.io-prodemmi-go-account-seccomp.json",
   "apparmor_profile_name": "ghcr.io-prodemmi-go-account-apparmor-profile",
   "image_stack": [
     {
       "is_top_image": true,
-      "id": "sha256:371d1b68e1833090e7d5f349676d08cded66912a0ec942b16697ac2b07862a31",
-      "full_name": "ghcr.io/prodemmi/go-account:0.7.0",
+      "id": "sha256:f7a44d598738c4faa4e69efe3dc66a20b7d43a00a5295dc30c073d361b57686b",
+      "full_name": "ghcr.io/prodemmi/go-account:0.7.2",
       "repo_name": "ghcr.io/prodemmi/go-account",
-      "version_tag": "0.7.0",
+      "version_tag": "0.7.2",
       "raw_tags": [
-        "ghcr.io/prodemmi/go-account:0.7.0"
+        "ghcr.io/prodemmi/go-account:0.7.2"
       ],
-      "create_time": "2024-04-25T20:07:23Z",
-      "new_size": 980103130,
-      "new_size_human": "980 MB",
+      "create_time": "2024-04-29T19:10:05Z",
+      "new_size": 961782812,
+      "new_size_human": "962 MB",
       "instructions": [
         {
           "type": "ADD",
@@ -89,7 +89,7 @@
           "source_type": "file",
           "inst_set_time_bucket": "2024-01-27T04:00:00+03:30",
           "inst_set_time_index": 0,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 4
         },
         {
           "type": "CMD",
@@ -104,7 +104,7 @@
           "command_all": "CMD [\"/bin/sh\"]\n",
           "inst_set_time_bucket": "2024-01-27T04:00:00+03:30",
           "inst_set_time_index": 0,
-          "inst_set_time_reverse_index": 3
+          "inst_set_time_reverse_index": 4
         },
         {
           "type": "RUN",
@@ -123,7 +123,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "ENV",
@@ -139,7 +139,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "ENV",
@@ -155,7 +155,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "ENV",
@@ -171,7 +171,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "ENV",
@@ -187,7 +187,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "COPY",
@@ -204,7 +204,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "RUN",
@@ -223,7 +223,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "WORKDIR",
@@ -242,7 +242,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-03T19:30:00+03:30",
           "inst_set_time_index": 1,
-          "inst_set_time_reverse_index": 2
+          "inst_set_time_reverse_index": 3
         },
         {
           "type": "ENV",
@@ -258,7 +258,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-22T15:45:00+03:30",
           "inst_set_time_index": 2,
-          "inst_set_time_reverse_index": 1
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "WORKDIR",
@@ -277,7 +277,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-22T15:45:00+03:30",
           "inst_set_time_index": 2,
-          "inst_set_time_reverse_index": 1
+          "inst_set_time_reverse_index": 2
         },
         {
           "type": "COPY",
@@ -294,7 +294,7 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
           "inst_set_time_index": 3,
-          "inst_set_time_reverse_index": 0
+          "inst_set_time_reverse_index": 1
         },
         {
           "type": "RUN",
@@ -313,32 +313,32 @@
           "is_buildkit_instruction": true,
           "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
           "inst_set_time_index": 3,
-          "inst_set_time_reverse_index": 0
+          "inst_set_time_reverse_index": 1
         },
         {
           "type": "COPY",
-          "time": "2024-04-25T20:07:09Z",
+          "time": "2024-04-29T19:09:52Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
-          "size": 129475949,
-          "size_human": "130 MB",
+          "size": 111137937,
+          "size_human": "111 MB",
           "params": ". ./",
           "command_snippet": "COPY . ./",
           "command_all": "COPY . ./",
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
-          "inst_set_time_index": 3,
+          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
+          "inst_set_time_index": 4,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "RUN",
-          "time": "2024-04-25T20:07:23Z",
+          "time": "2024-04-29T19:10:05Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
-          "size": 268103351,
+          "size": 268121045,
           "size_human": "268 MB",
           "command_snippet": "RUN go build -v -o server",
           "command_all": "RUN go build -v -o server",
@@ -347,13 +347,13 @@
           ],
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
-          "inst_set_time_index": 3,
+          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
+          "inst_set_time_index": 4,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "EXPOSE",
-          "time": "2024-04-25T20:07:23Z",
+          "time": "2024-04-29T19:10:05Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
@@ -363,13 +363,13 @@
           "command_all": "EXPOSE 9090/tcp",
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
-          "inst_set_time_index": 3,
+          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
+          "inst_set_time_index": 4,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "CMD",
-          "time": "2024-04-25T20:07:23Z",
+          "time": "2024-04-29T19:10:05Z",
           "is_last_instruction": true,
           "is_nop": false,
           "is_exec_form": true,
@@ -381,11 +381,11 @@
           "command_all": "CMD [\"./server\"]\n",
           "comment": "buildkit.dockerfile.v0",
           "raw_tags": [
-            "ghcr.io/prodemmi/go-account:0.7.0"
+            "ghcr.io/prodemmi/go-account:0.7.2"
           ],
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-04-25T23:30:00+03:30",
-          "inst_set_time_index": 3,
+          "inst_set_time_bucket": "2024-04-29T22:30:00+03:30",
+          "inst_set_time_index": 4,
           "inst_set_time_reverse_index": 0
         }
       ]

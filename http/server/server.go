@@ -1,26 +1,19 @@
 package server
 
 import (
-	c "account/http/container"
+	"account/http/container"
 	"account/http/routes"
 	"account/internal"
-	"github.com/gin-contrib/cors"
-	"log"
 	"net/http"
 	"time"
 
+	"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
-func SetupServer() (*gin.Engine, error) {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err.Error())
-	}
-
+func SetupServer(container *container.Container) (*gin.Engine, error) {
 	engine := gin.Default()
-
-	container := c.NewContainer()
 
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
@@ -49,6 +42,8 @@ func SetupServer() (*gin.Engine, error) {
 	if dbErr != nil {
 		return nil, dbErr
 	}
+
+	container.AppAMQP.Setup()
 
 	return engine, nil
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	c "account/http/container"
 	"account/http/server"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
 )
@@ -14,7 +16,15 @@ import (
 // @produce json
 // @schemes http https
 func main() {
-	engine, err := server.SetupServer()
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	container := c.NewContainer()
+
+	defer container.AMQPService.Close()
+
+	engine, err := server.SetupServer(container)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

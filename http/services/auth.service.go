@@ -9,11 +9,13 @@ type (
 	AuthService struct {
 		AuthRepository repositories.IAuthRepository
 		UserService    IUserService
+		AppService     IAppService
 	}
 	IAuthService interface {
 		SignUp(user models.User) (models.User, error)
 		SignInWithEmail(email string, password string) (models.User, error)
 		SignInWithMobile(email string, password string) (models.User, error)
+		Check(app string, user string) (bool, error)
 	}
 )
 
@@ -44,9 +46,36 @@ func (a AuthService) SignInWithMobile(mobile string, password string) (models.Us
 	return authUser, nil
 }
 
-func NewAuthService(authRepository repositories.IAuthRepository, userService IUserService) IAuthService {
+func (a AuthService) Check(app string, token string) (bool, error) {
+	userExists, err := a.UserService.ExistsByToken(app, token)
+	if err != nil {
+		return false, err
+	}
+
+	if userExists == false {
+		return false, nil
+	}
+
+	appExists, err := a.AppService.CheckExists(app)
+	if err != nil {
+		return false, err
+	}
+
+	if appExists == false {
+		return false, nil
+	}
+
+	if userExists == true && appExists == true {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func NewAuthService(authRepository repositories.IAuthRepository, appService IAppService, userService IUserService) IAuthService {
 	return AuthService{
 		AuthRepository: authRepository,
 		UserService:    userService,
+		AppService:     appService,
 	}
 }

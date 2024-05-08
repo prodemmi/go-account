@@ -4,18 +4,20 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="upgrade to version 0.6.1">
+    <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="remove server app">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.test" beforeDir="false" afterPath="$PROJECT_DIR$/.env.test" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/models/app.model.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/models/app.model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/container/container.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/container/container.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/app.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/app.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/controllers/auth.controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/controllers/auth.controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/middlewares/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/middlewares/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/repositories/user.repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/repositories/user.repository.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server" beforeDir="false" afterPath="$PROJECT_DIR$/server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/services/auth.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/auth.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/services/user.service.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/services/user.service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slim.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/slim.report.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/integration/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/integration/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/auth.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +101,7 @@
     &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/go-account&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/storage-account&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
@@ -246,7 +248,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix app middleware" />
     <MESSAGE value="add repository layer" />
     <MESSAGE value="fix relations" />
     <MESSAGE value="add delete app api" />
@@ -270,7 +271,9 @@
     <MESSAGE value="add env and prod to Makefile" />
     <MESSAGE value="add version route" />
     <MESSAGE value="upgrade to version 0.6.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="upgrade to version 0.6.1" />
+    <MESSAGE value="fix bugs" />
+    <MESSAGE value="remove server app" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove server app" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
