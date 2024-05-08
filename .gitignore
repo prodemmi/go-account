@@ -2,3 +2,4 @@ data/
 .idea/
 .env*
 !.env.example
+server
