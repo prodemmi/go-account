@@ -22,6 +22,7 @@ func SetupTestServer(wg *sync.WaitGroup) {
 	routes.RegisterUserRoutes(engine, container)
 	routes.RegisterAppRoutes(engine, container)
 	routes.RegisterAuthRoutes(engine, container)
+	routes.RegisterTestRoutes(engine, container)
 	routes.RegisterSwaggerRoutes(engine)
 
 	port := os.Getenv("APP_PORT")

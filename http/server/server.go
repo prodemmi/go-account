@@ -36,6 +36,7 @@ func SetupServer(container *container.Container) (*gin.Engine, error) {
 	routes.RegisterUserRoutes(engine, container)
 	routes.RegisterAppRoutes(engine, container)
 	routes.RegisterAuthRoutes(engine, container)
+	routes.RegisterTestRoutes(engine, container)
 	routes.RegisterSwaggerRoutes(engine)
 
 	dbErr := internal.SetupDatabase()
