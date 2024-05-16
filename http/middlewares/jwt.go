@@ -2,11 +2,12 @@ package middlewares
 
 import (
 	"account/http/services"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 func JWT(userService services.IUserService) gin.HandlerFunc {
@@ -21,9 +22,6 @@ func JWT(userService services.IUserService) gin.HandlerFunc {
 
 		tokenString := strings.TrimSpace(strings.Replace(authHeader, "Bearer ", "", 1))
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, jwt.ErrSignatureInvalid
-			}
 			return []byte(os.Getenv("APP_SECRET")), nil
 		})
 
