@@ -3,3 +3,6 @@ data/
 .env*
 !.env.example
 server
+
+slim.*
+*.xml

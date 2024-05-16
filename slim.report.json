@@ -9,7 +9,7 @@
   },
   "type": "build",
   "state": "done",
-  "target_reference": "ghcr.io/prodemmi/go-account:0.7.4",
+  "target_reference": "ghcr.io/prodemmi/go-account:0.7.5",
   "system": {
     "type": "Linux",
     "release": "6.2.0-39-generic",
@@ -21,17 +21,17 @@
   },
   "source_image": {
     "identity": {
-      "id": "sha256:c0c0c70e2a7e5cb0ca8683ab417b4f7edf621a41e82a9a56eb4d113aa2b9b094",
+      "id": "sha256:a6267d2fa18d8c7ac2c0313f53e8da425ca9d6b4cb442f6dcd8b8605f9a52d3d",
       "tags": [
-        "0.7.4"
+        "0.7.5"
       ],
       "names": [
-        "ghcr.io/prodemmi/go-account:0.7.4"
+        "ghcr.io/prodemmi/go-account:0.7.5"
       ]
     },
-    "size": 949092135,
+    "size": 949098024,
     "size_human": "949 MB",
-    "create_time": "2024-05-08T15:14:39Z",
+    "create_time": "2024-05-08T15:19:59Z",
     "docker_version": "",
     "architecture": "amd64",
     "exposed_ports": [
@@ -51,27 +51,27 @@
   },
   "minified_image_size": 37090254,
   "minified_image_size_human": "37 MB",
-  "minified_image": "ghcr.io/prodemmi/go-account.slim:0.7.4",
-  "minified_image_id": "sha256:484b3e984d7b8633f08f85d46870b270d75908b876382a66c7e090553af691d4",
-  "minified_image_digest": "sha256:9a40f2c6dcafac15afa375790d4a70f636a8eb86c671e5783312ca5510f1fd9b",
+  "minified_image": "ghcr.io/prodemmi/go-account.slim:0.7.5",
+  "minified_image_id": "sha256:f6aed6408be1de141c4749d3ade36860d10a6c70b2e1cda3e5fab533ff7fc2c2",
+  "minified_image_digest": "sha256:57a30015138b88b2becbdaf82704befdcc1b8c313e1d09272e57c72f721e3182",
   "minified_image_has_data": true,
-  "minified_by": 25.58872028754508,
-  "artifact_location": "/tmp/slim-state/.slim-state/images/c0c0c70e2a7e5cb0ca8683ab417b4f7edf621a41e82a9a56eb4d113aa2b9b094/artifacts",
+  "minified_by": 25.588879062408147,
+  "artifact_location": "/tmp/slim-state/.slim-state/images/a6267d2fa18d8c7ac2c0313f53e8da425ca9d6b4cb442f6dcd8b8605f9a52d3d/artifacts",
   "container_report_name": "creport.json",
   "seccomp_profile_name": "ghcr.io-prodemmi-go-account-seccomp.json",
   "apparmor_profile_name": "ghcr.io-prodemmi-go-account-apparmor-profile",
   "image_stack": [
     {
       "is_top_image": true,
-      "id": "sha256:c0c0c70e2a7e5cb0ca8683ab417b4f7edf621a41e82a9a56eb4d113aa2b9b094",
-      "full_name": "ghcr.io/prodemmi/go-account:0.7.4",
+      "id": "sha256:a6267d2fa18d8c7ac2c0313f53e8da425ca9d6b4cb442f6dcd8b8605f9a52d3d",
+      "full_name": "ghcr.io/prodemmi/go-account:0.7.5",
       "repo_name": "ghcr.io/prodemmi/go-account",
-      "version_tag": "0.7.4",
+      "version_tag": "0.7.5",
       "raw_tags": [
-        "ghcr.io/prodemmi/go-account:0.7.4"
+        "ghcr.io/prodemmi/go-account:0.7.5"
       ],
-      "create_time": "2024-05-08T15:14:39Z",
-      "new_size": 949092135,
+      "create_time": "2024-05-08T15:19:59Z",
+      "new_size": 949098024,
       "new_size_human": "949 MB",
       "instructions": [
         {
@@ -281,24 +281,24 @@
         },
         {
           "type": "COPY",
-          "time": "2024-05-08T15:11:40Z",
+          "time": "2024-05-08T15:17:08Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
-          "size": 128889383,
+          "size": 128895272,
           "size_human": "129 MB",
           "params": ". ./",
           "command_snippet": "COPY . ./",
           "command_all": "COPY . ./",
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_bucket": "2024-05-08T18:45:00+03:30",
           "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "RUN",
-          "time": "2024-05-08T15:14:39Z",
+          "time": "2024-05-08T15:19:59Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
@@ -311,13 +311,13 @@
           ],
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_bucket": "2024-05-08T18:45:00+03:30",
           "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "EXPOSE",
-          "time": "2024-05-08T15:14:39Z",
+          "time": "2024-05-08T15:19:59Z",
           "is_nop": false,
           "local_image_exists": false,
           "layer_index": 0,
@@ -327,13 +327,13 @@
           "command_all": "EXPOSE 9090/tcp",
           "comment": "buildkit.dockerfile.v0",
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_bucket": "2024-05-08T18:45:00+03:30",
           "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         },
         {
           "type": "CMD",
-          "time": "2024-05-08T15:14:39Z",
+          "time": "2024-05-08T15:19:59Z",
           "is_last_instruction": true,
           "is_nop": false,
           "is_exec_form": true,
@@ -345,10 +345,10 @@
           "command_all": "CMD [\"./server\"]\n",
           "comment": "buildkit.dockerfile.v0",
           "raw_tags": [
-            "ghcr.io/prodemmi/go-account:0.7.4"
+            "ghcr.io/prodemmi/go-account:0.7.5"
           ],
           "is_buildkit_instruction": true,
-          "inst_set_time_bucket": "2024-05-08T18:30:00+03:30",
+          "inst_set_time_bucket": "2024-05-08T18:45:00+03:30",
           "inst_set_time_index": 3,
           "inst_set_time_reverse_index": 0
         }

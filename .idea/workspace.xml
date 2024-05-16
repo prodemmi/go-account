@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix load env for rabbitmq">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/server/test_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/test_server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slim.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/slim.report.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/token.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/token.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +93,7 @@
     &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/storage-account&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/emad/Documents/Projects/go-account/http/routes&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
@@ -110,11 +112,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/http/routes" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/integration" />
       <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/server" />
-      <recent name="$PROJECT_DIR$/controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests" />
