@@ -3,8 +3,9 @@ package middlewares
 import (
 	"account/http/services"
 	"account/utils"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type AppHeader struct {
@@ -24,7 +25,7 @@ func App(appService services.IAppService) gin.HandlerFunc {
 
 		if !utils.IsUUID(header.AppID) {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error": "server id is not valid uuid.",
+				"error": "app id is not valid uuid.",
 			})
 			c.Abort()
 			return
