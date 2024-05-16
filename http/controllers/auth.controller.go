@@ -5,9 +5,10 @@ import (
 	"account/http/services"
 	"account/utils"
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 type AuthController struct {
@@ -83,7 +84,7 @@ func (c AuthController) SignUp(context *gin.Context) {
 	}
 
 	otpType, _ := context.Get("AppOtpType")
-	otpHash := utils.CreateAuthHash(user)
+	otpHash := utils.CreateAuthHash(user, context.Request.UserAgent())
 	_, errOtp := c.OtpService.CreateOTP(user.ID, user.AppID, fmt.Sprintf("%v", otpType), otpHash)
 	if errOtp != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
@@ -183,7 +184,7 @@ func (c AuthController) SignIn(context *gin.Context) {
 		return
 	}
 
-	otpHash := utils.CreateAuthHash(user)
+	otpHash := utils.CreateAuthHash(user, context.Request.UserAgent())
 	_, errOtp := c.OtpService.CreateOTP(user.ID, user.AppID, fmt.Sprintf("%v", appOtpType), otpHash)
 	if errOtp != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
@@ -269,7 +270,7 @@ func (c AuthController) VerifyOtp(context *gin.Context) {
 	}
 	user, _ := c.UserService.GetUser(payload.UserID)
 
-	if utils.VerifyAuthHash(payload.OtpHash, *user) {
+	if utils.VerifyAuthHash(payload.OtpHash, *user, context.Request.UserAgent()) {
 		verify, err := c.OtpService.CheckOTP(user.ID, user.AppID, payload.OtpCode, payload.OtpType, payload.OtpHash)
 		if err != nil {
 			context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
@@ -285,7 +286,7 @@ func (c AuthController) VerifyOtp(context *gin.Context) {
 			if errToken != nil {
 				context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 					"status": "error",
-					"error":  err.Error(),
+					"error":  errToken.Error(),
 				})
 				return
 			}
