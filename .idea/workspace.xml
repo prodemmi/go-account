@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f53fea60-2cbd-4b95-9d84-78621c0a8675" name="Changes" comment="fix load env for rabbitmq">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/server/test_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/server/test_server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/routes/test.route.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/routes/test.route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/amqp.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/amqp.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slim.report.json" beforeDir="false" afterPath="$PROJECT_DIR$/slim.report.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/token.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/token.go" afterDir="false" />
     </list>

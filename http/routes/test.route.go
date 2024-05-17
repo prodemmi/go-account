@@ -16,11 +16,19 @@ func RegisterTestRoutes(app *gin.Engine, container *container.Container) {
 
 			appID := utils.ToString(a)
 			token := utils.ToString(t)
+
+			sender, _ := container.UserService.GetUserByToken(token)
+
 			container.AMQPService.Publish(appID, internal.Message{
 				AppID:    &appID,
 				ApiToken: &token,
 				Event:    "SEND_SMS",
-				Body:     "09130243519",
+				Body: internal.SmsBody{
+					App:     appID,
+					Sender:  sender.ID.String(),
+					Message: "Hello emad",
+					TO:      "09130243519",
+				},
 			})
 		})
 		v1.GET("/email", func(context *gin.Context) {
@@ -29,11 +37,22 @@ func RegisterTestRoutes(app *gin.Engine, container *container.Container) {
 
 			appID := utils.ToString(a)
 			token := utils.ToString(t)
+
+			sender, _ := container.UserService.GetUserByToken(token)
+
 			container.AMQPService.Publish(appID, internal.Message{
 				AppID:    &appID,
 				ApiToken: &token,
 				Event:    "SEND_EMAIL",
-				Body:     "prodemmi@gmail.com",
+				Body: internal.EmailBody{
+					App:     appID,
+					Sender:  sender.ID.String(),
+					Subject: "My email",
+					CC:      "",
+					BCC:     "",
+					Message: "Hello emad",
+					TO:      "prodemmi@gmail.com",
+				},
 			})
 		})
 	}

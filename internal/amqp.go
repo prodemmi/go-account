@@ -22,25 +22,6 @@ type (
 		Subscribe(event string) (<-chan amqp091.Delivery, error)
 		Close()
 	}
-
-	Message struct {
-		Event         string  `json:"event_name"`
-		ReplyEvent    string  `json:"reply_event"`
-		Body          string  `json:"body"`
-		Meta          any     `json:"meta"`
-		CorrelationID string  `json:"correlation_id"`
-		AppID         *string `json:"app_id"`
-		ApiToken      *string `json:"api_token"`
-	}
-
-	MessageReply struct {
-		Event         string `json:"event_name"`
-		Error         bool   `json:"error"`
-		StatusCode    int    `json:"status_code"`
-		Body          string `json:"body"`
-		Meta          any    `json:"meta"`
-		CorrelationID string `json:"correlation_id"`
-	}
 )
 
 func MessageToString(message Message) (string, error) {

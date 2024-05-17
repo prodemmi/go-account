@@ -9,7 +9,7 @@ import (
 
 func CreateToken(appID string, userID string) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		ExpiresAt: time.Now().Add(96 * time.Hour).Unix(),
 		Issuer:    appID,
 		Subject:   userID,
 		Audience:  "guest",
