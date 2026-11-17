@@ -5,6 +5,7 @@ server
 .claude/
 .trail/
 .vscode/
+tmp/
 .env*
 *.md
 .git
