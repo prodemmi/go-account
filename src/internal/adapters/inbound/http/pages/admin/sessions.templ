@@ -1,0 +1,47 @@
+package pages
+
+import "github.com/a-h/templ"
+
+// admin/sessions.templ - Admin sessions list page
+// Compiled by: templ generate -> admin/sessions.go
+templ SessionsList(sessions []SessionRow) {
+	AdminLayout("Manage Sessions", {
+		<div class="header">
+			<h1>Active Sessions</h1>
+		</div>
+		@if len(sessions) == 0 {
+			<div class="empty-state">No active sessions.</div>
+		} @else {
+			<table class="table">
+				<thead>
+					<tr>
+						<th>App ID</th>
+						<th>Token</th>
+						<th>Expires At</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for _, s := range sessions {
+						<tr>
+							<td>{ s.AppID }</td>
+							<td style="font-family:monospace; font-size:0.875rem;">{ s.Token }</td>
+							<td>{ s.ExpiresAt }</td>
+							<td>
+								<form method="POST" action="/admin/sessions/{ s.Token }/delete" style="display:inline;" onsubmit="return confirm('Revoke this session?');">
+									<button type="submit" class="btn-secondary" style="background:#ef4444;">Revoke</button>
+								</form>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	})
+}
+
+type SessionRow struct {
+	AppID     string
+	Token     string
+	ExpiresAt string
+}

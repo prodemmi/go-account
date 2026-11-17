@@ -1,0 +1,62 @@
+package pages
+
+import "github.com/a-h/templ"
+
+// admin/apps.templ - Admin apps list page
+// Compiled by: templ generate -> admin/apps.go
+templ AppsList(apps []AppRow) {
+	AdminLayout("Manage Apps", {
+		<div class="header">
+			<h1>Applications</h1>
+			<a href="/admin/apps/new" class="btn">+ Add App</a>
+		</div>
+		@if len(apps) == 0 {
+			<div class="empty-state">No apps registered yet.</div>
+		} @else {
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>URL</th>
+						<th>Otp Type</th>
+						<th>Session Timeout</th>
+						<th>Auth Page</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for _, app := range apps {
+						<tr>
+							<td><strong>{ app.Name }</strong></td>
+							<td>{ app.Url }</td>
+							<td>{ app.OtpType }</td>
+							<td>{ app.SessionTimeout }s</td>
+							<td>
+								@if app.AuthPageEnabled {
+									<span class="badge badge-success">Custom</span>
+								} @else {
+									<span class="badge badge-default">Default</span>
+								}
+							</td>
+							<td>
+								<a href="/admin/apps/{ app.ID }" class="btn-secondary" style="padding:6px 10px;">Edit</a>
+								<form method="POST" action="/admin/apps/{ app.ID }/delete" style="display:inline;" onsubmit="return confirm('Delete this app?');">
+									<button type="submit" class="btn-secondary" style="background:#ef4444;">Delete</button>
+								</form>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	})
+}
+
+type AppRow struct {
+	ID              string
+	Name            string
+	Url             string
+	OtpType         string
+	SessionTimeout  int
+	AuthPageEnabled bool
+}

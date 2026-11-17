@@ -1,0 +1,43 @@
+package pages
+
+import "github.com/a-h/templ"
+
+// login.templ - Branded login page for an app (served by CAS)
+// Compiled by: templ generate -> login.go
+templ Login(data AuthData) {
+	Layout(data.PageTitle, {
+		<div class="container">
+			<div class="card">
+				<div class="brand">
+					@if data.AuthPageLogo != "" {
+						<img src={ data.AuthPageLogo } alt="Logo" />
+					}
+					<div class="name" style="color: { data.AuthPagePrimaryColor }">{ data.App.Name }</div>
+				</div>
+				<h1>Sign in to { data.App.Name }</h1>
+				@if data.Error != "" {
+					<div class="error show">{ data.Error }</div>
+				}
+				@if data.Success != "" {
+					<div class="success show">{ data.Success }</div>
+				}
+				<form method="POST" action="/auth/login">
+					<input type="hidden" name="app_id" value={ data.AppID } />
+					<input type="hidden" name="csrf_token" value={ data.CsrfToken } />
+					<div class="form-group">
+						<label for="email">Email</label>
+						<input type="email" id="email" name="email" placeholder="you@example.com" required />
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" id="password" name="password" placeholder="••••••••" required />
+					</div>
+					<button type="submit">Sign in</button>
+				</form>
+				<div class="footer">
+					New to { data.App.Name }? <a href="/auth/signup?app_id={ data.AppID }">Create an account</a>
+				</div>
+			</div>
+		</div>
+	})
+}

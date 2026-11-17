@@ -1,0 +1,137 @@
+/* Auth pages stylesheet (CAS branded login/signup/verify-OTP) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.container {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+}
+
+.brand {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.brand img {
+    max-width: 120px;
+    height: auto;
+}
+
+.brand .name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f9fafb;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color, #3b82f6);
+}
+
+button {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--primary-color, #3b82f6);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #fee2e2;
+    border-radius: 6px;
+    display: none;
+}
+
+.error.show {
+    display: block;
+}
+
+.success {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #d1fae5;
+    border-radius: 6px;
+    display: none;
+}
+
+.success.show {
+    display: block;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.footer a {
+    color: var(--primary-color, #3b82f6);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}

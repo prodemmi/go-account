@@ -1,7 +1,10 @@
 data/
 .idea/
+.claude/
+.trail/
 .env*
 !.env.example
+main
 server
 
 slim.*
