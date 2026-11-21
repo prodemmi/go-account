@@ -48,7 +48,7 @@ func (h AuthPageHandler) Login(c *gin.Context) {
 	}
 
 	// If the app hosts its own auth page, send the user there.
-	if a.AuthPageEnabled && a.AuthPageURL != "" {
+	if a.AuthPageEnabled && a.AuthPageURL != "" && isSafeRedirectURL(a.AuthPageURL) {
 		target := a.AuthPageURL
 		separator := "?"
 		if strings.Contains(target, "?") {
@@ -478,4 +478,16 @@ func authErrorReply(c *gin.Context, redirectURL, message string) {
 		return
 	}
 	redirectWithError(c, redirectURL, message)
+}
+
+func isSafeRedirectURL(raw string) bool {
+	raw = strings.TrimSpace(raw)
+	target, err := url.Parse(raw)
+	if err != nil || target.User != nil {
+		return false
+	}
+	if target.Scheme == "" {
+		return target.Host == "" && !strings.Contains(raw, `\`)
+	}
+	return (strings.EqualFold(target.Scheme, "http") || strings.EqualFold(target.Scheme, "https")) && target.Host != ""
 }
