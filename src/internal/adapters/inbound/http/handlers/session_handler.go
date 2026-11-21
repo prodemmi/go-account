@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -55,6 +56,14 @@ func (h SessionHandler) Create(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": "error",
 			"error":  "invalid app id",
+		})
+		return
+	}
+
+	if appIDVal, _ := c.Get("AppID"); fmt.Sprintf("%v", appIDVal) != payload.AppID {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+			"status": "error",
+			"error":  "app id mismatch",
 		})
 		return
 	}
@@ -129,6 +138,14 @@ func (h SessionHandler) Validate(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"status": "error",
 			"error":  "session not found",
+		})
+		return
+	}
+
+	if s.AppID.String() != appID {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"status": "error",
+			"error":  "session app mismatch",
 		})
 		return
 	}

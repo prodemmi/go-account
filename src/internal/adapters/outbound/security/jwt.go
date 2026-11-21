@@ -1,6 +1,7 @@
 package security
 
 import (
+	"errors"
 	"os"
 	"time"
 
@@ -29,11 +30,23 @@ func (s *JWTService) CreateToken(appID string, sessionTimeout time.Duration) (st
 
 func (s *JWTService) ParseToken(token string) (appID string, err error) {
 	claims := &jwt.StandardClaims{}
-	_, err = jwt.ParseWithClaims(token, claims, func(*jwt.Token) (interface{}, error) {
+	parsed, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
 		return []byte(os.Getenv("APP_SECRET")), nil
 	})
 	if err != nil {
 		return "", err
+	}
+	if !parsed.Valid {
+		return "", errors.New("invalid token")
+	}
+	if err := claims.Valid(); err != nil {
+		return "", err
+	}
+	if claims.Issuer == "" {
+		return "", errors.New("missing issuer")
 	}
 	return claims.Issuer, nil
 }

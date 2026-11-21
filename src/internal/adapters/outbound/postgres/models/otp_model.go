@@ -1,9 +1,7 @@
 package models
 
 import (
-	"fmt"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -25,7 +23,4 @@ type Otp struct {
 	ExpireAt *time.Time `json:"expire_at" gorm:"default:null" example:"2012-05-22 07:20:02"`
 }
 
-func (otp *Otp) AfterCreate(tx *gorm.DB) (err error) {
-	fmt.Println("otp code: " + otp.Code)
-	return
-}
+

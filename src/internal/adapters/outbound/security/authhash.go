@@ -1,8 +1,10 @@
 package security
 
 import (
-	"crypto/sha1"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/hex"
+	"os"
 
 	"aman/internal/domains/app"
 	"aman/internal/ports/outbound"
@@ -17,9 +19,9 @@ func NewAuthHash() *AuthHash {
 }
 
 func (s *AuthHash) CreateAuthHash(a app.App, agent string) string {
-	h := sha1.New()
-	h.Write([]byte(a.ID.String() + a.Name + agent))
-	return hex.EncodeToString(h.Sum(nil))
+	mac := hmac.New(sha256.New, []byte(os.Getenv("APP_SECRET")))
+	mac.Write([]byte(a.ID.String() + a.Name + agent))
+	return hex.EncodeToString(mac.Sum(nil))
 }
 
 func (s *AuthHash) VerifyAuthHash(hash string, a app.App, agent string) bool {

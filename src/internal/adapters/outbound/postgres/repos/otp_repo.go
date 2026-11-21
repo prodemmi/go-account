@@ -36,32 +36,22 @@ func (r *OTPRepository) CheckOTP(appID string, code, otpType, hash string) (bool
 		return false, err
 	}
 
-	var m pgmodels.Otp
-	result := r.db.
+	now := time.Now()
+	result := r.db.Model(&pgmodels.Otp{}).
 		Where("app_id = ?", uid).
 		Where("type = ?", otpType).
 		Where("code = ?", code).
 		Where("used = ?", false).
 		Where("hash = ?", hash).
-		Where("expire_at > ?", time.Now()).
-		First(&m)
+		Where("expire_at > ?", now).
+		Update("used", true)
 	if result.Error != nil {
 		return false, result.Error
 	}
-
 	if result.RowsAffected == 0 {
 		return false, fmt.Errorf("otp not exists")
 	}
-
-	if m.ExpireAt.After(time.Now()) {
-		m.Used = true
-		if err := r.db.Save(&m).Error; err != nil {
-			return false, err
-		}
-		return true, nil
-	}
-
-	return false, fmt.Errorf("otp code has expired")
+	return true, nil
 }
 
 func (r *OTPRepository) OTPActive(hash string) (otp.Otp, error) {

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -35,11 +36,27 @@ func NewJWTMiddleware(jwt outbound.IJWTService, sessionRepo outbound.ISessionRep
 			return
 		}
 
+		if headerAppID, _ := c.Get("AppID"); fmt.Sprintf("%v", headerAppID) != appID {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status": "error",
+				"error":  "token app mismatch",
+			})
+			return
+		}
+
 		s, err := sessionRepo.FindByToken(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"status": "error",
 				"error":  "session not found",
+			})
+			return
+		}
+
+		if s.AppID.String() != appID {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status": "error",
+				"error":  "session app mismatch",
 			})
 			return
 		}

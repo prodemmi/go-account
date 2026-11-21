@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"net/http"
+	"net/url"
 
 	"aman/internal/adapters/inbound/http/pages"
 	"aman/internal/adapters/inbound/http/pages/auth"
@@ -37,8 +40,8 @@ func (h AuthPageHandler) Login(c *gin.Context) {
 	}
 
 	// If app has a custom auth page URL, redirect there (app hosts its own auth)
-	if a.AuthPageEnabled && a.AuthPageURL != "" {
-		c.Redirect(http.StatusTemporaryRedirect, a.AuthPageURL+"?app_id="+appID)
+	if a.AuthPageEnabled && a.AuthPageURL != "" && isSafeRedirectURL(a.AuthPageURL) {
+		c.Redirect(http.StatusTemporaryRedirect, a.AuthPageURL+"?app_id="+url.QueryEscape(appID))
 		return
 	}
 
@@ -82,8 +85,8 @@ func (h AuthPageHandler) Signup(c *gin.Context) {
 		return
 	}
 
-	if a.AuthPageEnabled && a.AuthPageURL != "" {
-		c.Redirect(http.StatusTemporaryRedirect, a.AuthPageURL+"/signup?app_id="+appID)
+	if a.AuthPageEnabled && a.AuthPageURL != "" && isSafeRedirectURL(a.AuthPageURL) {
+		c.Redirect(http.StatusTemporaryRedirect, a.AuthPageURL+"/signup?app_id="+url.QueryEscape(appID))
 		return
 	}
 
@@ -122,8 +125,8 @@ func (h AuthPageHandler) VerifyOTP(c *gin.Context) {
 		return
 	}
 
-	if a.AuthPageEnabled && a.AuthPageURL != "" {
-		c.Redirect(http.StatusTemporaryRedirect, a.AuthPageURL+"/verify-otp?app_id="+appID)
+	if a.AuthPageEnabled && a.AuthPageURL != "" && isSafeRedirectURL(a.AuthPageURL) {
+		c.Redirect(http.StatusTemporaryRedirect, a.AuthPageURL+"/verify-otp?app_id="+url.QueryEscape(appID))
 		return
 	}
 
@@ -152,6 +155,20 @@ func (h AuthPageHandler) VerifyOTP(c *gin.Context) {
 }
 
 func generateCsrfToken() string {
-	// Simple CSRF token; in production use crypto/rand
-	return "csrf-placeholder"
+	buf := make([]byte, 16)
+	if _, err := rand.Read(buf); err != nil {
+		return "csrf-fallback"
+	}
+	return hex.EncodeToString(buf)
+}
+
+func isSafeRedirectURL(raw string) bool {
+	u, err := url.Parse(raw)
+	if err != nil {
+		return false
+	}
+	if u.Scheme == "" {
+		return true
+	}
+	return u.Scheme == "http" || u.Scheme == "https"
 }
