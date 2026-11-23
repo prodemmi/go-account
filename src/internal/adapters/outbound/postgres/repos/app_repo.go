@@ -1,6 +1,7 @@
 package repos
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 
 	pgmodels "aman/internal/adapters/outbound/postgres/models"
@@ -8,7 +9,7 @@ import (
 	"aman/internal/ports/outbound"
 )
 
-var _ outbound.IAppRepository = (*AppRepository)(nil)
+var _ outbound.AppRepository = (*AppRepository)(nil)
 
 type AppRepository struct {
 	db *gorm.DB
@@ -27,6 +28,10 @@ func (r *AppRepository) Create(a app.App) (app.App, error) {
 }
 
 func (r *AppRepository) FindByID(id string) (*app.App, error) {
+	if _, err := uuid.Parse(id); err != nil {
+		return nil, app.ErrNotFound
+	}
+
 	var m pgmodels.App
 	if err := r.db.Where("id = ?", id).First(&m).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -40,7 +45,7 @@ func (r *AppRepository) FindByID(id string) (*app.App, error) {
 
 func (r *AppRepository) FindAll() ([]app.App, error) {
 	var result []pgmodels.App
-	if err := r.db.Find(&result).Error; err != nil {
+	if err := r.db.Order("created_at DESC").Find(&result).Error; err != nil {
 		return nil, err
 	}
 	apps := make([]app.App, len(result))
@@ -48,6 +53,29 @@ func (r *AppRepository) FindAll() ([]app.App, error) {
 		apps[i] = pgmodels.ToDomainApp(m)
 	}
 	return apps, nil
+}
+
+func (r *AppRepository) FindPage(search string, limit, offset int) ([]app.App, int64, error) {
+	query := r.db.Model(&pgmodels.App{})
+	if search != "" {
+		like := "%" + search + "%"
+		query = query.Where("(name ILIKE ? OR url ILIKE ? OR callback_url ILIKE ?)", like, like, like)
+	}
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var result []pgmodels.App
+	if err := query.Order("created_at DESC").Limit(limit).Offset(offset).Find(&result).Error; err != nil {
+		return nil, 0, err
+	}
+	apps := make([]app.App, len(result))
+	for i, m := range result {
+		apps[i] = pgmodels.ToDomainApp(m)
+	}
+	return apps, total, nil
 }
 
 func (r *AppRepository) Update(a app.App) (app.App, error) {

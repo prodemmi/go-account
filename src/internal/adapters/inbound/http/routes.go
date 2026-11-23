@@ -1,11 +1,15 @@
 package httpadapter
 
 import (
+	"io/fs"
 	"net/http"
+	"os"
 
 	"aman/docs"
 	"aman/internal/adapters/inbound/http/handlers"
 	"aman/internal/adapters/inbound/http/middleware"
+	"aman/internal/adapters/inbound/http/pages"
+
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -15,7 +19,7 @@ import (
 func RegisterRoutes(
 	engine *gin.Engine,
 	authHandler *handlers.AuthHandler,
-	appHandler *handlers.AppHandler,
+	authPageHandler *handlers.AuthPageHandler,
 	sessionHandler *handlers.SessionHandler,
 	appMiddleware middleware.AppMiddleware,
 	jwtMiddleware middleware.JWTMiddleware,
@@ -25,42 +29,79 @@ func RegisterRoutes(
 	})
 
 	engine.GET("/version", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "0.7.0")
+		c.JSON(http.StatusOK, "0.8.0")
 	})
 
-	// Static CSS files for branded auth pages and admin panel
-	engine.StaticFS("/static/css", http.Dir("static/css"))
+	// Static CSS files for branded auth pages and admin panel. They are
+	// embedded in the binary so the admin panel is styled regardless of the
+	// process working directory.
+	css, err := fs.Sub(pages.CSS, "css")
+	if err == nil {
+		engine.StaticFS("/static/css", http.FS(css))
+	}
+	fonts, err := fs.Sub(pages.Fonts, "fonts")
+	if err == nil {
+		engine.StaticFS("/static/fonts", http.FS(fonts))
+	}
+
+	// Unknown routes and methods never render a JSON error. They redirect to
+	// the nginx-rendered 404, exactly like app-not-found and forbidden errors.
+	engine.NoRoute(func(c *gin.Context) {
+		if c.Request.URL.Path == handlers.NotFoundPath {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		c.Redirect(http.StatusFound, handlers.NotFoundPath)
+	})
+	engine.NoMethod(func(c *gin.Context) {
+		if c.Request.URL.Path == handlers.NotFoundPath {
+			c.Status(http.StatusNotFound)
+			return
+		}
+		c.Redirect(http.StatusFound, handlers.NotFoundPath)
+	})
+
+	// Browser auth flow (CAS branded pages). This is what apps redirect to.
+	authPages := engine.Group("/auth")
+	{
+		authPages.GET("/login", authPageHandler.Login)
+		authPages.GET("/verify-otp", authPageHandler.VerifyOTPPage)
+		authPages.POST("/send-otp", authPageHandler.SendOTP)
+		authPages.POST("/verify-otp", authPageHandler.VerifyOTP)
+		authPages.GET("/check", authPageHandler.Check)
+		authPages.GET("/logout", authPageHandler.Logout)
+		authPages.POST("/logout", authPageHandler.Logout)
+	}
 
 	v1 := engine.Group("/v1")
 
 	auth := v1.Group("/auth").Use(gin.HandlerFunc(appMiddleware))
 	{
+		auth.POST("/send-otp", authHandler.SendOTP)
+		auth.POST("/verify-otp", authHandler.VerifyOTP)
+		auth.POST("/verify-ott", authHandler.VerifyOTT)
+		auth.GET("/check", authHandler.Check)
 		auth.GET("/me", gin.HandlerFunc(jwtMiddleware), authHandler.Me)
-		auth.POST("/sign-in", authHandler.SignIn)
-		auth.DELETE("/logout", gin.HandlerFunc(jwtMiddleware), authHandler.Logout)
-		auth.POST("/verify-otp", authHandler.VerifyOtp)
-		auth.POST("/sign-up", authHandler.SignUp)
+		auth.POST("/logout", authHandler.Logout)
+		auth.DELETE("/logout", authHandler.Logout)
 	}
 
-	apps := v1.Group("/apps").Use(gin.HandlerFunc(appMiddleware))
+	// A user can list and terminate their own sessions. CAS does not manage
+	// users: ownership is proven by the app + identifier of the session token.
+	user := v1.Group("/user").Use(gin.HandlerFunc(appMiddleware), gin.HandlerFunc(jwtMiddleware))
 	{
-		apps.POST("/", appHandler.Store)
-		apps.GET("/", appHandler.Index)
-		apps.GET("/:id", appHandler.Single)
-		apps.PUT("/:id", appHandler.Update)
-		apps.DELETE("/:id", appHandler.Delete)
+		user.GET("/sessions", sessionHandler.Index)
+		user.DELETE("/sessions", sessionHandler.DeleteBatch)
+		user.DELETE("/sessions/:id", sessionHandler.Delete)
 	}
 
-	sessions := v1.Group("/sessions").Use(gin.HandlerFunc(appMiddleware))
-	{
-		sessions.POST("/", sessionHandler.Create)
-		sessions.GET("/validate", sessionHandler.Validate)
-		sessions.DELETE("/", sessionHandler.Delete)
+	if os.Getenv("APP_ENV") != "production" {
+		RegisterSwaggerRoutes(engine)
 	}
-
-	RegisterSwaggerRoutes(engine)
 }
 
+// RegisterSwaggerRoutes exposes the generated OpenAPI docs. It is never
+// registered in production.
 func RegisterSwaggerRoutes(engine *gin.Engine) {
 	docs.SwaggerInfo.BasePath = "/"
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

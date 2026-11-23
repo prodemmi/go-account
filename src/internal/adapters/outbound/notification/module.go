@@ -5,11 +5,11 @@ import (
 	"go.uber.org/fx"
 )
 
-// Module provides the SMS notification outbound adapter as its port interface.
+// Module provides the notification outbound adapter as its port interface.
 func Module() fx.Option {
 	return fx.Options(
-		fx.Provide(func() outbound.INotificationService {
-			return NewSMSService(&MockProvider{})
+		fx.Provide(func() outbound.Notifier {
+			return NewService(NewSMSProviderFromEnv(), NewEmailProviderFromEnv())
 		}),
 	)
 }

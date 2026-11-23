@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # Multi-stage build: compile with golang, run on minimal alpine
 FROM golang:1.27.0-alpine AS builder
 

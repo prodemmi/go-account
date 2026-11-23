@@ -9,6 +9,7 @@ import (
 	"aman/internal/adapters/inbound/http/admin"
 	"aman/internal/adapters/inbound/http/handlers"
 	"aman/internal/adapters/inbound/http/middleware"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 )
@@ -27,30 +28,20 @@ func NewServer(
 	lc fx.Lifecycle,
 	engine *gin.Engine,
 	authHandler *handlers.AuthHandler,
-	appHandler *handlers.AppHandler,
-	sessionHandler *handlers.SessionHandler,
 	authPageHandler *handlers.AuthPageHandler,
+	sessionHandler *handlers.SessionHandler,
 	appMiddleware middleware.AppMiddleware,
 	jwtMiddleware middleware.JWTMiddleware,
 	adminHandler *admin.AdminHandler,
 ) *Server {
-	// Public API routes (/v1/*)
-	RegisterRoutes(engine, authHandler, appHandler, sessionHandler, appMiddleware, jwtMiddleware)
+	RegisterRoutes(engine, authHandler, authPageHandler, sessionHandler, appMiddleware, jwtMiddleware)
 
-	// Auth pages (CAS serves branded login/signup/verify-OTP pages)
-	authPages := engine.Group("/auth")
-	{
-		authPages.GET("/login", authPageHandler.Login)
-		authPages.GET("/signup", authPageHandler.Signup)
-		authPages.GET("/verify-otp", authPageHandler.VerifyOTP)
-	}
-
-	// Admin panel routes (/admin/*)
+	// Admin panel routes (/admin/*) - server-rendered, Persian, no JSON API.
 	admin.RegisterAdminRoutes(engine, adminHandler)
 
 	s := &Server{engine: engine}
 	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
+		OnStart: func(context.Context) error {
 			go func() {
 				port := os.Getenv("APP_PORT")
 				if err := s.Run(":" + port); err != nil {

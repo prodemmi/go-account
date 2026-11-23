@@ -6,19 +6,56 @@ import (
 	"aman/internal/domains/app"
 )
 
-// AuthData holds the data passed to auth page templates.
+// AuthData holds the data passed to auth page components.
 type AuthData struct {
-	App              app.App
-	AppID            string
-	Error            string
-	Success          string
-	OtpHash          string
-	CsrfToken        string
-	PageTitle        string
-	PrimaryColor     string
-	LogoURL          string
-	AuthPageLogo     string
-	AuthPagePrimaryColor string
+	App                 app.App
+	AppID               string
+	Identifier          string
+	Error               string
+	Success             string
+	OtpHash             string
+	CsrfToken           string
+	ReturnTo            string
+	PageTitle           string
+	DocumentTitle       string
+	PrimaryColor        string
+	BackgroundColor     string
+	CardBackgroundColor string
+	PinBackgroundColor  string
+	PinTextColor        string
+	Theme               string
+	Font                string
+	TextAlign           string
+	Layout              string
+	LogoURL             string
+	LogoMask            string
+	LogoPosition        string
+	BannerMode          string
+	Banners             []app.Banner
+	CopyCustom          bool
+	AllowMobile         bool
+	AllowEmail          bool
+	Step                string
+
+	Title           string
+	Subtitle        string
+	IdentifierLabel string
+	SendButton      string
+	VerifyTitle     string
+	VerifySubtitle  string
+	VerifyButton    string
+	RetryText       string
+	BackText        string
+	FooterText      string
+
+	CaptchaEnabled bool
+	CaptchaSiteKey string
+
+	OTPLength        int
+	OTPInputType     string
+	OTPCodeInputType string
+	OTPExpire        int
+	OTPExpiresAt     int64
 }
 
 // WriteEscaped writes HTML-escaped text to w.

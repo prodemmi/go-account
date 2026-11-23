@@ -9,13 +9,13 @@ import (
 // fx can inject them where the ports are required.
 func Module() fx.Option {
 	return fx.Options(
-		fx.Provide(func() outbound.IPasswordService {
+		fx.Provide(func() outbound.PasswordService {
 			return NewPasswordService()
 		}),
-		fx.Provide(func() outbound.IJWTService {
+		fx.Provide(func() outbound.JWTService {
 			return NewJWTService()
 		}),
-		fx.Provide(func() outbound.IAuthHash {
+		fx.Provide(func() outbound.AuthHash {
 			return NewAuthHash()
 		}),
 	)

@@ -4,6 +4,7 @@ import (
 	"aman/internal/adapters/inbound/http/admin"
 	"aman/internal/adapters/inbound/http/handlers"
 	"aman/internal/adapters/inbound/http/middleware"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 )
@@ -15,16 +16,13 @@ func Module() fx.Option {
 	return fx.Options(
 		fx.Provide(gin.Default),
 		fx.Provide(handlers.NewAuthHandler),
-		fx.Provide(handlers.NewAppHandler),
-		fx.Provide(handlers.NewSessionHandler),
 		fx.Provide(handlers.NewAuthPageHandler),
+		fx.Provide(handlers.NewSessionHandler),
 		fx.Provide(middleware.NewAppMiddleware),
 		fx.Provide(middleware.NewJWTMiddleware),
 		fx.Provide(NewServer),
-		// fx only constructs providers that are reachable from an fx.Invoke
-		// target. NewServer registers the HTTP OnStart hook (it starts the
-		// listener), so we invoke it here to make fx actually build the
-		// server and start listening.
+		// fx only constructs providers reachable from an fx.Invoke target.
+		// NewServer registers the HTTP OnStart hook, so we invoke it here.
 		fx.Invoke(func(s *Server) {}),
 		admin.Module(),
 	)

@@ -8,7 +8,7 @@ import (
 	"aman/internal/ports/outbound"
 )
 
-var _ outbound.IAuthHash = (*AuthHash)(nil)
+var _ outbound.AuthHash = (*AuthHash)(nil)
 
 type AuthHash struct{}
 

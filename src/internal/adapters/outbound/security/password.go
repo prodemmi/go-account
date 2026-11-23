@@ -6,7 +6,7 @@ import (
 	"aman/internal/ports/outbound"
 )
 
-var _ outbound.IPasswordService = (*PasswordService)(nil)
+var _ outbound.PasswordService = (*PasswordService)(nil)
 
 type PasswordService struct{}
 

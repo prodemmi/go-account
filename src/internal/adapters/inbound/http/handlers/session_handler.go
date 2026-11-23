@@ -2,184 +2,103 @@ package handlers
 
 import (
 	"net/http"
-	"time"
 
-	"aman/internal/domains/session"
-	"aman/internal/ports/outbound"
+	"aman/internal/ports/inbound"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
-// SessionHandler is the primary (inbound) HTTP adapter for session management (CAS).
+// SessionHandler exposes the current user's sessions. CAS does not manage
+// users: a session belongs to the app + identifier pair authenticated by the
+// request middleware.
 type SessionHandler struct {
-	sessionRepo outbound.ISessionRepository
-	appRepo     outbound.IAppRepository
-	jwt         outbound.IJWTService
+	sessions inbound.SessionUseCase
 }
 
-func NewSessionHandler(
-	sessionRepo outbound.ISessionRepository,
-	appRepo outbound.IAppRepository,
-	jwt outbound.IJWTService,
-) *SessionHandler {
-	return &SessionHandler{
-		sessionRepo: sessionRepo,
-		appRepo:     appRepo,
-		jwt:         jwt,
-	}
+func NewSessionHandler(sessions inbound.SessionUseCase) *SessionHandler {
+	return &SessionHandler{sessions: sessions}
 }
 
-// Create godoc
-// @Summary Create a new CAS session
-// @Tags Session
-// @Accept json
+// Index lists the caller's active sessions.
+// @Summary List my sessions (CAS)
+// @Tags Sessions
 // @Produce json
-// @Param payload body createSessionBody true "payload"
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /v1/sessions [post]
-func (h SessionHandler) Create(c *gin.Context) {
-	var payload createSessionBody
-	if err := c.BindJSON(&payload); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": "error",
-			"error":  err.Error(),
-		})
-		return
-	}
-
-	appID, err := uuid.Parse(payload.AppID)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": "error",
-			"error":  "invalid app id",
-		})
-		return
-	}
-
-	a, err := h.appRepo.FindByID(payload.AppID)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"error": "app not found.",
-		})
-		return
-	}
-
-	token, err := h.jwt.CreateToken(payload.AppID, a.SessionTimeout)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": "error",
-			"error":  err.Error(),
-		})
-		return
-	}
-
-	s, err := h.sessionRepo.Create(session.Session{
-		AppID:     appID,
-		Token:     token,
-		ExpiresAt: time.Now().Add(a.SessionTimeout),
-	})
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": "error",
-			"error":  err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{
-		"status": "success",
-		"data":   s,
-	})
-}
-
-// Validate godoc
-// @Summary Validate a CAS session token
-// @Tags Session
-// @Accept json
-// @Produce json
-// @Param token query string true "session token"
+// @Param APP-ID header string true "app id"
 // @Success 200 {object} map[string]interface{}
-// @Failure 401 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /v1/sessions/validate [get]
-func (h SessionHandler) Validate(c *gin.Context) {
-	token := c.Query("token")
-	if token == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": "error",
-			"error":  "token is required",
-		})
+// @Router /v1/user/sessions [get]
+func (h SessionHandler) Index(c *gin.Context) {
+	sess, ok := currentSession(c)
+	if !ok {
+		redirectNotFound(c)
 		return
 	}
 
-	appID, err := h.jwt.ParseToken(token)
+	list, err := h.sessions.List(c.Request.Context(), sess.AppID.String(), sess.Identifier)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"status": "error",
-			"error":  "invalid token",
-		})
-		return
-	}
-
-	s, err := h.sessionRepo.FindByToken(token)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"status": "error",
-			"error":  "session not found",
-		})
-		return
-	}
-
-	if s.ExpiresAt.Before(time.Now()) {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"status": "error",
-			"error":  "session expired",
-		})
+		redirectNotFound(c)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data": gin.H{
-			"app_id":   appID,
-			"session":  s,
-			"valid":    true,
-		},
+		"data":   list,
 	})
 }
 
-// Delete godoc
-// @Summary Delete a CAS session (logout)
-// @Tags Session
-// @Accept json
-// @Produce json
-// @Param token query string true "session token"
+// Delete terminates one session by id.
+// @Summary Terminate a session (CAS)
+// @Tags Sessions
+// @Param id path string true "session id"
 // @Success 200 {object} map[string]interface{}
-// @Failure 500 {object} map[string]interface{}
-// @Router /v1/sessions [delete]
+// @Router /v1/user/sessions/{id} [delete]
 func (h SessionHandler) Delete(c *gin.Context) {
-	token := c.Query("token")
-	if token == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": "error",
-			"error":  "token is required",
-		})
+	sess, ok := currentSession(c)
+	if !ok {
+		redirectNotFound(c)
 		return
 	}
 
-	if err := h.sessionRepo.Delete(token); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": "error",
-			"error":  err.Error(),
-		})
+	if err := h.sessions.Terminate(c.Request.Context(), sess.AppID.String(), sess.Identifier, c.Param("id")); err != nil {
+		redirectNotFound(c)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": "success",
-		"data":   true,
-	})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": true})
+}
+
+// DeleteBatch terminates several sessions at once, or all of them when the
+// request has no body / no ids.
+// @Summary Terminate sessions in batch (CAS)
+// @Tags Sessions
+// @Param payload body terminateSessionsBody false "session ids"
+// @Success 200 {object} map[string]interface{}
+// @Router /v1/user/sessions [delete]
+func (h SessionHandler) DeleteBatch(c *gin.Context) {
+	sess, ok := currentSession(c)
+	if !ok {
+		redirectNotFound(c)
+		return
+	}
+
+	var payload terminateSessionsBody
+	_ = c.ShouldBindJSON(&payload)
+
+	ctx := c.Request.Context()
+	appID := sess.AppID.String()
+
+	if len(payload.IDs) > 0 {
+		if err := h.sessions.TerminateMany(ctx, appID, sess.Identifier, payload.IDs); err != nil {
+			redirectNotFound(c)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"terminated": len(payload.IDs)}})
+		return
+	}
+
+	if err := h.sessions.TerminateAll(ctx, appID, sess.Identifier); err != nil {
+		redirectNotFound(c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": gin.H{"terminated": "all"}})
 }

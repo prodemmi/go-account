@@ -8,7 +8,7 @@ import (
 // Module provides the OTP generation outbound adapter as its port interface.
 func Module() fx.Option {
 	return fx.Options(
-		fx.Provide(func() outbound.IOTPGenerator {
+		fx.Provide(func() outbound.OTPGenerator {
 			return NewOTPGenerator()
 		}),
 	)

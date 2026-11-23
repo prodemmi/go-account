@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 
+	"aman/internal/adapters/inbound/http/handlers"
 	"aman/internal/ports/outbound"
 
 	"github.com/gin-gonic/gin"
@@ -19,39 +20,36 @@ type appHeader struct {
 
 // NewAppMiddleware validates the APP-ID header, resolves the app and stores
 // app-scoped values on the gin context for downstream handlers.
-func NewAppMiddleware(appRepo outbound.IAppRepository) AppMiddleware {
+func NewAppMiddleware(appRepo outbound.AppRepository) AppMiddleware {
 	return AppMiddleware(func(c *gin.Context) {
 		header := &appHeader{}
 		if err := c.BindHeader(header); err != nil {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "app id is not set.",
-			})
-			c.Abort()
+			redirectNotFound(c)
 			return
 		}
 
 		if _, err := uuid.Parse(header.AppID); err != nil {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "app id is not valid uuid.",
-			})
-			c.Abort()
+			redirectNotFound(c)
 			return
 		}
 
 		a, err := appRepo.FindByID(header.AppID)
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "app not found,",
-			})
-			c.Abort()
+			redirectNotFound(c)
 			return
 		}
 
-		c.Set("App", a)
-		c.Set("AppID", a.ID)
-		c.Set("AppUrl", a.Url)
-		c.Set("AppAuthUrl", a.AuthUrl)
-		c.Set("AppOtpType", a.OtpType)
+		normalized := a.Normalize()
+		c.Set("App", &normalized)
+		c.Set("AppID", normalized.ID.String())
+		c.Set("AppUrl", normalized.Url)
+		c.Set("AppCallbackUrl", normalized.CallbackURL)
+		c.Set("AppOtpType", normalized.OTPChannel)
 		c.Next()
 	})
+}
+
+func redirectNotFound(c *gin.Context) {
+	c.Redirect(http.StatusFound, handlers.NotFoundPath)
+	c.Abort()
 }

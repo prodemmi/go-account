@@ -10,6 +10,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // NewDB opens a connection to Postgres, runs auto-migration and returns the
@@ -26,7 +27,15 @@ func NewDB() (*gorm.DB, error) {
 		pgUser, pgPassword, pgHost, pgPort, pgName,
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// SQL logging is a development aid only: production keeps gorm silent.
+	logLevel := logger.Silent
+	if os.Getenv("APP_ENV") == "development" {
+		logLevel = logger.Info
+	}
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logLevel),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +44,7 @@ func NewDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&pgmodels.App{}, &pgmodels.Session{}, &pgmodels.Otp{}); err != nil {
+	if err := db.AutoMigrate(&pgmodels.App{}, &pgmodels.Session{}, &pgmodels.Otp{}, &pgmodels.OTT{}); err != nil {
 		return nil, err
 	}
 

@@ -10,6 +10,8 @@ import (
 	"aman/internal/adapters/outbound/otpgen"
 	"aman/internal/adapters/outbound/postgres"
 	"aman/internal/adapters/outbound/security"
+	"aman/internal/adapters/outbound/webhook"
+	"aman/internal/domains/services"
 
 	"go.uber.org/fx"
 )
@@ -26,6 +28,8 @@ func main() {
 		security.Module(),
 		otpgen.Module(),
 		notification.Module(),
+		webhook.Module(),
+		services.Module(),
 		httpadapter.Module(),
 	)
 
