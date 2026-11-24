@@ -7,8 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"aman/internal/adapters/inbound/http/pages"
 	adminpages "aman/internal/adapters/inbound/http/pages/admin"
 	"aman/internal/domains/app"
+	"aman/internal/domains/session"
 	"aman/internal/ports/inbound"
 
 	"github.com/a-h/templ"
@@ -37,11 +39,14 @@ func NewAdminHandler(apps inbound.AppUseCase, sessions inbound.SessionUseCase) *
 func (h AdminHandler) AppsList(c *gin.Context) {
 	page, offset := pageParams(c, appsPageSize)
 	search := strings.TrimSpace(c.Query("q"))
+	from, until, dateFrom, dateTo, filterError := parseDateRange(c)
 
 	apps, total, err := h.apps.ListPage(c.Request.Context(), inbound.AppFilter{
-		Search: search,
-		Limit:  appsPageSize,
-		Offset: offset,
+		Search:       search,
+		CreatedFrom:  from,
+		CreatedUntil: until,
+		Limit:        appsPageSize,
+		Offset:       offset,
 	})
 	if err != nil {
 		redirectNotFound(c)
@@ -61,16 +66,20 @@ func (h AdminHandler) AppsList(c *gin.Context) {
 			SessionTimeout:  int(a.SessionTimeout.Seconds()),
 			InfiniteSession: a.InfiniteSession,
 			AuthPageEnabled: a.AuthPageEnabled,
+			CreatedAt:       adminpages.FormatDateTime(a.CreatedAt),
 		}
 	}
 
 	meta := adminpages.PageMeta{
-		BasePath: "/admin/apps",
-		Search:   search,
-		Page:     page,
-		Pages:    totalPages(total, appsPageSize),
-		Total:    total,
-		PageSize: appsPageSize,
+		BasePath:    "/admin/apps",
+		Search:      search,
+		From:        dateFrom,
+		To:          dateTo,
+		FilterError: filterError,
+		Page:        page,
+		Pages:       totalPages(total, appsPageSize),
+		Total:       total,
+		PageSize:    appsPageSize,
 	}
 
 	render(c, "برنامه‌ها", "/admin/apps", adminpages.AppsList(rows, meta, c.Query("error"), c.Query("success")))
@@ -97,6 +106,8 @@ func (h AdminHandler) NewApp(c *gin.Context) {
 		AuthPagePrimaryColor:        "#3b82f6",
 		AuthPageBackgroundColor:     "#f8fafc",
 		AuthPageCardBackgroundColor: "#ffffff",
+		AuthPageTextColor:           "#111827",
+		AuthPageMutedTextColor:      "#667085",
 		AuthPagePinBackgroundColor:  "#f9fafb",
 		AuthPagePinTextColor:        "#111827",
 		AuthPageBannerMode:          app.BannerModeNone,
@@ -160,6 +171,8 @@ func (h AdminHandler) EditApp(c *gin.Context) {
 		SessionCookieSecure:         a.SessionCookieSecure,
 		SessionCookieSameSite:       a.SessionCookieSameSite,
 		RedirectBack:                a.RedirectBack,
+		CustomAuthEnabled:           a.CustomAuthEnabled,
+		AllowedCountries:            strings.Join(a.AllowedCountries, ","),
 		AuthPageEnabled:             a.AuthPageEnabled,
 		AuthPageURL:                 a.AuthPageURL,
 		AuthPageTitle:               a.AuthPageTitle,
@@ -172,10 +185,13 @@ func (h AdminHandler) EditApp(c *gin.Context) {
 		AuthPagePrimaryColor:        a.AuthPagePrimaryColor,
 		AuthPageBackgroundColor:     a.AuthPageBackgroundColor,
 		AuthPageCardBackgroundColor: a.AuthPageCardBackgroundColor,
+		AuthPageTextColor:           a.AuthPageTextColor,
+		AuthPageMutedTextColor:      a.AuthPageMutedTextColor,
 		AuthPagePinBackgroundColor:  a.AuthPagePinBackgroundColor,
 		AuthPagePinTextColor:        a.AuthPagePinTextColor,
 		AuthPageTheme:               a.AuthPageTheme,
 		AuthPageCaptchaEnabled:      a.AuthPageCaptchaEnabled,
+		AuthPageCaptchaProvider:     a.AuthPageCaptchaProvider,
 		AuthPageCaptchaSiteKey:      a.AuthPageCaptchaSiteKey,
 		AuthPageCaptchaSecretKey:    a.AuthPageCaptchaSecretKey,
 		AuthPageBannerMode:          a.AuthPageBannerMode,
@@ -189,7 +205,7 @@ func (h AdminHandler) EditApp(c *gin.Context) {
 		AuthPageVerifySubtitle:      copyValue(a.AuthPageVerifySubtitle, "کد ارسال‌شده به {identifier} را وارد کنید."),
 		AuthPageVerifyButton:        copyValue(a.AuthPageVerifyButton, "تایید و ورود"),
 		AuthPageRetryText:           copyValue(a.AuthPageRetryText, "ارسال دوباره کد"),
-		AuthPageBackText:            copyValue(a.AuthPageBackText, "تغییر ایمیل یا شماره موبایل"),
+		AuthPageBackText:            copyValue(a.AuthPageBackText, pages.EditIdentifierText(a.AllowsEmail(), a.AllowsMobile())),
 		AuthPageFooterText:          copyValue(a.AuthPageFooterText, "ورود امن با Aman CAS"),
 		Error:                       c.Query("error"),
 		Success:                     c.Query("success"),
@@ -230,7 +246,15 @@ func (h AdminHandler) Developers(c *gin.Context) {
 // Dashboard renders the stats dashboard with an app filter and charts.
 func (h AdminHandler) Dashboard(c *gin.Context) {
 	appID := strings.TrimSpace(c.Query("app_id"))
+	status := strings.TrimSpace(c.Query("status"))
+	switch status {
+	case session.StatusActive, session.StatusPending, session.StatusRevoked, "expired":
+	default:
+		status = ""
+	}
 	days, allTime := parseRange(c.Query("days"))
+	from, until, dateFrom, dateTo, filterError := parseDateRange(c)
+	customDateRange := filterError == "" && (dateFrom != "" || dateTo != "")
 
 	apps, err := h.apps.List(c.Request.Context())
 	if err != nil {
@@ -240,12 +264,14 @@ func (h AdminHandler) Dashboard(c *gin.Context) {
 
 	now := time.Now()
 	var since *time.Time
-	if !allTime {
+	if customDateRange {
+		since = from
+	} else if !allTime {
 		start := startOfDay(now).AddDate(0, 0, -(days - 1))
 		since = &start
 	}
 
-	stats, err := h.sessions.Stats(c.Request.Context(), appID, since)
+	stats, err := h.sessions.Stats(c.Request.Context(), appID, status, since, until)
 	if err != nil {
 		redirectNotFound(c)
 		return
@@ -257,24 +283,38 @@ func (h AdminHandler) Dashboard(c *gin.Context) {
 	if since != nil {
 		chartSince = *since
 	}
-	counts, err := h.sessions.DailyCounts(c.Request.Context(), appID, chartSince)
+	counts, err := h.sessions.DailyCounts(c.Request.Context(), appID, status, chartSince, until)
 	if err != nil {
 		redirectNotFound(c)
 		return
 	}
 
+	chartEnd := startOfDay(now)
+	if until != nil {
+		chartEnd = until.AddDate(0, 0, -1)
+	}
 	chartDays := days
-	if allTime {
-		chartDays = daysBetween(counts, startOfDay(now))
+	if customDateRange {
+		chartStart := chartStart(chartSince, counts, chartEnd)
+		chartDays = int(chartEnd.Sub(chartStart).Hours()/24) + 1
+		if chartDays < 1 {
+			chartDays = 1
+		}
+	} else if allTime {
+		chartDays = daysBetween(counts, chartEnd)
 	}
 
 	render(c, "داشبورد", "/admin", adminpages.Dashboard(adminpages.DashboardData{
 		Apps:        toAppOptions(apps),
 		AppID:       appID,
+		Status:      status,
 		Days:        days,
 		AllTime:     allTime,
+		From:        dateFrom,
+		To:          dateTo,
+		FilterError: filterError,
 		Stats:       stats,
-		Daily:       fillDaily(counts, chartStart(chartSince, counts, startOfDay(now)), chartDays),
+		Daily:       fillDaily(counts, chartStart(chartSince, counts, chartEnd), chartDays),
 		ChartDays:   chartDays,
 		GeneratedAt: now,
 		Error:       c.Query("error"),
@@ -287,13 +327,16 @@ func (h AdminHandler) SessionsList(c *gin.Context) {
 	search := strings.TrimSpace(c.Query("q"))
 	status := strings.TrimSpace(c.Query("status"))
 	appID := strings.TrimSpace(c.Query("app_id"))
+	from, until, dateFrom, dateTo, filterError := parseDateRange(c)
 
 	sessions, total, err := h.sessions.ListAll(c.Request.Context(), inbound.SessionFilter{
-		AppID:  appID,
-		Search: search,
-		Status: status,
-		Limit:  sessionsPageSize,
-		Offset: offset,
+		AppID:        appID,
+		Search:       search,
+		Status:       status,
+		CreatedFrom:  from,
+		CreatedUntil: until,
+		Limit:        sessionsPageSize,
+		Offset:       offset,
 	})
 	if err != nil {
 		redirectNotFound(c)
@@ -341,14 +384,17 @@ func (h AdminHandler) SessionsList(c *gin.Context) {
 	}
 
 	meta := adminpages.PageMeta{
-		BasePath: "/admin/sessions",
-		Search:   search,
-		Status:   status,
-		AppID:    appID,
-		Page:     page,
-		Pages:    totalPages(total, sessionsPageSize),
-		Total:    total,
-		PageSize: sessionsPageSize,
+		BasePath:    "/admin/sessions",
+		Search:      search,
+		Status:      status,
+		AppID:       appID,
+		From:        dateFrom,
+		To:          dateTo,
+		FilterError: filterError,
+		Page:        page,
+		Pages:       totalPages(total, sessionsPageSize),
+		Total:       total,
+		PageSize:    sessionsPageSize,
 	}
 
 	render(c, "نشست‌ها", "/admin/sessions", adminpages.SessionsList(rows, meta, toAppOptions(apps), c.Query("error"), c.Query("success")))
@@ -397,6 +443,8 @@ func parseAppInput(c *gin.Context) inbound.AppInput {
 		SessionCookieSameSite: c.PostForm("session_cookie_same_site"),
 		RedirectBack:          checkbox(c.PostForm("redirect_back")),
 
+		CustomAuthEnabled:           checkbox(c.PostForm("custom_auth_enabled")),
+		AllowedCountries:            c.PostForm("allowed_countries"),
 		AuthPageEnabled:             checkbox(c.PostForm("auth_page_enabled")),
 		AuthPageURL:                 c.PostForm("auth_page_url"),
 		AuthPageTitle:               c.PostForm("auth_page_title"),
@@ -409,10 +457,13 @@ func parseAppInput(c *gin.Context) inbound.AppInput {
 		AuthPagePrimaryColor:        c.PostForm("auth_page_primary_color"),
 		AuthPageBackgroundColor:     c.PostForm("auth_page_background_color"),
 		AuthPageCardBackgroundColor: c.PostForm("auth_page_card_background_color"),
+		AuthPageTextColor:           c.PostForm("auth_page_text_color"),
+		AuthPageMutedTextColor:      c.PostForm("auth_page_muted_text_color"),
 		AuthPagePinBackgroundColor:  c.PostForm("auth_page_pin_background_color"),
 		AuthPagePinTextColor:        c.PostForm("auth_page_pin_text_color"),
 		AuthPageTheme:               c.PostForm("auth_page_theme"),
 		AuthPageCaptchaEnabled:      checkbox(c.PostForm("auth_page_captcha_enabled")),
+		AuthPageCaptchaProvider:     c.PostForm("auth_page_captcha_provider"),
 		AuthPageCaptchaSiteKey:      c.PostForm("auth_page_captcha_site_key"),
 		AuthPageCaptchaSecretKey:    c.PostForm("auth_page_captcha_secret_key"),
 		AuthPageBannerMode:          c.PostForm("auth_page_banner_mode"),
@@ -537,6 +588,16 @@ func parseRange(raw string) (days int, allTime bool) {
 	default:
 		return 14, false
 	}
+}
+
+func parseDateRange(c *gin.Context) (from, until *time.Time, rawFrom, rawTo, message string) {
+	rawFrom = strings.TrimSpace(c.Query("from"))
+	rawTo = strings.TrimSpace(c.Query("to"))
+	from, until, err := adminpages.ParseJalaliRange(rawFrom, rawTo)
+	if err != nil {
+		return nil, nil, rawFrom, rawTo, err.Error()
+	}
+	return from, until, rawFrom, rawTo, ""
 }
 
 // chartStart picks the first day of the chart: the beginning of the selected

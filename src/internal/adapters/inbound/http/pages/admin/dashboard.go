@@ -25,9 +25,13 @@ type AppOption struct {
 type DashboardData struct {
 	Apps        []AppOption
 	AppID       string
+	Status      string
 	Days        int
 	ChartDays   int
 	AllTime     bool
+	From        string
+	To          string
+	FilterError string
 	Stats       inbound.SessionStats
 	Daily       []inbound.DailyCount
 	GeneratedAt time.Time
@@ -73,7 +77,7 @@ func Dashboard(data DashboardData) templ.Component {
 		peakLabel := "—"
 		peakValue := int64(0)
 		if maxCount > 0 {
-			peakLabel = faNum(peak.Day.Format("2006-01-02"))
+			peakLabel = FormatJalaliDate(peak.Day)
 			peakValue = peak.Count
 		}
 
@@ -110,10 +114,20 @@ func Dashboard(data DashboardData) templ.Component {
 		w.Write([]byte(`</select>
 		</div>
 		<div class="field">
+			<label for="dashboard-status">وضعیت</label>
+			<select id="dashboard-status" name="status">
+				<option value="">همه وضعیت‌ها</option>`))
+		writeStatusOption(w, "active", "فعال", data.Status)
+		writeStatusOption(w, "pending", "معلق", data.Status)
+		writeStatusOption(w, "expired", "منقضی", data.Status)
+		writeStatusOption(w, "revoked", "باطل‌شده", data.Status)
+		w.Write([]byte(`</select>
+		</div>
+		<div class="field">
 			<label for="days">
 				بازه زمانی
 				<span class="help-tip" tabindex="0" aria-label="راهنمای بازه زمانی">?
-					<span class="help-bubble">نمودار و ترکیب وضعیت فقط نشست‌های ساخته‌شده در این بازه را نشان می‌دهند. «همه زمان‌ها» از اولین نشست ثبت‌شده حساب می‌کند.</span>
+					<span class="help-bubble">همه آمار و نمودارها فقط نشست‌های ساخته‌شده در این بازه را نشان می‌دهند. «همه زمان‌ها» از اولین نشست ثبت‌شده حساب می‌کند.</span>
 				</span>
 			</label>
 			<select id="days" name="days">`))
@@ -123,8 +137,16 @@ func Dashboard(data DashboardData) templ.Component {
 		writeRangeOption(w, "90", "۹۰ روز اخیر", data)
 		writeRangeOption(w, "all", "همه زمان‌ها", data)
 		w.Write([]byte(`</select>
-		</div>
-	</form>
+		</div>`))
+		dateRangeFields(w, "dashboard-date", data.From, data.To)
+		w.Write([]byte(`<button type="button" class="btn btn-ghost" data-clear-date-range>پیش‌فرض: همه زمان‌ها</button>
+	</form>`))
+		if data.FilterError != "" {
+			w.Write([]byte(`<p class="date-filter-error" role="alert">`))
+			pages.WriteEscaped(w, data.FilterError)
+			w.Write([]byte(`</p>`))
+		}
+		w.Write([]byte(`
 </section>
 
 <div class="stats-grid stats-grid-4 dashboard-stats">
@@ -133,7 +155,7 @@ func Dashboard(data DashboardData) templ.Component {
 	` + statCard("معلق", data.Stats.Pending, "منتظر تبادل تیکت", "warning", iconPending) + `
 	` + statCard("منقضی", data.Stats.Expired, "پایان‌یافته بدون ابطال", "danger", iconExpired) + `
 	` + statCard("باطل‌شده", data.Stats.Revoked, "خروج یا ابطال دستی", "neutral", iconRevoked) + `
-	` + statCard("امروز", data.Stats.Today, trendLabel(todayTrend), "violet", iconToday) + `
+	` + statCard("امروز", data.Stats.Today, "در بازه انتخاب‌شده", "violet", iconToday) + `
 	` + statCard("کاربران یکتا", data.Stats.Unique, "شناسه‌های متمایز در بازه", "teal", iconUsers) + `
 	` + statCard("نشست همیشگی", data.Stats.Infinite, "بدون انقضای عملی", "indigo", iconInfinite) + `
 </div>
@@ -148,6 +170,7 @@ func Dashboard(data DashboardData) templ.Component {
 			<div class="chart-badges">
 				<span class="chart-badge">میانگین روزانه <strong>` + faNumFloat(average) + `</strong></span>
 				<span class="chart-badge">اوج <strong>` + faNum(strconv.FormatInt(peakValue, 10)) + `</strong><small>` + peakLabel + `</small></span>
+				<span class="chart-badge">تغییر روز آخر <strong>` + trendLabel(todayTrend) + `</strong></span>
 			</div>
 		</div>`))
 
@@ -157,6 +180,7 @@ func Dashboard(data DashboardData) templ.Component {
 			if err := areaChart(w, data.Daily, maxCount); err != nil {
 				return err
 			}
+			weekdayChart(w, data.Daily)
 		}
 
 		w.Write([]byte(`</section>
@@ -247,6 +271,42 @@ func areaChart(w io.Writer, daily []inbound.DailyCount, maxCount int64) error {
 	return nil
 }
 
+var weekdayNames = [...]string{"شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"}
+
+func weekdayCounts(daily []inbound.DailyCount) [7]int64 {
+	var counts [7]int64
+	for _, point := range daily {
+		// Go starts the week on Sunday; this display starts on Saturday.
+		counts[(int(point.Day.Weekday())+1)%len(counts)] += point.Count
+	}
+	return counts
+}
+
+func weekdayChart(w io.Writer, daily []inbound.DailyCount) {
+	counts := weekdayCounts(daily)
+	var maxCount int64
+	for _, count := range counts {
+		if count > maxCount {
+			maxCount = count
+		}
+	}
+	w.Write([]byte(`<div class="weekday-summary">
+	<h4>نشست‌ها به تفکیک روز هفته</h4>
+	<div class="weekday-chart" role="img" aria-label="تعداد نشست‌ها در روزهای هفته">`))
+	for i, count := range counts {
+		height := 0
+		if maxCount > 0 {
+			height = int(math.Round(float64(count) / float64(maxCount) * 100))
+		}
+		w.Write([]byte(`<div class="weekday-column">
+			<span class="weekday-count">` + faNum(strconv.FormatInt(count, 10)) + `</span>
+			<span class="weekday-bar" aria-hidden="true" style="height:` + strconv.Itoa(height) + `%"></span>
+			<span class="weekday-label">` + weekdayNames[i] + `</span>
+		</div>`))
+	}
+	w.Write([]byte(`</div></div>`))
+}
+
 // donut renders the status split as a conic-gradient ring plus a center total.
 func donut(stats inbound.SessionStats) string {
 	total := stats.Total
@@ -294,11 +354,11 @@ func statCard(label string, value int64, note, tone, icon string) string {
 func trendLabel(trend int64) string {
 	switch {
 	case trend > 0:
-		return "▲ " + faNum(strconv.FormatInt(trend, 10)) + " نسبت به دیروز"
+		return "▲ " + faNum(strconv.FormatInt(trend, 10)) + " نسبت به روز قبل"
 	case trend < 0:
-		return "▼ " + faNum(strconv.FormatInt(-trend, 10)) + " نسبت به دیروز"
+		return "▼ " + faNum(strconv.FormatInt(-trend, 10)) + " نسبت به روز قبل"
 	default:
-		return "بدون تغییر نسبت به دیروز"
+		return "بدون تغییر نسبت به روز قبل"
 	}
 }
 
@@ -319,6 +379,16 @@ func faNumFloat(value float64) string {
 }
 
 func rangeText(data DashboardData) string {
+	if data.FilterError == "" && (data.From != "" || data.To != "") {
+		switch {
+		case data.From != "" && data.To != "":
+			return data.From + " تا " + data.To
+		case data.From != "":
+			return "از " + data.From
+		default:
+			return "تا " + data.To
+		}
+	}
 	if data.AllTime {
 		return "همه زمان‌ها"
 	}

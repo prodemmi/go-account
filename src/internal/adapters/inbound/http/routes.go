@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"strings"
 
 	"aman/docs"
 	"aman/internal/adapters/inbound/http/handlers"
@@ -44,17 +45,17 @@ func RegisterRoutes(
 		engine.StaticFS("/static/fonts", http.FS(fonts))
 	}
 
-	// Unknown routes and methods never render a JSON error. They redirect to
-	// the nginx-rendered 404, exactly like app-not-found and forbidden errors.
+	// Unknown routes redirect to nginx's 404 page, except the /auth namespace,
+	// which returns an actual 404 (including when custom auth is enabled).
 	engine.NoRoute(func(c *gin.Context) {
-		if c.Request.URL.Path == handlers.NotFoundPath {
+		if c.Request.URL.Path == handlers.NotFoundPath || isAuthRoutePath(c.Request.URL.Path) {
 			c.Status(http.StatusNotFound)
 			return
 		}
 		c.Redirect(http.StatusFound, handlers.NotFoundPath)
 	})
 	engine.NoMethod(func(c *gin.Context) {
-		if c.Request.URL.Path == handlers.NotFoundPath {
+		if c.Request.URL.Path == handlers.NotFoundPath || isAuthRoutePath(c.Request.URL.Path) {
 			c.Status(http.StatusNotFound)
 			return
 		}
@@ -62,7 +63,7 @@ func RegisterRoutes(
 	})
 
 	// Browser auth flow (CAS branded pages). This is what apps redirect to.
-	authPages := engine.Group("/auth")
+	authPages := engine.Group("/auth").Use(authPageHandler.RequireManagedAuth())
 	{
 		authPages.GET("/login", authPageHandler.Login)
 		authPages.GET("/verify-otp", authPageHandler.VerifyOTPPage)
@@ -81,6 +82,7 @@ func RegisterRoutes(
 		auth.POST("/verify-otp", authHandler.VerifyOTP)
 		auth.POST("/verify-ott", authHandler.VerifyOTT)
 		auth.GET("/check", authHandler.Check)
+		auth.GET("/check-login", authHandler.CheckLogin)
 		auth.GET("/me", gin.HandlerFunc(jwtMiddleware), authHandler.Me)
 		auth.POST("/logout", authHandler.Logout)
 		auth.DELETE("/logout", authHandler.Logout)
@@ -98,6 +100,10 @@ func RegisterRoutes(
 	if os.Getenv("APP_ENV") != "production" {
 		RegisterSwaggerRoutes(engine)
 	}
+}
+
+func isAuthRoutePath(path string) bool {
+	return path == "/auth" || strings.HasPrefix(path, "/auth/")
 }
 
 // RegisterSwaggerRoutes exposes the generated OpenAPI docs. It is never

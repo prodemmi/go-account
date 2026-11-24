@@ -28,6 +28,7 @@ type AuthService struct {
 	generator outbound.OTPGenerator
 	notifier  outbound.Notifier
 	webhooks  *WebhookService
+	geoIP     outbound.GeoIPResolver
 }
 
 func NewAuthService(
@@ -40,6 +41,7 @@ func NewAuthService(
 	generator outbound.OTPGenerator,
 	notifier outbound.Notifier,
 	webhooks *WebhookService,
+	geoIP outbound.GeoIPResolver,
 ) *AuthService {
 	return &AuthService{
 		apps:      apps,
@@ -51,6 +53,7 @@ func NewAuthService(
 		generator: generator,
 		notifier:  notifier,
 		webhooks:  webhooks,
+		geoIP:     geoIP,
 	}
 }
 
@@ -62,6 +65,9 @@ func (s *AuthService) SendOTP(ctx context.Context, cmd inbound.SendOTPCommand) (
 		return nil, err
 	}
 	appEntity := a.Normalize()
+	if _, err := s.authLocation(appEntity, cmd.IP, cmd.Country, cmd.City, cmd.Region, false); err != nil {
+		return nil, err
+	}
 
 	identifier := strings.TrimSpace(cmd.Identifier)
 	channel, err := resolveChannel(appEntity, identifier)
@@ -74,8 +80,11 @@ func (s *AuthService) SendOTP(ctx context.Context, cmd inbound.SendOTPCommand) (
 		return nil, err
 	}
 
-	hash := s.hasher.CreateAuthHash(appEntity, cmd.UserAgent)
 	expiresAt := time.Now().Add(appEntity.OTPExpire)
+	hash := s.hasher.CreateAuthHash(appEntity, identifier, cmd.UserAgent, expiresAt)
+	if hash == "" {
+		return nil, fmt.Errorf("APP_SECRET is not configured")
+	}
 
 	if _, err := s.otps.Create(otp.Otp{
 		AppID:      appEntity.ID,
@@ -117,8 +126,12 @@ func (s *AuthService) VerifyOTP(ctx context.Context, cmd inbound.VerifyOTPComman
 		return nil, err
 	}
 	appEntity := a.Normalize()
+	location, err := s.authLocation(appEntity, cmd.IP, cmd.Country, cmd.City, cmd.Region, true)
+	if err != nil {
+		return nil, err
+	}
 
-	if !s.hasher.VerifyAuthHash(cmd.OTPHash, appEntity, cmd.UserAgent) {
+	if !s.hasher.VerifyAuthHash(cmd.OTPHash, appEntity, strings.TrimSpace(cmd.Identifier), cmd.UserAgent) {
 		return nil, fmt.Errorf("%w: cannot verify otp hash", otp.ErrInvalid)
 	}
 
@@ -153,9 +166,9 @@ func (s *AuthService) VerifyOTP(ctx context.Context, cmd inbound.VerifyOTPComman
 		Email:       email,
 		UserAgent:   cmd.UserAgent,
 		IP:          cmd.IP,
-		Country:     cmd.Country,
-		City:        cmd.City,
-		Region:      cmd.Region,
+		Country:     location.Country,
+		City:        location.City,
+		Region:      location.Region,
 		Device:      cmd.Device,
 		Status:      session.StatusPending,
 		IsLoggedIn:  false,
@@ -186,6 +199,39 @@ func (s *AuthService) VerifyOTP(ctx context.Context, cmd inbound.VerifyOTPComman
 		OTT:         ottToken,
 		RedirectURL: redirectWithOTT(&appEntity, cmd.ReturnTo, ottToken),
 	}, nil
+}
+
+func (s *AuthService) authLocation(a app.App, ip, country, city, region string, enrich bool) (outbound.IPLocation, error) {
+	location := outbound.IPLocation{Country: country, City: city, Region: region}
+	restricted := len(a.AllowedCountries) > 0
+	needsLookup := restricted || (enrich && (country == "" || city == "" || region == ""))
+	var resolved outbound.IPLocation
+	var lookupErr error
+	if needsLookup && s.geoIP != nil {
+		resolved, lookupErr = s.geoIP.Lookup(ip)
+	}
+
+	if restricted {
+		if lookupErr != nil || !a.AllowsCountry(resolved.Country) {
+			return outbound.IPLocation{}, app.ErrCountryRestricted
+		}
+		// The allowlist must use server-resolved data, never a client-supplied
+		// country header. Persist the same authoritative country on the session.
+		location.Country = resolved.Country
+	}
+
+	if lookupErr == nil {
+		if location.Country == "" {
+			location.Country = resolved.Country
+		}
+		if location.City == "" {
+			location.City = resolved.City
+		}
+		if location.Region == "" {
+			location.Region = resolved.Region
+		}
+	}
+	return location, nil
 }
 
 // Check reports whether the browser still has a valid CAS session. When it

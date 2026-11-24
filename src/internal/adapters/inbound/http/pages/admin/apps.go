@@ -39,16 +39,23 @@ func AppsList(apps []AppRow, meta PageMeta, errorMessage, successMessage string)
 		pages.WriteEscaped(w, meta.CountLabel("برنامه"))
 		w.Write([]byte(`</span>
 		</div>
-		<form method="GET" action="/admin/apps" class="filter-form filter-form-compact">
+		<form method="GET" action="/admin/apps" class="filter-form filter-form-compact" data-auto-filter>
 			<div class="search-box">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
 				<input type="search" name="q" value="`))
 		pages.WriteEscaped(w, meta.Search)
 		w.Write([]byte(`" placeholder="جستجو در نام، آدرس یا callback…" aria-label="جستجوی برنامه‌ها" />
-			</div>
-			<button type="submit" class="btn btn-ghost">جستجو</button>
+			</div>`))
+		dateRangeFields(w, "apps-date", meta.From, meta.To)
+		w.Write([]byte(`<button type="submit" class="btn btn-ghost">جستجو</button>
+			<button type="button" class="btn btn-ghost" data-clear-date-range>پیش‌فرض: همه زمان‌ها</button>
 		</form>
 	</div>`))
+		if meta.FilterError != "" {
+			w.Write([]byte(`<p class="date-filter-error" role="alert">`))
+			pages.WriteEscaped(w, meta.FilterError)
+			w.Write([]byte(`</p>`))
+		}
 
 		if len(apps) == 0 {
 			w.Write([]byte(`<div class="empty-state">
@@ -56,20 +63,20 @@ func AppsList(apps []AppRow, meta PageMeta, errorMessage, successMessage string)
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 4.5v5" stroke-linecap="round"/></svg>
 		</span>
 		<h4>`))
-			if meta.Search != "" {
+			if meta.Search != "" || meta.From != "" || meta.To != "" {
 				w.Write([]byte(`نتیجه‌ای برای این جستجو پیدا نشد`))
 			} else {
 				w.Write([]byte(`هنوز برنامه‌ای ثبت نشده است`))
 			}
 			w.Write([]byte(`</h4>
 		<p>`))
-			if meta.Search != "" {
+			if meta.Search != "" || meta.From != "" || meta.To != "" {
 				w.Write([]byte(`عبارت جستجو را تغییر دهید یا همه برنامه‌ها را ببینید.`))
 			} else {
 				w.Write([]byte(`اولین برنامه را اضافه کنید تا جریان ورود و تنظیمات آن را مدیریت کنید.`))
 			}
 			w.Write([]byte(`</p>`))
-			if meta.Search != "" {
+			if meta.Search != "" || meta.From != "" || meta.To != "" {
 				w.Write([]byte(`<a href="/admin/apps" class="btn btn-ghost">نمایش همه برنامه‌ها</a>`))
 			} else {
 				w.Write([]byte(`<a href="/admin/apps/new" class="btn btn-primary">افزودن اولین برنامه</a>`))
@@ -88,6 +95,7 @@ func AppsList(apps []AppRow, meta PageMeta, errorMessage, successMessage string)
 				<th>اعتبار تیکت</th>
 				<th>مدت نشست</th>
 				<th>صفحه ورود</th>
+				<th>تاریخ ایجاد</th>
 				<th class="th-actions">عملیات</th>
 			</tr>
 		</thead>
@@ -101,6 +109,11 @@ func AppsList(apps []AppRow, meta PageMeta, errorMessage, successMessage string)
 							<strong>`))
 			pages.WriteEscaped(w, a.Name)
 			w.Write([]byte(`</strong>
+							<small class="app-id copy-id"><span class="ltr mono">`))
+			pages.WriteEscaped(w, shortID(a.ID))
+			w.Write([]byte(`</span>`))
+			copyButton(w, a.ID, "شناسه برنامه")
+			w.Write([]byte(`</small>
 						</div>
 					</div>
 				</td>
@@ -126,6 +139,9 @@ func AppsList(apps []AppRow, meta PageMeta, errorMessage, successMessage string)
 			} else {
 				w.Write([]byte(`<span class="badge badge-neutral">پیش‌فرض</span>`))
 			}
+			w.Write([]byte(`</td>
+				<td class="nowrap">`))
+			pages.WriteEscaped(w, a.CreatedAt)
 			w.Write([]byte(`</td>
 				<td>
 					<div class="row-actions">
@@ -168,4 +184,5 @@ type AppRow struct {
 	SessionTimeout  int
 	InfiniteSession bool
 	AuthPageEnabled bool
+	CreatedAt       string
 }

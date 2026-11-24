@@ -35,18 +35,20 @@ func (s *SessionService) List(_ context.Context, appID, identifier string) ([]se
 // ListAll returns a filtered, paginated page of sessions (admin panel).
 func (s *SessionService) ListAll(_ context.Context, filter inbound.SessionFilter) ([]session.Session, int64, error) {
 	return s.sessions.FindPage(outbound.SessionQuery{
-		AppID:  filter.AppID,
-		Search: filter.Search,
-		Status: filter.Status,
-		Limit:  filter.Limit,
-		Offset: filter.Offset,
+		AppID:        filter.AppID,
+		Search:       filter.Search,
+		Status:       filter.Status,
+		CreatedFrom:  filter.CreatedFrom,
+		CreatedUntil: filter.CreatedUntil,
+		Limit:        filter.Limit,
+		Offset:       filter.Offset,
 	})
 }
 
 // Stats returns dashboard aggregates for all apps or one app. A nil since
 // means "all time"; otherwise only sessions created inside the range count.
-func (s *SessionService) Stats(_ context.Context, appID string, since *time.Time) (inbound.SessionStats, error) {
-	stats, err := s.sessions.Stats(appID, time.Now(), since)
+func (s *SessionService) Stats(_ context.Context, appID, status string, since, until *time.Time) (inbound.SessionStats, error) {
+	stats, err := s.sessions.Stats(appID, status, time.Now(), since, until)
 	if err != nil {
 		return inbound.SessionStats{}, err
 	}
@@ -63,8 +65,8 @@ func (s *SessionService) Stats(_ context.Context, appID string, since *time.Time
 }
 
 // DailyCounts returns the sessions-per-day series used by the dashboard chart.
-func (s *SessionService) DailyCounts(_ context.Context, appID string, since time.Time) ([]inbound.DailyCount, error) {
-	rows, err := s.sessions.DailyCounts(appID, since)
+func (s *SessionService) DailyCounts(_ context.Context, appID, status string, since time.Time, until *time.Time) ([]inbound.DailyCount, error) {
+	rows, err := s.sessions.DailyCounts(appID, status, since, until)
 	if err != nil {
 		return nil, err
 	}

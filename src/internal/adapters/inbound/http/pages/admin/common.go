@@ -17,6 +17,9 @@ type PageMeta struct {
 	Search   string
 	Status   string
 	AppID    string
+	From     string
+	To       string
+	FilterError string
 	Page     int
 	Pages    int
 	Total    int64
@@ -60,7 +63,53 @@ func (m PageMeta) Link(page int) string {
 	if m.AppID != "" {
 		values.Set("app_id", m.AppID)
 	}
+	if m.From != "" {
+		values.Set("from", m.From)
+	}
+	if m.To != "" {
+		values.Set("to", m.To)
+	}
 	return m.BasePath + "?" + values.Encode()
+}
+
+func dateRangeFields(w io.Writer, prefix, from, to string) {
+	dateRangeField(w, prefix+"-from", "از تاریخ شمسی", from, "from")
+	dateRangeField(w, prefix+"-to", "تا تاریخ شمسی", to, "to")
+}
+
+func dateRangeField(w io.Writer, id, label, value, name string) {
+	w.Write([]byte(`<div class="field date-filter-field">
+	<label for="`))
+	pages.WriteEscaped(w, id)
+	w.Write([]byte(`">`))
+	pages.WriteEscaped(w, label)
+	w.Write([]byte(`</label>
+	<div class="jalali-date-field">
+		<input type="text" id="`))
+	pages.WriteEscaped(w, id)
+	w.Write([]byte(`" name="`))
+	pages.WriteEscaped(w, name)
+	w.Write([]byte(`" value="`))
+	pages.WriteEscaped(w, value)
+	w.Write([]byte(`" placeholder="۱۴۰۵/۰۱/۰۱" inputmode="numeric" autocomplete="off" data-jalali-date />
+		<button type="button" class="icon-action date-picker-toggle" data-date-open aria-label="انتخاب تاریخ" title="انتخاب تاریخ">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17"/></svg>
+		</button>
+		<div class="jalali-calendar" data-jalali-calendar hidden></div>
+	</div>
+</div>`))
+}
+
+func copyButton(w io.Writer, value, label string) {
+	w.Write([]byte(`<button type="button" class="copy-button" data-copy-text="`))
+	pages.WriteEscaped(w, value)
+	w.Write([]byte(`" aria-label="کپی `))
+	pages.WriteEscaped(w, label)
+	w.Write([]byte(`" title="کپی `))
+	pages.WriteEscaped(w, label)
+	w.Write([]byte(`">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1.5 1.5 0 0 0-1.5-1.5h-9A1.5 1.5 0 0 0 4 5v9A1.5 1.5 0 0 0 5.5 15.5H8"/></svg>
+	</button>`))
 }
 
 // CountLabel renders the total with a Persian unit.

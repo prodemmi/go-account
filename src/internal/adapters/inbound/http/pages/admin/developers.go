@@ -23,9 +23,11 @@ func Developers() templ.Component {
 	<aside class="card docs-nav" aria-label="فهرست مستندات">
 		<span class="docs-nav-title">در این صفحه</span>
 		<a href="#basics">مبانی</a>
+		<a href="#auth-modes">حالت‌های احراز هویت</a>
 		<a href="#browser-flow">جریان مرورگر</a>
 		<a href="#browser-api">مسیرهای صفحه ورود</a>
 		<a href="#json-api">API برنامه‌ها</a>
+		<a href="#cookies">کوکی و نشست</a>
 		<a href="#verify-ott">مبادله تیکت</a>
 		<a href="#user-sessions">نشست‌های کاربر</a>
 		<a href="#hosted-page">صفحه ورود اختصاصی</a>
@@ -43,6 +45,21 @@ func Developers() templ.Component {
 				<div><dt>پاسخ‌ها</dt><dd>پاسخ‌های موفق JSON با ساختار <code>{"status":"success","data":{...}}</code> هستند.</dd></div>
 				<div><dt>خطاها</dt><dd>درخواست نامعتبر یا برنامه ناشناس به صفحه ۴۰۴ هدایت می‌شود. خطاهای منطقی جریان مرورگر با پارامتر <code>error</code> و پیام فارسی برمی‌گردند.</dd></div>
 			</dl>
+		</section>
+
+		<section class="card docs-section" id="auth-modes">
+			<h3>حالت‌های احراز هویت</h3>
+			<p>حالت هر برنامه در تنظیمات آن مشخص می‌شود. <code>custom_auth_enabled</code> به‌طور پیش‌فرض خاموش است.</p>
+			<h4>مدیریت‌شده (Managed)</h4>
+			<p>با <code>custom_auth_enabled=false</code>، Aman مسیر مرورگری <code>/auth/check</code> و صفحه‌های ورود و تایید کد را مدیریت می‌کند. تنظیم «صفحه ورود میزبانی‌شده» فقط مسیر ورود این حالت را به URL ثبت‌شده برنامه هدایت می‌کند؛ با حالت API سفارشی یکی نیست.</p>
+			<h4>سفارشی (Custom)</h4>
+			<p>با <code>custom_auth_enabled=true</code>، درخواست‌های این برنامه به همه مسیرهای <code>/auth/**</code> با HTTP 404 پاسخ می‌گیرند؛ مسیرهای بدون شناسه برنامه نیز ۴۰۴ هستند. رابط کسب‌وکار باید خودش کد ورود را نمایش دهد و بک‌اند کسب‌وکار باید APIهای زیر را با هدر <code>APP-ID</code> فراخوانی کند. مسیرهای <code>/v1/auth/*</code> فعال می‌مانند.</p>
+			<ol class="docs-list">
+				<li><code>POST /v1/auth/send-otp</code> با <code>{"identifier":"…"}</code> کد را می‌فرستد و <code>otp_hash</code> رمزنگاری‌شده و احرازاصالت‌شده با <code>APP_SECRET</code> را برمی‌گرداند. اگر کپچا روشن است، توکن ویجت انتخاب‌شده را در <code>captcha_token</code> بفرستید. توکن OTP، برنامه، شناسه، User-Agent و انقضا را به هم متصل می‌کند؛ رکورد OTP سمت سرور همچنان مرجع یک‌بارمصرف بودن کد است.</li>
+				<li><code>POST /v1/auth/verify-otp</code> با <code>identifier</code>، <code>otp_code</code> و همان <code>otp_hash</code> کد را تایید می‌کند و نشست معلق، OTT یک‌بارمصرف و کوکی Aman را صادر می‌کند.</li>
+				<li>بک‌اند برنامه، <code>ott</code> را با <code>POST /v1/auth/verify-ott</code> مبادله می‌کند. پاسخ شامل توکن نشست و هویت تاییدشده است؛ برنامه باید نشست و کوکی مخصوص دامنه خودش را در سمت سرور ایجاد کند.</li>
+			</ol>
+			<p>توکن نشست را در کد مرورگر یا URL قرار ندهید. بک‌اند باید <code>User-Agent</code> کاربر را در درخواست‌های ارسال، تایید و بررسی نشست یکسان نگه دارد؛ توکن به همان مرورگر مقید است. این سرور CORS را فعال نمی‌کند؛ برای رابطی روی دامنه دیگر، API را از بک‌اند خود فراخوانی کنید، نه مستقیماً از JavaScript مرورگر.</p>
 		</section>
 
 		<section class="card docs-section" id="browser-flow">
@@ -90,8 +107,8 @@ func Developers() templ.Component {
 						<tr><td><code>app_id</code></td><td>string</td><td>شناسه برنامه، الزامی.</td></tr>
 						<tr><td><code>identifier</code></td><td>string</td><td>ایمیل یا شماره موبایل، الزامی.</td></tr>
 						<tr><td><code>redirect</code></td><td>string</td><td>آدرس بازگشت اختیاری روی دامنه برنامه.</td></tr>
-						<tr><td><code>arcaptcha-token</code></td><td>string</td><td>توکن کپچا، فقط وقتی کپچا برای برنامه روشن است.</td></tr>
-						<tr><td><code>retry</code></td><td>string</td><td>مقدار <code>1</code> برای ارسال دوباره از صفحه تایید؛ از کپچا مستثنی است.</td></tr>
+						<tr><td><code>arcaptcha-token</code> / <code>g-recaptcha-response</code></td><td>string</td><td>توکن ارائه‌دهنده انتخاب‌شده، فقط وقتی کپچا برای برنامه روشن است.</td></tr>
+						<tr><td><code>retry</code></td><td>string</td><td>مقدار <code>1</code> برای ارسال دوباره از صفحه تایید؛ کپچا همچنان الزامی است.</td></tr>
 					</tbody>
 				</table>
 				<p>پاسخ SPA:</p>
@@ -114,7 +131,7 @@ func Developers() templ.Component {
 					<span class="method method-post">POST</span>
 					<code class="endpoint-path">/auth/verify-otp</code>
 				</div>
-				<p>تایید کد و صدور نشست. پارامترها: <code>app_id</code>، <code>identifier</code>، <code>otp_hash</code>، <code>otp_code</code>، <code>expires_at</code> و <code>redirect</code>. در حالت SPA پاسخ شامل <code>{"ok":true,"redirect":"…"}</code> است و کوکی نشست تنظیم می‌شود.</p>
+				<p>تایید کد و صدور نشست. پارامترها: <code>app_id</code>، <code>identifier</code>، <code>otp_hash</code>، <code>otp_code</code>، <code>expires_at</code> و <code>redirect</code>. مقدار URL برای <code>expires_at</code> فقط شمارش‌گر رابط است؛ اعتبار امضا و انقضای رکورد سمت سرور بررسی می‌شود. در حالت SPA پاسخ شامل <code>{"ok":true,"redirect":"…"}</code> است و کوکی نشست تنظیم می‌شود.</p>
 			</article>
 
 			<article class="endpoint">
@@ -141,8 +158,9 @@ func Developers() templ.Component {
 					<pre><code>curl -X POST https://cas.example.com/v1/auth/send-otp \
   -H "APP-ID: APP_ID" \
   -H "Content-Type: application/json" \
-  -d '{"identifier":"09123456789"}'</code></pre>
+  -d '{"identifier":"09123456789","captcha_token":"…"}'</code></pre>
 				</div>
+				<p><code>captcha_token</code> فقط وقتی تنظیم کپچای برنامه روشن است لازم است؛ مقدار آن را از فیلد پاسخ ارائه‌دهنده انتخاب‌شده بگیرید.</p>
 				<div class="code-block">
 					<div class="code-head"><span>پاسخ</span><button type="button" class="code-copy" data-copy>کپی</button></div>
 					<pre><code>{
@@ -183,7 +201,33 @@ func Developers() templ.Component {
 					<span class="method method-get">GET</span>
 					<code class="endpoint-path">/v1/auth/check</code>
 				</div>
-				<p>بررسی نشست موجود. اگر نشست معتبر باشد، مرورگر با OTT تازه به برنامه هدایت می‌شود؛ در غیر این صورت به صفحه ورود.</p>
+				<p>مسیر سازگاری قدیمی: در حالت مدیریت‌شده، نشست را بررسی و مرورگر را با OTT تازه به callback هدایت می‌کند یا به صفحه ورود می‌فرستد. در حالت سفارشی، نتیجه JSON برمی‌گرداند تا به صفحه غیرفعال‌شده <code>/auth/login</code> هدایت نشود.</p>
+			</article>
+
+			<article class="endpoint">
+				<div class="endpoint-head">
+					<span class="method method-get">GET</span>
+					<code class="endpoint-path">/v1/auth/check-login</code>
+				</div>
+				<p>بررسی JSON نشست برای بک‌اند برنامه. هدرهای <code>APP-ID</code> و یکی از کوکی نشست یا <code>API-TOKEN</code> را بفرستید. پارامتر <code>redirect</code> اختیاری است و فقط URL مجاز همان برنامه پذیرفته می‌شود.</p>
+				<div class="code-block">
+					<div class="code-head"><span>درخواست</span><button type="button" class="code-copy" data-copy>کپی</button></div>
+					<pre><code>curl -i "https://cas.example.com/v1/auth/check-login?redirect=https://app.example.com/dashboard" \
+  -H "APP-ID: APP_ID" \
+  -H "API-TOKEN: SESSION_TOKEN"</code></pre>
+				</div>
+				<div class="code-block">
+					<div class="code-head"><span>پاسخ در صورت ورود</span><button type="button" class="code-copy" data-copy>کپی</button></div>
+					<pre><code>{
+  "status": "success",
+  "data": {
+    "authenticated": true,
+    "ott": "ONE_TIME_TICKET",
+    "redirect_url": "https://app.example.com/callback?ott=ONE_TIME_TICKET"
+  }
+}</code></pre>
+				</div>
+				<p>بدون نشست معتبر، <code>data.authenticated</code> برابر <code>false</code> است. در صورت معتبر بودن نشست، هر فراخوانی یک OTT تازه صادر می‌کند.</p>
 			</article>
 
 			<article class="endpoint">
@@ -245,48 +289,18 @@ func Developers() templ.Component {
 		</section>
 
 		<section class="card docs-section" id="hosted-page">
-			<h3>صفحه ورود اختصاصی</h3>
-			<p>اگر گزینه «صفحه ورود میزبانی‌شده» را روشن کرده‌اید، CAS کاربر را با پارامتر <code>app_id</code> به آدرس شما می‌فرستد. فرم خود را با API زیر وصل کنید:</p>
-			<div class="code-block">
-				<div class="code-head"><span>JavaScript</span><button type="button" class="code-copy" data-copy>کپی</button></div>
-				<pre><code>async function sendCode(identifier) {
-  const response = await fetch("https://cas.example.com/v1/auth/send-otp", {
-    method: "POST",
-    headers: {
-      "APP-ID": APP_ID,
-      "Content-Type": "application/json"
-    },
-    credentials: "include",
-    body: JSON.stringify({ identifier })
-  });
-  const payload = await response.json();
-  return payload.data; // otp_hash, expires_at, length
-}</code></pre>
-			</div>
-			<div class="code-block">
-				<div class="code-head"><span>JavaScript</span><button type="button" class="code-copy" data-copy>کپی</button></div>
-				<pre><code>async function verifyCode(identifier, otpHash, code) {
-  const response = await fetch("https://cas.example.com/v1/auth/verify-otp", {
-    method: "POST",
-    headers: {
-      "APP-ID": APP_ID,
-      "Content-Type": "application/json"
-    },
-    credentials: "include",
-    body: JSON.stringify({
-      identifier,
-      otp_hash: otpHash,
-      otp_code: code
-    })
-  });
-  const payload = await response.json();
-  window.location.assign(payload.data.redirect_url);
-}</code></pre>
-			</div>
-			<div class="callout callout-warn">
-				<strong>کوکی و دامنه</strong>
-				<span>برای اینکه کوکی نشست روی دامنه برنامه شما تنظیم شود، تنظیمات کوکی برنامه (به‌ویژه SameSite و Secure) را با دامنه‌های درگیر هماهنگ کنید.</span>
-			</div>
+			<h3>صفحه ورود میزبانی‌شده</h3>
+			<p>تنظیم قدیمی «صفحه ورود میزبانی‌شده» در حالت Managed، <code>/auth/login</code> را به URL ثبت‌شده با پارامتر <code>app_id</code> می‌فرستد. برای ساخت یک جریان کاملاً سفارشی، به‌جای آن <code>custom_auth_enabled</code> را روشن کنید و API را از بک‌اند برنامه فراخوانی کنید.</p>
+		</section>
+
+		<section class="card docs-section" id="cookies">
+			<h3>کوکی و نشست</h3>
+			<ul class="docs-list">
+				<li>نام کوکی از تنظیم برنامه می‌آید و مقدار پیش‌فرض آن <code>cas_cookie</code> است. APIهای بررسی نشست توکن را از همین کوکی می‌خوانند؛ سپس <code>cas_cookie</code> و <code>cas_session</code> را نیز برای سازگاری قدیمی امتحان می‌کنند.</li>
+				<li>کوکی روی پاسخ تایید OTP و مبادله OTT تنظیم می‌شود: مسیر <code>/</code>، انقضای نشست، و گزینه‌های <code>HttpOnly</code>، <code>Secure</code> و <code>SameSite</code> مطابق تنظیمات برنامه. نام پیش‌فرض <code>cas_cookie</code> و SameSite پیش‌فرض <code>Lax</code> است؛ درخواست HTTPS نیز کوکی را <code>Secure</code> می‌کند. برای <code>SameSite=None</code> از HTTPS استفاده کنید. عمر Max-Age نشست همیشگی حداکثر ۱۰ سال است.</li>
+				<li>اگر دامنه Aman و callback برنامه زیر یک دامنه والد مشترک باشند، کوکی برای آن والد تنظیم می‌شود. در دامنه‌های نامرتبط، مرورگر کوکی صادرشده از Aman را برای دامنه برنامه نمی‌پذیرد؛ تبادل OTT و کوکی نشست خود برنامه راه ارتباطی است.</li>
+				<li><code>GET /v1/auth/check-login</code> کوکی را می‌پذیرد؛ برای فراخوانی سمت سرور می‌توانید همان توکن نشست را در هدر <code>API-TOKEN</code> بفرستید. <code>User-Agent</code> اصلی کاربر را نیز حفظ کنید. توکن را محرمانه و فقط سمت سرور نگه دارید.</li>
+			</ul>
 		</section>
 
 		<section class="card docs-section" id="errors">

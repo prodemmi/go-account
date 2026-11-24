@@ -33,6 +33,28 @@ func NewAuthPageHandler(apps inbound.AppUseCase, auth inbound.AuthUseCase) *Auth
 	return &AuthPageHandler{apps: apps, auth: auth}
 }
 
+// RequireManagedAuth hides the browser auth surface for apps that use their
+// own UI and the JSON API instead.
+func (h AuthPageHandler) RequireManagedAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		appID := c.Query("app_id")
+		if appID == "" {
+			appID = c.PostForm("app_id")
+		}
+		if appID == "" {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		a, err := h.apps.Get(c.Request.Context(), appID)
+		if err != nil || a == nil || a.CustomAuthEnabled {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+		c.Next()
+	}
+}
+
 // Login renders the branded login page for an app.
 func (h AuthPageHandler) Login(c *gin.Context) {
 	appID := c.Query("app_id")
@@ -62,9 +84,14 @@ func (h AuthPageHandler) Login(c *gin.Context) {
 	data := authData(*a, "ورود", c.Query("error"))
 	data.Step = "login"
 	data.ReturnTo = returnTo
-	if a.AuthPageCaptchaEnabled && arCaptchaConfigured(a) {
-		data.CaptchaEnabled = true
-		data.CaptchaSiteKey = a.AuthPageCaptchaSiteKey
+	if a.AuthPageCaptchaEnabled {
+		if captchaConfigured(a) {
+			data.CaptchaEnabled = true
+			data.CaptchaProvider = a.AuthPageCaptchaProvider
+			data.CaptchaSiteKey = captchaProviderFor(a).siteKey(a)
+		} else if data.Error == "" {
+			data.Error = "تنظیمات کپچا کامل نیست. لطفاً با مدیر برنامه تماس بگیرید."
+		}
 	}
 
 	renderPage(c, auth.Login(data))
@@ -89,9 +116,10 @@ func (h AuthPageHandler) VerifyOTPPage(c *gin.Context) {
 	data.Identifier = c.Query("identifier")
 	data.OtpHash = c.Query("otp_hash")
 	data.ReturnTo = h.resolveReturnTo(c, a)
-	if a.AuthPageCaptchaEnabled && arCaptchaConfigured(a) {
+	if a.AuthPageCaptchaEnabled && captchaConfigured(a) {
 		data.CaptchaEnabled = true
-		data.CaptchaSiteKey = a.AuthPageCaptchaSiteKey
+		data.CaptchaProvider = a.AuthPageCaptchaProvider
+		data.CaptchaSiteKey = captchaProviderFor(a).siteKey(a)
 	}
 	if expires := c.Query("expires_at"); expires != "" {
 		if unix, err := strconv.ParseInt(expires, 10, 64); err == nil {
@@ -121,13 +149,14 @@ func (h AuthPageHandler) SendOTP(c *gin.Context) {
 	loginURL := loginPageURLWithReturn(a, appID, returnTo)
 
 	if a.AuthPageCaptchaEnabled {
-		// The retry button on the verify step is only enabled after the code
-		// countdown ends, so it is exempt from a second captcha challenge.
-		if c.PostForm("retry") != "1" && arCaptchaConfigured(a) {
-			if !verifyArCaptcha(a, c.PostForm("arcaptcha-token")) {
-				authErrorReply(c, loginURL, "تایید کپچا ناموفق بود. دوباره تلاش کنید.")
-				return
-			}
+		provider := captchaProviderFor(a)
+		if !captchaConfigured(a) {
+			authErrorReply(c, loginURL, "تنظیمات کپچا کامل نیست.")
+			return
+		}
+		if !verifyCaptcha(c.Request.Context(), a, c.PostForm(provider.tokenField())) {
+			authErrorReply(c, loginURL, "تایید کپچا ناموفق بود. دوباره تلاش کنید.")
+			return
 		}
 	}
 
@@ -322,6 +351,8 @@ func authData(a app.App, title, errMessage string) pages.AuthData {
 		PrimaryColor:        a.AuthPagePrimaryColor,
 		BackgroundColor:     background,
 		CardBackgroundColor: a.AuthPageCardBackgroundColor,
+		TextColor:           a.AuthPageTextColor,
+		MutedTextColor:      a.AuthPageMutedTextColor,
 		PinBackgroundColor:  a.AuthPagePinBackgroundColor,
 		PinTextColor:        a.AuthPagePinTextColor,
 		Theme:               a.AuthPageTheme,
@@ -344,7 +375,7 @@ func authData(a app.App, title, errMessage string) pages.AuthData {
 		VerifySubtitle:      a.CopyText(a.AuthPageVerifySubtitle, ""),
 		VerifyButton:        a.CopyText(a.AuthPageVerifyButton, "تایید و ورود"),
 		RetryText:           a.CopyText(a.AuthPageRetryText, "ارسال دوباره کد"),
-		BackText:            a.CopyText(a.AuthPageBackText, "تغییر ایمیل یا شماره موبایل"),
+		BackText:            a.CopyText(a.AuthPageBackText, pages.EditIdentifierText(a.AllowsEmail(), a.AllowsMobile())),
 		FooterText:          a.CopyText(a.AuthPageFooterText, "ورود امن با Aman CAS"),
 		OTPLength:           a.OTPLength,
 		OTPInputType:        a.OTPInputType(),
@@ -451,6 +482,8 @@ func humanizeAuthError(err error) string {
 		return ""
 	case errors.Is(err, session.ErrForbidden), errors.Is(err, ott.ErrForbidden):
 		return "این نشست معتبر نیست."
+	case errors.Is(err, app.ErrCountryRestricted):
+		return "ورود از کشور محل اتصال مجاز نیست."
 	case strings.Contains(err.Error(), "mobile"):
 		return "این برنامه فقط شماره موبایل را می‌پذیرد."
 	case strings.Contains(err.Error(), "email"):

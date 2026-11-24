@@ -19,7 +19,7 @@ type MockAppRepository struct {
 	CreateFn   func(a app.App) (app.App, error)
 	FindByIDFn func(id string) (*app.App, error)
 	FindAllFn  func() ([]app.App, error)
-	FindPageFn func(search string, limit, offset int) ([]app.App, int64, error)
+	FindPageFn func(search string, createdFrom, createdUntil *time.Time, limit, offset int) ([]app.App, int64, error)
 	UpdateFn   func(a app.App) (app.App, error)
 	DeleteFn   func(id string) error
 }
@@ -45,9 +45,9 @@ func (m *MockAppRepository) FindAll() ([]app.App, error) {
 	return nil, nil
 }
 
-func (m *MockAppRepository) FindPage(search string, limit, offset int) ([]app.App, int64, error) {
+func (m *MockAppRepository) FindPage(search string, createdFrom, createdUntil *time.Time, limit, offset int) ([]app.App, int64, error) {
 	if m.FindPageFn != nil {
-		return m.FindPageFn(search, limit, offset)
+		return m.FindPageFn(search, createdFrom, createdUntil, limit, offset)
 	}
 	return nil, 0, nil
 }
@@ -74,8 +74,8 @@ type MockSessionRepository struct {
 	FindPageFn                     func(q outbound.SessionQuery) ([]session.Session, int64, error)
 	FindActiveByAppAndIdentifierFn func(appID, identifier string) ([]session.Session, error)
 	LatestCreatedAtFn              func(appID, identifier string) (*time.Time, error)
-	StatsFn                        func(appID string, now time.Time, since *time.Time) (outbound.SessionStats, error)
-	DailyCountsFn                  func(appID string, since time.Time) ([]outbound.DailyCount, error)
+	StatsFn                        func(appID, status string, now time.Time, since, until *time.Time) (outbound.SessionStats, error)
+	DailyCountsFn                  func(appID, status string, since time.Time, until *time.Time) ([]outbound.DailyCount, error)
 	MarkActiveFn                   func(id string) error
 	RevokeFn                       func(id string) error
 	RevokeManyFn                   func(ids []string) error
@@ -132,16 +132,16 @@ func (m *MockSessionRepository) LatestCreatedAt(appID, identifier string) (*time
 	return nil, nil
 }
 
-func (m *MockSessionRepository) Stats(appID string, now time.Time, since *time.Time) (outbound.SessionStats, error) {
+func (m *MockSessionRepository) Stats(appID, status string, now time.Time, since, until *time.Time) (outbound.SessionStats, error) {
 	if m.StatsFn != nil {
-		return m.StatsFn(appID, now, since)
+		return m.StatsFn(appID, status, now, since, until)
 	}
 	return outbound.SessionStats{}, nil
 }
 
-func (m *MockSessionRepository) DailyCounts(appID string, since time.Time) ([]outbound.DailyCount, error) {
+func (m *MockSessionRepository) DailyCounts(appID, status string, since time.Time, until *time.Time) ([]outbound.DailyCount, error) {
 	if m.DailyCountsFn != nil {
-		return m.DailyCountsFn(appID, since)
+		return m.DailyCountsFn(appID, status, since, until)
 	}
 	return nil, nil
 }

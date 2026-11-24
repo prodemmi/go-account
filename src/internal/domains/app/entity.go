@@ -87,6 +87,11 @@ const (
 	BannerModeTime     = "time"
 )
 
+const (
+	CaptchaProviderARCaptcha = "arcaptcha"
+	CaptchaProviderGoogle    = "google_recaptcha"
+)
+
 // DefaultSessionCookieName is used when an app does not configure a cookie name.
 const DefaultSessionCookieName = "cas_cookie"
 
@@ -131,6 +136,8 @@ type App struct {
 	RedirectBack          bool   // return to the CAS entry URL when it shares the app origin
 
 	// Auth page customization (CAS serves branded auth pages per app)
+	CustomAuthEnabled           bool // business-hosted UI; disables all browser /auth routes
+	AllowedCountries            []string
 	AuthPageEnabled             bool
 	AuthPageURL                 string // custom auth page URL (if app hosts its own)
 	AuthPageTitle               string // browser document title
@@ -143,12 +150,15 @@ type App struct {
 	AuthPagePrimaryColor        string // primary brand color (hex)
 	AuthPageBackgroundColor     string // page background color (hex)
 	AuthPageCardBackgroundColor string // card/panel background color (hex)
+	AuthPageTextColor           string // main auth-page text color (hex)
+	AuthPageMutedTextColor      string // secondary auth-page text color (hex)
 	AuthPagePinBackgroundColor  string // OTP box background color (hex)
 	AuthPagePinTextColor        string // OTP box text color (hex)
 	AuthPageTheme               string // light | dark
 	AuthPageCaptchaEnabled      bool
-	AuthPageCaptchaSiteKey      string // public ArCaptcha site key
-	AuthPageCaptchaSecretKey    string // server-side ArCaptcha secret
+	AuthPageCaptchaProvider     string
+	AuthPageCaptchaSiteKey      string // public CAPTCHA site key
+	AuthPageCaptchaSecretKey    string // server-side CAPTCHA secret
 	AuthPageBannerMode          string // none | progress | time
 	AuthPageBanners             []Banner
 
@@ -216,6 +226,21 @@ func (a App) SessionTTL() time.Duration {
 	return a.SessionTimeout
 }
 
+// AllowsCountry reports whether a resolved ISO 3166-1 alpha-2 country is
+// allowed. An empty allowlist means no geographic restriction.
+func (a App) AllowsCountry(country string) bool {
+	if len(a.AllowedCountries) == 0 {
+		return true
+	}
+	country = strings.ToUpper(strings.TrimSpace(country))
+	for _, allowed := range a.AllowedCountries {
+		if country == allowed {
+			return true
+		}
+	}
+	return false
+}
+
 // ExpandText replaces the supported placeholders in a customized string.
 func (a App) ExpandText(s string) string {
 	s = strings.ReplaceAll(s, "{app}", a.Name)
@@ -249,6 +274,10 @@ func (a App) Normalize() App {
 	a.Url = strings.TrimSpace(a.Url)
 	a.CallbackURL = strings.TrimSpace(a.CallbackURL)
 	a.WebhookURL = strings.TrimSpace(a.WebhookURL)
+	a.AuthPageCaptchaProvider = strings.TrimSpace(a.AuthPageCaptchaProvider)
+	if a.AuthPageCaptchaProvider == "" {
+		a.AuthPageCaptchaProvider = CaptchaProviderARCaptcha
+	}
 
 	switch a.OTPChannel {
 	case OTPChannelSMS, OTPChannelEmail, OTPChannelBoth:
@@ -346,6 +375,20 @@ func (a App) Normalize() App {
 			a.AuthPageCardBackgroundColor = "#0f172a"
 		} else {
 			a.AuthPageCardBackgroundColor = "#ffffff"
+		}
+	}
+	if a.AuthPageTextColor == "" {
+		if a.AuthPageTheme == ThemeDark {
+			a.AuthPageTextColor = "#e2e8f0"
+		} else {
+			a.AuthPageTextColor = "#111827"
+		}
+	}
+	if a.AuthPageMutedTextColor == "" {
+		if a.AuthPageTheme == ThemeDark {
+			a.AuthPageMutedTextColor = "#94a3b8"
+		} else {
+			a.AuthPageMutedTextColor = "#667085"
 		}
 	}
 	if a.AuthPagePinBackgroundColor == "" {

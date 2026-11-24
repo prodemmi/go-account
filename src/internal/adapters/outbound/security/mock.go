@@ -23,15 +23,15 @@ func (m *MockJWTService) ParseToken(token string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
-// MockAuthHash returns a stable hash for a given app and user agent.
+// MockAuthHash returns a stable challenge token for tests.
 type MockAuthHash struct{}
 
-func (m *MockAuthHash) CreateAuthHash(a app.App, agent string) string {
-	return a.ID.String() + "|" + agent
+func (m *MockAuthHash) CreateAuthHash(a app.App, identifier, agent string, _ time.Time) string {
+	return a.ID.String() + "|" + identifier + "|" + agent
 }
 
-func (m *MockAuthHash) VerifyAuthHash(hash string, a app.App, agent string) bool {
-	return hash == m.CreateAuthHash(a, agent)
+func (m *MockAuthHash) VerifyAuthHash(hash string, a app.App, identifier, agent string) bool {
+	return hash == m.CreateAuthHash(a, identifier, agent, time.Time{})
 }
 
 // MockPasswordService is a no-op password hasher for tests.

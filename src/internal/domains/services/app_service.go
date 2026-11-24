@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"strings"
 	"time"
@@ -34,7 +35,7 @@ func (s *AppService) List(context.Context) ([]app.App, error) {
 }
 
 func (s *AppService) ListPage(_ context.Context, filter inbound.AppFilter) ([]app.App, int64, error) {
-	apps, total, err := s.apps.FindPage(strings.TrimSpace(filter.Search), filter.Limit, filter.Offset)
+	apps, total, err := s.apps.FindPage(strings.TrimSpace(filter.Search), filter.CreatedFrom, filter.CreatedUntil, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -89,6 +90,25 @@ func appFromInput(id uuid.UUID, in inbound.AppInput) (app.App, error) {
 	if in.OTPLength < 4 || in.OTPLength > 32 {
 		return app.App{}, errors.New("طول کد یکبار مصرف باید بین ۴ تا ۳۲ باشد")
 	}
+	allowedCountries, err := parseAllowedCountries(in.AllowedCountries)
+	if err != nil {
+		return app.App{}, err
+	}
+	captchaProvider := strings.ToLower(strings.TrimSpace(in.AuthPageCaptchaProvider))
+	if captchaProvider == "" {
+		captchaProvider = app.CaptchaProviderARCaptcha
+	}
+	if captchaProvider != app.CaptchaProviderARCaptcha && captchaProvider != app.CaptchaProviderGoogle {
+		return app.App{}, errors.New("ارائه‌دهنده کپچا معتبر نیست")
+	}
+	textColor, err := authPageColor(in.AuthPageTextColor)
+	if err != nil {
+		return app.App{}, errors.New("رنگ متن صفحه ورود معتبر نیست")
+	}
+	mutedTextColor, err := authPageColor(in.AuthPageMutedTextColor)
+	if err != nil {
+		return app.App{}, errors.New("رنگ متن ثانویه صفحه ورود معتبر نیست")
+	}
 
 	a := app.App{
 		ID:          id,
@@ -111,6 +131,8 @@ func appFromInput(id uuid.UUID, in inbound.AppInput) (app.App, error) {
 		SessionCookieSameSite: in.SessionCookieSameSite,
 		RedirectBack:          in.RedirectBack,
 
+		CustomAuthEnabled:           in.CustomAuthEnabled,
+		AllowedCountries:            allowedCountries,
 		AuthPageEnabled:             in.AuthPageEnabled,
 		AuthPageURL:                 in.AuthPageURL,
 		AuthPageTitle:               in.AuthPageTitle,
@@ -123,10 +145,13 @@ func appFromInput(id uuid.UUID, in inbound.AppInput) (app.App, error) {
 		AuthPagePrimaryColor:        in.AuthPagePrimaryColor,
 		AuthPageBackgroundColor:     in.AuthPageBackgroundColor,
 		AuthPageCardBackgroundColor: in.AuthPageCardBackgroundColor,
+		AuthPageTextColor:           textColor,
+		AuthPageMutedTextColor:      mutedTextColor,
 		AuthPagePinBackgroundColor:  in.AuthPagePinBackgroundColor,
 		AuthPagePinTextColor:        in.AuthPagePinTextColor,
 		AuthPageTheme:               in.AuthPageTheme,
 		AuthPageCaptchaEnabled:      in.AuthPageCaptchaEnabled,
+		AuthPageCaptchaProvider:     captchaProvider,
 		AuthPageCaptchaSiteKey:      strings.TrimSpace(in.AuthPageCaptchaSiteKey),
 		AuthPageCaptchaSecretKey:    strings.TrimSpace(in.AuthPageCaptchaSecretKey),
 		AuthPageBannerMode:          in.AuthPageBannerMode,
@@ -144,4 +169,38 @@ func appFromInput(id uuid.UUID, in inbound.AppInput) (app.App, error) {
 		AuthPageFooterText:          in.AuthPageFooterText,
 	}
 	return a.Normalize(), nil
+}
+
+func authPageColor(raw string) (string, error) {
+	color := strings.TrimSpace(raw)
+	if color == "" {
+		return "", nil
+	}
+	if len(color) != 7 || color[0] != '#' {
+		return "", errors.New("invalid hex color")
+	}
+	if _, err := hex.DecodeString(color[1:]); err != nil {
+		return "", err
+	}
+	return color, nil
+}
+
+func parseAllowedCountries(raw string) ([]string, error) {
+	seen := make(map[string]struct{})
+	countries := make([]string, 0)
+	for _, value := range strings.Split(raw, ",") {
+		country := strings.ToUpper(strings.TrimSpace(value))
+		if country == "" {
+			continue
+		}
+		if len(country) != 2 || country[0] < 'A' || country[0] > 'Z' || country[1] < 'A' || country[1] > 'Z' {
+			return nil, errors.New("کشورها را با کد دوحرفی ISO، جداشده با ویرگول وارد کنید")
+		}
+		if _, exists := seen[country]; exists {
+			continue
+		}
+		seen[country] = struct{}{}
+		countries = append(countries, country)
+	}
+	return countries, nil
 }

@@ -1,6 +1,8 @@
 package repos
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
@@ -55,11 +57,17 @@ func (r *AppRepository) FindAll() ([]app.App, error) {
 	return apps, nil
 }
 
-func (r *AppRepository) FindPage(search string, limit, offset int) ([]app.App, int64, error) {
+func (r *AppRepository) FindPage(search string, createdFrom, createdUntil *time.Time, limit, offset int) ([]app.App, int64, error) {
 	query := r.db.Model(&pgmodels.App{})
 	if search != "" {
 		like := "%" + search + "%"
 		query = query.Where("(name ILIKE ? OR url ILIKE ? OR callback_url ILIKE ?)", like, like, like)
+	}
+	if createdFrom != nil {
+		query = query.Where("created_at >= ?", *createdFrom)
+	}
+	if createdUntil != nil {
+		query = query.Where("created_at < ?", *createdUntil)
 	}
 
 	var total int64

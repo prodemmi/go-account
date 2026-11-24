@@ -65,6 +65,12 @@ func FormatDateTime(t time.Time) string {
 	return faNum(raw)
 }
 
+func FormatJalaliDate(t time.Time) string {
+	y, m, d := t.Date()
+	jy, jm, jd := toJalali(y, int(m), d)
+	return faNum(fmt.Sprintf("%04d/%02d/%02d", jy, jm, jd))
+}
+
 // toJalali converts a Gregorian date to the Jalali calendar. It is the
 // standard arithmetic conversion and needs no external dependency.
 func toJalali(gy, gm, gd int) (jy, jm, jd int) {

@@ -19,6 +19,20 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 		if theme == "" {
 			theme = "light"
 		}
+		textColor := data.TextColor
+		if textColor == "" {
+			textColor = "#111827"
+			if theme == "dark" {
+				textColor = "#e2e8f0"
+			}
+		}
+		mutedTextColor := data.MutedTextColor
+		if mutedTextColor == "" {
+			mutedTextColor = "#667085"
+			if theme == "dark" {
+				mutedTextColor = "#94a3b8"
+			}
+		}
 		primary := data.PrimaryColor
 		if primary == "" {
 			primary = "#3b82f6"
@@ -62,10 +76,15 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 	<title>`))
 		pages.WriteEscaped(w, documentTitle)
 		w.Write([]byte(`</title>
-	<link rel="stylesheet" href="/static/css/auth.css?v=10" />`))
+	<link rel="stylesheet" href="/static/css/auth.css?v=11" />`))
 		if data.CaptchaEnabled {
-			w.Write([]byte(`
+			if data.CaptchaProvider == "google_recaptcha" {
+				w.Write([]byte(`
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>`))
+			} else {
+				w.Write([]byte(`
 	<script src="https://nwidget.arcaptcha.ir/1/api.js" async defer></script>`))
+			}
 		}
 		w.Write([]byte(`
 </head>
@@ -79,6 +98,10 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 		pages.WriteEscaped(w, primary)
 		w.Write([]byte(`; --auth-bg:`))
 		pages.WriteEscaped(w, background)
+		w.Write([]byte(`; --auth-text:`))
+		pages.WriteEscaped(w, textColor)
+		w.Write([]byte(`; --auth-muted:`))
+		pages.WriteEscaped(w, mutedTextColor)
 		w.Write([]byte(`; --text-align:`))
 		pages.WriteEscaped(w, align)
 		if data.CardBackgroundColor != "" {
@@ -293,6 +316,25 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 		var retryCountdown = document.querySelector('[data-retry-countdown]');
 		var countdownTimer = null;
 		var expiresAt = verifyStep ? parseInt(verifyStep.getAttribute('data-expires'), 10) || 0 : 0;
+		var challengeCache = Object.create(null);
+		function rememberChallenge(payload) {
+			if (!payload || !payload.identifier || !payload.otp_hash || !payload.expires_at) return;
+			var identifier = String(payload.identifier).trim();
+			if (!identifier) return;
+			challengeCache[identifier] = {
+				identifier: identifier,
+				otp_hash: payload.otp_hash,
+				expires_at: Number(payload.expires_at)
+			};
+		}
+		var initialVerifyForm = document.querySelector('[data-auth-verify]');
+		if (initialVerifyForm) {
+			rememberChallenge({
+				identifier: initialVerifyForm.elements.identifier && initialVerifyForm.elements.identifier.value,
+				otp_hash: initialVerifyForm.elements.otp_hash && initialVerifyForm.elements.otp_hash.value,
+				expires_at: initialVerifyForm.elements.expires_at && initialVerifyForm.elements.expires_at.value
+			});
+		}
 
 		function showStep(name, push) {
 			document.querySelectorAll('[data-auth-step]').forEach(function (node) {
@@ -371,6 +413,9 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 			if (window.arcaptcha && typeof window.arcaptcha.reset === 'function') {
 				try { window.arcaptcha.reset(); } catch (error) { /* widget not ready */ }
 			}
+			if (window.grecaptcha && typeof window.grecaptcha.reset === 'function') {
+				try { window.grecaptcha.reset(); } catch (error) { /* widget not ready */ }
+			}
 		}
 
 		function setField(form, name, value) {
@@ -381,12 +426,14 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 
 		function applyChallenge(payload) {
 			if (!payload) return;
+			rememberChallenge(payload);
 			var verifyForm = document.querySelector('[data-auth-verify]');
 			setField(verifyForm, 'identifier', payload.identifier);
 			setField(verifyForm, 'otp_hash', payload.otp_hash);
 			setField(verifyForm, 'expires_at', payload.expires_at);
 			var retryForm = document.querySelector('[data-auth-retry]');
 			setField(retryForm, 'identifier', payload.identifier);
+			setField(document.querySelector('[data-auth-login]'), 'identifier', payload.identifier);
 
 			var subtitle = document.querySelector('[data-verify-subtitle]');
 			if (subtitle) {
@@ -426,6 +473,16 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 		if (loginForm && window.fetch && window.FormData) {
 			loginForm.addEventListener('submit', function (event) {
 				event.preventDefault();
+				var identifierField = loginForm.elements.identifier;
+				var identifier = identifierField ? identifierField.value.trim() : '';
+				var previousChallenge = challengeCache[identifier];
+				if (previousChallenge && previousChallenge.expires_at > Math.floor(Date.now() / 1000)) {
+					applyChallenge(previousChallenge);
+					clearPins(document.querySelector('[data-pin]'));
+					resetCaptcha();
+					showStep('verify', true);
+					return;
+				}
 				setBusy(loginForm, true);
 				postForm(loginForm, loginForm.getAttribute('action')).then(function (result) {
 					if (!result.ok) {
@@ -435,6 +492,7 @@ func Layout(data pages.AuthData, content templ.Component) templ.Component {
 						return;
 					}
 					applyChallenge(result);
+					clearPins(document.querySelector('[data-pin]'));
 					resetCaptcha();
 					setBusy(loginForm, false);
 					showStep('verify', true);

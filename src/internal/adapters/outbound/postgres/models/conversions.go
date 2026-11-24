@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 
 	"aman/internal/domains/app"
@@ -57,6 +58,8 @@ func ToModelApp(a app.App) App {
 		SessionCookieSecure:         a.SessionCookieSecure,
 		SessionCookieSameSite:       a.SessionCookieSameSite,
 		RedirectBack:                a.RedirectBack,
+		CustomAuthEnabled:           a.CustomAuthEnabled,
+		AllowedCountries:            strings.Join(a.AllowedCountries, ","),
 		AuthPageEnabled:             a.AuthPageEnabled,
 		AuthPageURL:                 a.AuthPageURL,
 		AuthPageTitle:               a.AuthPageTitle,
@@ -69,10 +72,13 @@ func ToModelApp(a app.App) App {
 		AuthPagePrimaryColor:        a.AuthPagePrimaryColor,
 		AuthPageBackgroundColor:     a.AuthPageBackgroundColor,
 		AuthPageCardBackgroundColor: a.AuthPageCardBackgroundColor,
+		AuthPageTextColor:           a.AuthPageTextColor,
+		AuthPageMutedTextColor:      a.AuthPageMutedTextColor,
 		AuthPagePinBackgroundColor:  a.AuthPagePinBackgroundColor,
 		AuthPagePinTextColor:        a.AuthPagePinTextColor,
 		AuthPageTheme:               a.AuthPageTheme,
 		AuthPageCaptchaEnabled:      a.AuthPageCaptchaEnabled,
+		AuthPageCaptchaProvider:     a.AuthPageCaptchaProvider,
 		AuthPageCaptchaSiteKey:      a.AuthPageCaptchaSiteKey,
 		AuthPageCaptchaSecretKey:    a.AuthPageCaptchaSecretKey,
 		AuthPageBannerMode:          a.AuthPageBannerMode,
@@ -111,6 +117,8 @@ func ToDomainApp(m App) app.App {
 		SessionCookieSecure:         m.SessionCookieSecure,
 		SessionCookieSameSite:       m.SessionCookieSameSite,
 		RedirectBack:                m.RedirectBack,
+		CustomAuthEnabled:           m.CustomAuthEnabled,
+		AllowedCountries:            splitCountries(m.AllowedCountries),
 		AuthPageEnabled:             m.AuthPageEnabled,
 		AuthPageURL:                 m.AuthPageURL,
 		AuthPageTitle:               m.AuthPageTitle,
@@ -123,10 +131,13 @@ func ToDomainApp(m App) app.App {
 		AuthPagePrimaryColor:        m.AuthPagePrimaryColor,
 		AuthPageBackgroundColor:     m.AuthPageBackgroundColor,
 		AuthPageCardBackgroundColor: m.AuthPageCardBackgroundColor,
+		AuthPageTextColor:           m.AuthPageTextColor,
+		AuthPageMutedTextColor:      m.AuthPageMutedTextColor,
 		AuthPagePinBackgroundColor:  m.AuthPagePinBackgroundColor,
 		AuthPagePinTextColor:        m.AuthPagePinTextColor,
 		AuthPageTheme:               m.AuthPageTheme,
 		AuthPageCaptchaEnabled:      m.AuthPageCaptchaEnabled,
+		AuthPageCaptchaProvider:     m.AuthPageCaptchaProvider,
 		AuthPageCaptchaSiteKey:      m.AuthPageCaptchaSiteKey,
 		AuthPageCaptchaSecretKey:    m.AuthPageCaptchaSecretKey,
 		AuthPageBannerMode:          m.AuthPageBannerMode,
@@ -146,6 +157,13 @@ func ToDomainApp(m App) app.App {
 		UpdatedAt:                   m.UpdatedAt,
 		DeletedAt:                   m.DeletedAt,
 	}
+}
+
+func splitCountries(raw string) []string {
+	if strings.TrimSpace(raw) == "" {
+		return nil
+	}
+	return strings.Split(raw, ",")
 }
 
 // ToModelSession maps a domain Session to its gorm persistence model.

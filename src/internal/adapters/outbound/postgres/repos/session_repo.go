@@ -92,16 +92,15 @@ func (r *SessionRepository) FindPage(q outbound.SessionQuery) ([]session.Session
 		like := "%" + q.Search + "%"
 		query = query.Where("(identifier ILIKE ? OR ip ILIKE ? OR user_agent ILIKE ? OR city ILIKE ?)", like, like, like, like)
 	}
+	if q.CreatedFrom != nil {
+		query = query.Where("created_at >= ?", *q.CreatedFrom)
+	}
+	if q.CreatedUntil != nil {
+		query = query.Where("created_at < ?", *q.CreatedUntil)
+	}
 	now := time.Now()
-	switch q.Status {
-	case session.StatusActive:
-		query = query.Where(legacyActive).Where("expires_at > ?", now)
-	case "expired":
-		query = query.Where(expired, now)
-	case session.StatusPending:
-		query = query.Where("status = ?", session.StatusPending).Where("expires_at > ?", now)
-	case session.StatusRevoked:
-		query = query.Where(legacyRevoked)
+	if condition, args := sessionStatusFilter(q.Status, now); condition != "" {
+		query = query.Where(condition, args...)
 	}
 
 	var total int64
@@ -152,8 +151,12 @@ func (r *SessionRepository) LatestCreatedAt(appID, identifier string) (*time.Tim
 	return created, nil
 }
 
-func (r *SessionRepository) Stats(appID string, now time.Time, since *time.Time) (outbound.SessionStats, error) {
+func (r *SessionRepository) Stats(appID, status string, now time.Time, since, until *time.Time) (outbound.SessionStats, error) {
 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	activeCondition, activeArgs := sessionStatusFilter(session.StatusActive, now)
+	pendingCondition, pendingArgs := sessionStatusFilter(session.StatusPending, now)
+	expiredCondition, expiredArgs := sessionStatusFilter("expired", now)
+	revokedCondition, revokedArgs := sessionStatusFilter(session.StatusRevoked, now)
 
 	where := "deleted_at IS NULL"
 	if appID != "" {
@@ -162,25 +165,39 @@ func (r *SessionRepository) Stats(appID string, now time.Time, since *time.Time)
 	if since != nil {
 		where += " AND created_at >= ?"
 	}
+	if until != nil {
+		where += " AND created_at < ?"
+	}
+	statusCondition, statusArgs := sessionStatusFilter(status, now)
+	if statusCondition != "" {
+		where += " AND " + statusCondition
+	}
 
 	query := `SELECT
 		count(*) AS total,
-		count(*) FILTER (WHERE ` + legacyActive + ` AND expires_at > ?) AS active,
-		count(*) FILTER (WHERE status = 'pending' AND expires_at > ?) AS pending,
-		count(*) FILTER (WHERE ` + expired + `) AS expired,
-		count(*) FILTER (WHERE ` + legacyRevoked + `) AS revoked,
+		count(*) FILTER (WHERE ` + activeCondition + `) AS active,
+		count(*) FILTER (WHERE ` + pendingCondition + `) AS pending,
+		count(*) FILTER (WHERE ` + expiredCondition + `) AS expired,
+		count(*) FILTER (WHERE ` + revokedCondition + `) AS revoked,
 		count(*) FILTER (WHERE infinite = true) AS infinite,
 		count(*) FILTER (WHERE created_at >= ?) AS today,
 		count(DISTINCT identifier) AS unique
 		FROM sessions WHERE ` + where
 
-	args := []any{now, now, now, startOfDay}
+	args := append(activeArgs, pendingArgs...)
+	args = append(args, expiredArgs...)
+	args = append(args, revokedArgs...)
+	args = append(args, startOfDay)
 	if appID != "" {
 		args = append(args, appID)
 	}
 	if since != nil {
 		args = append(args, *since)
 	}
+	if until != nil {
+		args = append(args, *until)
+	}
+	args = append(args, statusArgs...)
 
 	var stats outbound.SessionStats
 	if err := r.db.Raw(query, args...).Scan(&stats).Error; err != nil {
@@ -189,12 +206,18 @@ func (r *SessionRepository) Stats(appID string, now time.Time, since *time.Time)
 	return stats, nil
 }
 
-func (r *SessionRepository) DailyCounts(appID string, since time.Time) ([]outbound.DailyCount, error) {
+func (r *SessionRepository) DailyCounts(appID, status string, since time.Time, until *time.Time) ([]outbound.DailyCount, error) {
 	query := r.db.Table("sessions").
 		Select("date_trunc('day', created_at) AS day, count(*) AS count").
 		Where("deleted_at IS NULL AND created_at >= ?", since)
+	if until != nil {
+		query = query.Where("created_at < ?", *until)
+	}
 	if appID != "" {
 		query = query.Where("app_id = ?", appID)
+	}
+	if condition, args := sessionStatusFilter(status, time.Now()); condition != "" {
+		query = query.Where(condition, args...)
 	}
 
 	var rows []outbound.DailyCount
@@ -202,6 +225,23 @@ func (r *SessionRepository) DailyCounts(appID string, since time.Time) ([]outbou
 		return nil, err
 	}
 	return rows, nil
+}
+
+// sessionStatusFilter is shared by the session table and dashboard aggregates
+// so status categories use the same lifecycle semantics everywhere.
+func sessionStatusFilter(status string, now time.Time) (string, []any) {
+	switch status {
+	case session.StatusActive:
+		return legacyActive + " AND expires_at > ?", []any{now}
+	case "expired":
+		return expired, []any{now}
+	case session.StatusPending:
+		return "status = ? AND expires_at > ?", []any{session.StatusPending, now}
+	case session.StatusRevoked:
+		return legacyRevoked, nil
+	default:
+		return "", nil
+	}
 }
 
 func (r *SessionRepository) MarkActive(id string) error {

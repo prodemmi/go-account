@@ -41,6 +41,10 @@ func (h AuthHandler) SendOTP(c *gin.Context) {
 		redirectNotFound(c)
 		return
 	}
+	if a.AuthPageCaptchaEnabled && (!captchaConfigured(a) || !verifyCaptcha(c.Request.Context(), a, payload.CaptchaToken)) {
+		redirectNotFound(c)
+		return
+	}
 
 	meta := metaFrom(c)
 	challenge, err := h.auth.SendOTP(c.Request.Context(), inbound.SendOTPCommand{
@@ -169,29 +173,59 @@ func (h AuthHandler) VerifyOTT(c *gin.Context) {
 	})
 }
 
-// Check reports whether the browser already has a valid CAS session. When it
-// does the user is redirected back to the app with a fresh OTT; otherwise the
-// user goes to the auth page.
+// Check preserves the browser redirect contract in managed mode. In custom
+// mode it returns the session state as JSON instead of redirecting to /auth.
 // @Summary Check CAS session (CAS)
 // @Tags Auth
 // @Param APP-ID header string true "app id"
+// @Param API-TOKEN header string false "session token"
 // @Success 302 {string} string "Location"
+// @Success 200 {object} map[string]interface{} "Custom auth mode result"
 // @Router /v1/auth/check [get]
 func (h AuthHandler) Check(c *gin.Context) {
+	h.check(c, false)
+}
+
+// CheckLogin returns a JSON result for business services integrating their own
+// login UI. The browser-facing /auth/check route keeps its redirect behavior.
+// @Summary Check a CAS login (CAS)
+// @Tags Auth
+// @Param APP-ID header string true "app id"
+// @Param API-TOKEN header string false "session token"
+// @Success 200 {object} map[string]interface{}
+// @Router /v1/auth/check-login [get]
+func (h AuthHandler) CheckLogin(c *gin.Context) {
+	h.check(c, true)
+}
+
+func (h AuthHandler) check(c *gin.Context, jsonResponse bool) {
 	a, appID, ok := requestApp(c)
 	if !ok {
 		redirectNotFound(c)
 		return
 	}
 
+	token := sessionCookie(c, a)
+	if token == "" {
+		token = c.GetHeader("API-TOKEN")
+	}
 	result, err := h.auth.Check(c.Request.Context(), inbound.CheckCommand{
 		AppID:        appID,
-		SessionToken: sessionCookie(c, a),
+		SessionToken: token,
 		UserAgent:    c.Request.UserAgent(),
 		ReturnTo:     c.Query("redirect"),
 	})
 	if err != nil {
 		redirectNotFound(c)
+		return
+	}
+	if jsonResponse || a.CustomAuthEnabled {
+		data := gin.H{"authenticated": result.Authenticated}
+		if result.Authenticated {
+			data["ott"] = result.OTT
+			data["redirect_url"] = result.RedirectURL
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "success", "data": data})
 		return
 	}
 

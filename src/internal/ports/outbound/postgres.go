@@ -14,18 +14,20 @@ type AppRepository interface {
 	Create(a app.App) (app.App, error)
 	FindByID(id string) (*app.App, error)
 	FindAll() ([]app.App, error)
-	FindPage(search string, limit, offset int) ([]app.App, int64, error)
+	FindPage(search string, createdFrom, createdUntil *time.Time, limit, offset int) ([]app.App, int64, error)
 	Update(a app.App) (app.App, error)
 	Delete(id string) error
 }
 
 // SessionQuery is the persistence-level filter for admin session tables.
 type SessionQuery struct {
-	AppID  string
-	Search string
-	Status string
-	Limit  int
-	Offset int
+	AppID        string
+	Search       string
+	Status       string
+	CreatedFrom  *time.Time
+	CreatedUntil *time.Time
+	Limit        int
+	Offset       int
 }
 
 // SessionStats is the aggregate used by the dashboard.
@@ -55,8 +57,8 @@ type SessionRepository interface {
 	FindPage(q SessionQuery) ([]session.Session, int64, error)
 	FindActiveByAppAndIdentifier(appID, identifier string) ([]session.Session, error)
 	LatestCreatedAt(appID, identifier string) (*time.Time, error)
-	Stats(appID string, now time.Time, since *time.Time) (SessionStats, error)
-	DailyCounts(appID string, since time.Time) ([]DailyCount, error)
+	Stats(appID, status string, now time.Time, since, until *time.Time) (SessionStats, error)
+	DailyCounts(appID, status string, since time.Time, until *time.Time) ([]DailyCount, error)
 	MarkActive(id string) error
 	Revoke(id string) error
 	RevokeMany(ids []string) error

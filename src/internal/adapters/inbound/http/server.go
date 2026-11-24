@@ -2,9 +2,11 @@ package httpadapter
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"aman/internal/adapters/inbound/http/admin"
 	"aman/internal/adapters/inbound/http/handlers"
@@ -33,7 +35,17 @@ func NewServer(
 	appMiddleware middleware.AppMiddleware,
 	jwtMiddleware middleware.JWTMiddleware,
 	adminHandler *admin.AdminHandler,
-) *Server {
+) (*Server, error) {
+	var trustedProxies []string
+	for _, proxy := range strings.Split(os.Getenv("TRUSTED_PROXIES"), ",") {
+		if proxy = strings.TrimSpace(proxy); proxy != "" {
+			trustedProxies = append(trustedProxies, proxy)
+		}
+	}
+	if err := engine.SetTrustedProxies(trustedProxies); err != nil {
+		return nil, fmt.Errorf("configure trusted proxies: %w", err)
+	}
+
 	RegisterRoutes(engine, authHandler, authPageHandler, sessionHandler, appMiddleware, jwtMiddleware)
 
 	// Admin panel routes (/admin/*) - server-rendered, Persian, no JSON API.
@@ -52,7 +64,7 @@ func NewServer(
 		},
 		OnStop: s.Shutdown,
 	})
-	return s
+	return s, nil
 }
 
 // Run blocks listening on addr. Intended to be run in a goroutine from the

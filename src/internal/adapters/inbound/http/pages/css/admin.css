@@ -982,6 +982,34 @@ svg {
     font-weight: 600;
 }
 
+.field-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.field-label-row label {
+    flex: 1;
+    margin: 0;
+}
+
+.field-guide-link {
+    flex: 0 0 auto;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.field-guide-link:hover,
+.field-guide-link:focus-visible {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
 input[type="text"],
 input[type="url"],
 input[type="email"],
@@ -1114,6 +1142,24 @@ input[type="color"]::-webkit-color-swatch {
 .switch-row:hover {
     background: #f5f8ff;
     border-color: #cfd9ea;
+}
+
+.switch-guide-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.switch-guide-row .switch-row {
+    flex: 1;
+    min-width: 0;
+    margin-top: 0;
+}
+
+.switch-guide-row > .field-guide-link {
+    display: flex;
+    align-items: center;
 }
 
 .switch-copy {
@@ -1922,7 +1968,7 @@ code {
     background: var(--surface);
     border: none;
     border-inline-start: 1px solid var(--border);
-    box-shadow: -24px 0 60px rgba(11, 18, 32, 0.22);
+    box-shadow: 24px 0 60px rgba(11, 18, 32, 0.22);
 }
 
 .drawer::backdrop {
@@ -1998,6 +2044,156 @@ code {
 
 .drawer-actions {
     margin-top: 20px;
+}
+
+.copy-id,
+.copy-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.copy-id {
+    color: var(--muted);
+    font-size: 0.7rem;
+}
+
+.copy-value {
+    justify-content: flex-start;
+}
+
+.copy-button {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 27px;
+    height: 27px;
+    padding: 0;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.copy-button:hover {
+    color: var(--primary);
+    background: var(--primary-soft);
+    border-color: #bfdbfe;
+}
+
+.copy-button svg {
+    width: 14px;
+    height: 14px;
+}
+
+.date-range-fields {
+    display: contents;
+}
+
+.date-filter-field {
+    min-width: 170px;
+}
+
+.jalali-date-field {
+    position: relative;
+}
+
+.jalali-date-field input {
+    padding-inline-start: 42px;
+    direction: ltr;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+}
+
+.date-picker-toggle {
+    position: absolute;
+    inset-inline-start: 4px;
+    top: 50%;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    transform: translateY(-50%);
+}
+
+.date-picker-toggle svg {
+    width: 16px;
+    height: 16px;
+}
+
+.jalali-calendar {
+    position: absolute;
+    inset-inline-start: 0;
+    top: calc(100% + 6px);
+    z-index: 70;
+    width: 280px;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+}
+
+.jalali-calendar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.jalali-calendar-nav {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    color: var(--text-soft);
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.jalali-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    text-align: center;
+}
+
+.jalali-calendar-weekday,
+.jalali-calendar-day {
+    display: grid;
+    place-items: center;
+    min-height: 32px;
+    font-size: 0.72rem;
+}
+
+.jalali-calendar-weekday {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.jalali-calendar-day {
+    padding: 0;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.jalali-calendar-day:hover,
+.jalali-calendar-day.is-selected {
+    color: var(--primary);
+    background: var(--primary-soft);
+    border-color: #bfdbfe;
+}
+
+.date-filter-error {
+    margin-top: 8px;
+    color: var(--danger);
+    font-size: 0.76rem;
 }
 
 /* ---------- documentation pages ---------- */
@@ -2551,6 +2747,51 @@ code {
 
 .area-labels span {
     white-space: nowrap;
+}
+
+.weekday-summary {
+    margin: 0 18px 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+
+.weekday-summary h4 {
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.weekday-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 128px;
+}
+
+.weekday-column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    height: 100%;
+    min-width: 0;
+}
+
+.weekday-count,
+.weekday-label {
+    color: var(--muted);
+    font-size: 0.66rem;
+    white-space: nowrap;
+}
+
+.weekday-bar {
+    width: min(100%, 28px);
+    min-height: 2px;
+    background: #7c3aed;
+    border-radius: 5px 5px 2px 2px;
 }
 
 .breakdown-layout {

@@ -24,7 +24,7 @@ func AdminLayout(title, active string, content templ.Component) templ.Component 
 	<title>`))
 		pages.WriteEscaped(w, title)
 		w.Write([]byte(` · Aman CAS</title>
-	<link rel="stylesheet" href="/static/css/admin.css?v=11" />
+	<link rel="stylesheet" href="/static/css/admin.css?v=13" />
 </head>
 <body>
 	<div class="shell">
@@ -193,12 +193,119 @@ func AdminLayout(title, active string, content templ.Component) templ.Component 
 			// no separate "apply" button.
 			document.querySelectorAll('form[data-auto-filter]').forEach(function (form) {
 				var timer = null;
-				form.addEventListener('change', function () { form.requestSubmit(); });
-				form.querySelectorAll('input[type="search"], input[type="text"]').forEach(function (input) {
+				form.addEventListener('change', function (event) {
+					if (event.target && event.target.name === 'days') {
+						form.querySelectorAll('[data-jalali-date]').forEach(function (input) { input.value = ''; });
+					}
+					form.requestSubmit();
+				});
+				form.querySelectorAll('input[type="search"], input[type="text"]:not([data-jalali-date])').forEach(function (input) {
 					input.addEventListener('input', function () {
 						window.clearTimeout(timer);
 						timer = window.setTimeout(function () { form.requestSubmit(); }, 450);
 					});
+				});
+			});
+
+			// Date fields are Jalali text values; the compact calendar uses the
+			// browser's Persian-calendar Intl implementation and submits ISO-free
+			// year/month/day values for server-side conversion.
+			var persianCalendar = new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn', {
+				year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC'
+			});
+			function jalaliParts(date) {
+				var parts = persianCalendar.formatToParts(date);
+				var result = {};
+				parts.forEach(function (part) {
+					if (part.type === 'year' || part.type === 'month' || part.type === 'day') result[part.type] = Number(part.value);
+				});
+				return result;
+			}
+			function gregorianForJalali(year, month, day) {
+				var guess = Date.UTC(year + 621, 2, 19);
+				for (var i = 0; i < 370; i++) {
+					var date = new Date(guess + i * 86400000);
+					var parts = jalaliParts(date);
+					if (parts.year === year && parts.month === month && parts.day === day) return date;
+				}
+				return null;
+			}
+			function parseJalali(value) {
+				var ascii = String(value || '').replace(/[۰-۹٠-٩]/g, function (digit) {
+					return '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit) >= 0
+						? String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))
+						: String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit));
+				});
+				var match = ascii.trim().match(/^(\d{1,4})[/-](\d{1,2})[/-](\d{1,2})$/);
+				return match ? { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) } : null;
+			}
+			function renderCalendar(field, year, month) {
+				var calendar = field.querySelector('[data-jalali-calendar]');
+				var input = field.querySelector('[data-jalali-date]');
+				if (!calendar || !input) return;
+				var first = gregorianForJalali(year, month, 1);
+				var nextYear = month === 12 ? year + 1 : year;
+				var nextMonth = month === 12 ? 1 : month + 1;
+				var next = gregorianForJalali(nextYear, nextMonth, 1);
+				if (!first || !next) {
+					calendar.textContent = 'تقویم در این مرورگر پشتیبانی نمی‌شود.';
+					return;
+				}
+				var monthLabel = new Intl.DateTimeFormat('fa-IR-u-ca-persian-nu-latn', {
+					year: 'numeric', month: 'long', timeZone: 'UTC'
+				}).format(first);
+				var selected = parseJalali(input.value);
+				var markup = '<div class="jalali-calendar-head"><button type="button" class="jalali-calendar-nav" data-calendar-prev aria-label="ماه قبل">‹</button><span>' + monthLabel + '</span><button type="button" class="jalali-calendar-nav" data-calendar-next aria-label="ماه بعد">›</button></div><div class="jalali-calendar-grid">';
+				['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'].forEach(function (day) {
+					markup += '<span class="jalali-calendar-weekday">' + day + '</span>';
+				});
+				var offset = (first.getUTCDay() + 1) % 7;
+				for (var blank = 0; blank < offset; blank++) markup += '<span></span>';
+				var dayCount = Math.round((next.getTime() - first.getTime()) / 86400000);
+				for (var day = 1; day <= dayCount; day++) {
+					var isSelected = selected && selected.year === year && selected.month === month && selected.day === day;
+					markup += '<button type="button" class="jalali-calendar-day' + (isSelected ? ' is-selected' : '') + '" data-calendar-day="' + day + '">' + toFa(day) + '</button>';
+				}
+				calendar.innerHTML = markup + '</div>';
+				calendar.querySelector('[data-calendar-prev]').addEventListener('click', function () {
+					var previous = month === 1 ? 12 : month - 1;
+					renderCalendar(field, month === 1 ? year - 1 : year, previous);
+				});
+				calendar.querySelector('[data-calendar-next]').addEventListener('click', function () {
+					renderCalendar(field, month === 12 ? year + 1 : year, nextMonth);
+				});
+				calendar.querySelectorAll('[data-calendar-day]').forEach(function (button) {
+					button.addEventListener('click', function () {
+						input.value = toFa(year + '/' + pad2(month) + '/' + pad2(Number(button.dataset.calendarDay)));
+						calendar.hidden = true;
+						input.dispatchEvent(new Event('change', { bubbles: true }));
+					});
+				});
+			}
+			document.querySelectorAll('.jalali-date-field').forEach(function (field) {
+				var input = field.querySelector('[data-jalali-date]');
+				var calendar = field.querySelector('[data-jalali-calendar]');
+				var toggle = field.querySelector('[data-date-open]');
+				if (!input || !calendar || !toggle || !window.Intl || !Intl.DateTimeFormat.prototype.formatToParts) return;
+				toggle.addEventListener('click', function () {
+					var selected = parseJalali(input.value) || jalaliParts(new Date());
+					calendar.hidden = false;
+					renderCalendar(field, selected.year, selected.month);
+				});
+			});
+			document.addEventListener('click', function (event) {
+				document.querySelectorAll('[data-jalali-calendar]:not([hidden])').forEach(function (calendar) {
+					if (!calendar.parentElement.contains(event.target)) calendar.hidden = true;
+				});
+			});
+			document.querySelectorAll('[data-clear-date-range]').forEach(function (button) {
+				button.addEventListener('click', function () {
+					var form = button.closest('form');
+					if (!form) return;
+					form.querySelectorAll('[data-jalali-date]').forEach(function (input) { input.value = ''; });
+					var days = form.elements.days;
+					if (days) days.value = 'all';
+					form.requestSubmit();
 				});
 			});
 
@@ -320,6 +427,36 @@ func AdminLayout(title, active string, content templ.Component) templ.Component 
 						document.body.appendChild(area);
 						area.select();
 						try { document.execCommand('copy'); done(); } catch (error) { /* ignore */ }
+						document.body.removeChild(area);
+					}
+					if (navigator.clipboard && navigator.clipboard.writeText) {
+						navigator.clipboard.writeText(text).then(done).catch(fallback);
+					} else {
+						fallback();
+					}
+				});
+			});
+				document.querySelectorAll('[data-copy-text]').forEach(function (button) {
+				button.addEventListener('click', function () {
+					var text = button.getAttribute('data-copy-text') || '';
+					var previousLabel = button.getAttribute('aria-label') || 'کپی شناسه';
+					function done() {
+						button.setAttribute('aria-label', 'کپی شد');
+						button.setAttribute('title', 'کپی شد');
+						window.setTimeout(function () {
+							button.setAttribute('aria-label', previousLabel);
+							button.setAttribute('title', previousLabel.replace(/^کپی /, 'کپی '));
+						}, 1400);
+					}
+					function fallback() {
+						var area = document.createElement('textarea');
+						area.value = text;
+						area.setAttribute('readonly', 'readonly');
+						area.style.position = 'fixed';
+						area.style.opacity = '0';
+						document.body.appendChild(area);
+						area.select();
+						try { if (document.execCommand('copy')) done(); } catch (error) { /* unavailable */ }
 						document.body.removeChild(area);
 					}
 					if (navigator.clipboard && navigator.clipboard.writeText) {

@@ -21,6 +21,8 @@ type AuthData struct {
 	PrimaryColor        string
 	BackgroundColor     string
 	CardBackgroundColor string
+	TextColor           string
+	MutedTextColor      string
 	PinBackgroundColor  string
 	PinTextColor        string
 	Theme               string
@@ -48,14 +50,26 @@ type AuthData struct {
 	BackText        string
 	FooterText      string
 
-	CaptchaEnabled bool
-	CaptchaSiteKey string
+	CaptchaEnabled  bool
+	CaptchaProvider string
+	CaptchaSiteKey  string
 
 	OTPLength        int
 	OTPInputType     string
 	OTPCodeInputType string
 	OTPExpire        int
 	OTPExpiresAt     int64
+}
+
+func EditIdentifierText(allowEmail, allowMobile bool) string {
+	switch {
+	case allowEmail && allowMobile:
+		return "تغییر ایمیل یا شماره موبایل"
+	case allowEmail:
+		return "تغییر ایمیل"
+	default:
+		return "تغییر شماره موبایل"
+	}
 }
 
 // WriteEscaped writes HTML-escaped text to w.

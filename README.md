@@ -25,6 +25,19 @@ app backend ──► POST /v1/auth/verify-ott {ott}
 - The CAS session cookie (and, when the app shares a parent domain, the same
   cookie for the app domain) is set after the OTP is verified.
 
+## Authentication modes
+
+- **Managed** (default): Aman serves `/auth/check` and its branded login pages.
+  The optional hosted-page setting redirects `/auth/login` to the app's own
+  page while retaining the managed browser flow.
+- **Custom** (`custom_auth_enabled=true`): Aman returns HTTP 404 for
+  `/auth/**` requests for that app. The app owns its UI and calls the `/v1/auth`
+  API from its backend. Verify the returned OTT server-side and create the
+  app's own session cookie; do not expose `session_token` to browser code.
+
+The API server does not configure CORS. Cross-origin browser code should call
+the app backend rather than Aman directly.
+
 ## Routes
 
 Browser / server-rendered:
@@ -44,7 +57,8 @@ JSON API (requires the `APP-ID` header):
 | `POST /v1/auth/send-otp` | `{identifier}` → `{otp_hash, channel, expires_at}` |
 | `POST /v1/auth/verify-otp` | `{identifier, otp_code, otp_hash}` → `{session_token, ott, redirect_url}` |
 | `POST /v1/auth/verify-ott` | `{ott}` → credentials |
-| `GET /v1/auth/check` | Redirect with a fresh OTT or to login |
+| `GET /v1/auth/check` | Managed mode redirects; custom mode returns JSON |
+| `GET /v1/auth/check-login` | JSON login check; accepts the session cookie or `API-TOKEN` |
 | `GET /v1/auth/me` | Current session |
 | `POST/DELETE /v1/auth/logout` | Revoke the session |
 | `GET /v1/user/sessions` | List my sessions |
@@ -57,13 +71,31 @@ Admin panel (server-rendered, Persian):
 - `/admin/apps` – list/create/edit/delete apps with search and pagination
 - `/admin/sessions` – list/filter/revoke sessions with search and pagination
 
-Per-app configuration: OTP channel (`sms`, `email`, `both`), OTP length
+Per-app configuration: managed/custom auth mode, OTP channel (`sms`, `email`, `both`), OTP length
 (4–32) and charset (`numeric`, `alpha`, `alphanumeric`), OTP/OTT expiry, session
 duration or infinite sessions, per-app session cookie (name, HttpOnly, Secure,
 SameSite), same-origin return redirect, callback/webhook URLs, and the full auth
 page appearance: layout, theme, font, text alignment, colors, logo mask and
-position, captcha, ordered multi-banner carousel, custom copy and a live preview
-in the admin form.
+position, selectable ArCaptcha or Google reCAPTCHA v2, ordered multi-banner
+carousel, custom copy and a live preview in the admin form. Apps can also set a
+comma-separated ISO 3166-1 alpha-2 country allowlist; an empty list permits all
+countries.
+
+Geo restriction and session location enrichment use a local MaxMind GeoLite2
+City MMDB configured with `GEOIP_DATABASE_PATH`. Obtain and update the database
+from MaxMind under its applicable terms. No IP lookup traffic leaves Aman. If a
+country allowlist is set and no database is configured or the request IP cannot
+be resolved, authentication is denied; a configured but unreadable database
+prevents startup. Without an allowlist, a lookup failure only leaves unavailable
+location fields empty. Google reCAPTCHA
+uses checkbox v2 keys and Google's `siteverify` endpoint; only the CAPTCHA
+response and configured secret are sent there. A CAPTCHA enabled without both
+keys is rejected rather than bypassed.
+
+When Aman is behind a reverse proxy, set `TRUSTED_PROXIES` to the proxy IPs or
+CIDRs (comma-separated), for example `10.0.0.10,10.0.1.0/24`. The default is
+empty, which disables forwarded-IP trust; untrusted `X-Forwarded-For` values
+cannot influence geo-fencing.
 
 ## Architecture
 
@@ -78,6 +110,7 @@ internal/
     inbound/http/     gin routes, handlers, middlewares, page components
     outbound/
       postgres/       gorm repositories (+ mock.go)
+      geoip/          optional local MaxMind MMDB lookup
       notification/   SMS + email delivery (+ mock.go)
       otpgen/         OTP codes (+ mock.go)
       security/       JWT + auth hash (+ mock.go)
@@ -87,10 +120,15 @@ internal/
 Services are concrete structs: they receive outbound adapters and do not
 implement interfaces themselves.
 
-## Errors and 404
+## Cookies and errors
 
-The app does not return JSON on errors. It redirects to `/not-found`, which
-nginx answers with the custom `nginx/404.html` page.
+Session cookies use the configured name (default `cas_cookie`), `Path=/`,
+expiry, `HttpOnly`, `Secure` and `SameSite` settings. Aman can set a shared
+parent-domain cookie when CAS and app hosts share a parent domain. For unrelated
+domains the browser cannot accept Aman’s cookie for the app; exchange the OTT
+server-side and set an app-owned cookie. API check-login accepts the token in
+`API-TOKEN` for server-to-server checks. Invalid API requests still redirect to
+`/not-found`, which nginx answers with the custom `nginx/404.html` page.
 
 ## Running
 

@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"aman/internal/adapters/inbound/http"
+	"aman/internal/adapters/outbound/geoip"
 	"aman/internal/adapters/outbound/notification"
 	"aman/internal/adapters/outbound/otpgen"
 	"aman/internal/adapters/outbound/postgres"
@@ -25,6 +26,7 @@ func main() {
 
 	app := fx.New(
 		postgres.Module(),
+		geoip.Module(),
 		security.Module(),
 		otpgen.Module(),
 		notification.Module(),

@@ -24,6 +24,8 @@ type App struct {
 	SessionCookieSameSite string `json:"session_cookie_same_site" gorm:"default:lax" example:"lax"`
 	RedirectBack          bool   `json:"redirect_back" gorm:"default:false" example:"true"`
 
+	CustomAuthEnabled           bool   `json:"custom_auth_enabled" gorm:"default:false" example:"false"`
+	AllowedCountries            string `json:"allowed_countries" gorm:"type:text" example:"CA,US"`
 	AuthPageEnabled             bool   `json:"auth_page_enabled" gorm:"default:false" example:"true"`
 	AuthPageURL                 string `json:"auth_page_url" gorm:"default:null" example:"https://fotomi.net/auth/login"`
 	AuthPageTitle               string `json:"auth_page_title" gorm:"default:null" example:"ورود به {app}"`
@@ -36,10 +38,13 @@ type App struct {
 	AuthPagePrimaryColor        string `json:"auth_page_primary_color" gorm:"default:#3b82f6" example:"#3b82f6"`
 	AuthPageBackgroundColor     string `json:"auth_page_background_color" gorm:"default:#f8fafc" example:"#f8fafc"`
 	AuthPageCardBackgroundColor string `json:"auth_page_card_background_color" gorm:"default:#ffffff" example:"#ffffff"`
+	AuthPageTextColor           string `json:"auth_page_text_color" gorm:"default:#111827" example:"#111827"`
+	AuthPageMutedTextColor      string `json:"auth_page_muted_text_color" gorm:"default:#667085" example:"#667085"`
 	AuthPagePinBackgroundColor  string `json:"auth_page_pin_background_color" gorm:"default:#f9fafb" example:"#f9fafb"`
 	AuthPagePinTextColor        string `json:"auth_page_pin_text_color" gorm:"default:#111827" example:"#111827"`
 	AuthPageTheme               string `json:"auth_page_theme" gorm:"default:light" example:"light"`
 	AuthPageCaptchaEnabled      bool   `json:"auth_page_captcha_enabled" gorm:"default:false" example:"true"`
+	AuthPageCaptchaProvider     string `json:"auth_page_captcha_provider" gorm:"default:arcaptcha" example:"arcaptcha"`
 	AuthPageCaptchaSiteKey      string `json:"auth_page_captcha_site_key" gorm:"default:null" example:"public-site-key"`
 	AuthPageCaptchaSecretKey    string `json:"auth_page_captcha_secret_key" gorm:"default:null"`
 	AuthPageBannerMode          string `json:"auth_page_banner_mode" gorm:"default:none" example:"progress"`

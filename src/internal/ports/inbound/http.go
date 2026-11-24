@@ -130,6 +130,8 @@ type AppInput struct {
 	SessionCookieSameSite string
 	RedirectBack          bool
 
+	CustomAuthEnabled           bool
+	AllowedCountries            string // comma-separated ISO 3166-1 alpha-2 country codes
 	AuthPageEnabled             bool
 	AuthPageURL                 string
 	AuthPageTitle               string
@@ -142,10 +144,13 @@ type AppInput struct {
 	AuthPagePrimaryColor        string
 	AuthPageBackgroundColor     string
 	AuthPageCardBackgroundColor string
+	AuthPageTextColor           string
+	AuthPageMutedTextColor      string
 	AuthPagePinBackgroundColor  string
 	AuthPagePinTextColor        string
 	AuthPageTheme               string
 	AuthPageCaptchaEnabled      bool
+	AuthPageCaptchaProvider     string
 	AuthPageCaptchaSiteKey      string
 	AuthPageCaptchaSecretKey    string
 	AuthPageBannerMode          string
@@ -166,9 +171,11 @@ type AppInput struct {
 
 // AppFilter narrows down an app list and paginates it.
 type AppFilter struct {
-	Search string
-	Limit  int
-	Offset int
+	Search       string
+	CreatedFrom  *time.Time
+	CreatedUntil *time.Time
+	Limit        int
+	Offset       int
 }
 
 // AppUseCase is the inbound port used by the admin panel to manage apps.
@@ -183,19 +190,21 @@ type AppUseCase interface {
 
 // SessionFilter narrows down an admin session list and paginates it.
 type SessionFilter struct {
-	AppID  string
-	Search string
-	Status string
-	Limit  int
-	Offset int
+	AppID        string
+	Search       string
+	Status       string
+	CreatedFrom  *time.Time
+	CreatedUntil *time.Time
+	Limit        int
+	Offset       int
 }
 
 // SessionUseCase is the inbound port used by users to manage their sessions.
 type SessionUseCase interface {
 	List(ctx context.Context, appID, identifier string) ([]session.Session, error)
 	ListAll(ctx context.Context, filter SessionFilter) ([]session.Session, int64, error)
-	Stats(ctx context.Context, appID string, since *time.Time) (SessionStats, error)
-	DailyCounts(ctx context.Context, appID string, since time.Time) ([]DailyCount, error)
+	Stats(ctx context.Context, appID, status string, since, until *time.Time) (SessionStats, error)
+	DailyCounts(ctx context.Context, appID, status string, since time.Time, until *time.Time) ([]DailyCount, error)
 	Terminate(ctx context.Context, appID, identifier, id string) error
 	TerminateMany(ctx context.Context, appID, identifier string, ids []string) error
 	TerminateAll(ctx context.Context, appID, identifier string) error

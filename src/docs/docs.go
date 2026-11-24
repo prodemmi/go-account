@@ -28,13 +28,58 @@ const docTemplate = `{
                         "name": "APP-ID",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "session token",
+                        "name": "API-TOKEN",
+                        "in": "header"
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "Custom auth mode result",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
                     "302": {
                         "description": "Location",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/check-login": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check a CAS login (CAS)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "app id",
+                        "name": "APP-ID",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "session token",
+                        "name": "API-TOKEN",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -311,6 +356,10 @@ const docTemplate = `{
                 "identifier": {
                     "type": "string",
                     "example": "+989130243519"
+                },
+                "captcha_token": {
+                    "type": "string",
+                    "example": "provider-response-token"
                 }
             }
         },

@@ -65,8 +65,16 @@ func SessionsList(sessions []SessionRow, meta PageMeta, apps []AppOption, errorM
 		writeStatusOption(w, "expired", "منقضی", meta.Status)
 		writeStatusOption(w, "revoked", "باطل‌شده", meta.Status)
 		w.Write([]byte(`</select>
-		</div>
-	</form>
+		</div>`))
+		dateRangeFields(w, "sessions-date", meta.From, meta.To)
+		w.Write([]byte(`<button type="button" class="btn btn-ghost" data-clear-date-range>پیش‌فرض: همه زمان‌ها</button>
+	</form>`))
+		if meta.FilterError != "" {
+			w.Write([]byte(`<p class="date-filter-error" role="alert">`))
+			pages.WriteEscaped(w, meta.FilterError)
+			w.Write([]byte(`</p>`))
+		}
+		w.Write([]byte(`
 </section>
 
 <section class="card">
@@ -85,14 +93,14 @@ func SessionsList(sessions []SessionRow, meta PageMeta, apps []AppOption, errorM
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M8 12h8M8 9.5h4"/></svg>
 		</span>
 		<h4>`))
-			if meta.Search != "" || meta.Status != "" || meta.AppID != "" {
+			if meta.Search != "" || meta.Status != "" || meta.AppID != "" || meta.From != "" || meta.To != "" {
 				w.Write([]byte(`نتیجه‌ای برای این فیلترها پیدا نشد`))
 			} else {
 				w.Write([]byte(`هنوز نشستی ثبت نشده است`))
 			}
 			w.Write([]byte(`</h4>
 		<p>`))
-			if meta.Search != "" || meta.Status != "" || meta.AppID != "" {
+			if meta.Search != "" || meta.Status != "" || meta.AppID != "" || meta.From != "" || meta.To != "" {
 				w.Write([]byte(`فیلترها را تغییر دهید تا نتیجه دیگری نمایش داده شود.`))
 			} else {
 				w.Write([]byte(`پس از اولین ورود کاربران از طریق برنامه‌ها، نشست‌ها اینجا نمایش داده می‌شوند.`))
@@ -122,7 +130,11 @@ func SessionsList(sessions []SessionRow, meta PageMeta, apps []AppOption, errorM
 			w.Write([]byte(`<tr>
 				<td><strong class="ltr table-strong">`))
 			pages.WriteEscaped(w, s.Identifier)
-			w.Write([]byte(`</strong></td>
+			w.Write([]byte(`</strong><small class="copy-id"><span class="ltr mono">`))
+			pages.WriteEscaped(w, shortID(s.ID))
+			w.Write([]byte(`</span>`))
+			copyButton(w, s.ID, "شناسه نشست")
+			w.Write([]byte(`</small></td>
 				<td><strong class="table-strong">`))
 			pages.WriteEscaped(w, s.AppName)
 			w.Write([]byte(`</strong></td>
@@ -134,8 +146,8 @@ func SessionsList(sessions []SessionRow, meta PageMeta, apps []AppOption, errorM
 			}
 			w.Write([]byte(`</td>
 				<td>`))
-			if s.Device != "" {
-				pages.WriteEscaped(w, deviceLabel(s.Device))
+			if s.UserAgent != "" || s.Device != "" {
+				pages.WriteEscaped(w, humanDeviceName(s.UserAgent, s.Device))
 			} else {
 				w.Write([]byte(`—`))
 			}
@@ -185,7 +197,7 @@ func SessionsList(sessions []SessionRow, meta PageMeta, apps []AppOption, errorM
 
 func sessionDrawer(id string, s SessionRow) templ.Component {
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		w.Write([]byte(`<dialog class="drawer" id="`))
+		w.Write([]byte(`<dialog class="drawer" aria-label="جزئیات نشست" id="`))
 		pages.WriteEscaped(w, id)
 		w.Write([]byte(`">
 	<div class="drawer-head">
@@ -204,17 +216,23 @@ func sessionDrawer(id string, s SessionRow) templ.Component {
 		writeStatusBadge(w, s.Status)
 		w.Write([]byte(`</div>
 		<dl class="detail-list">
-			<div class="detail-row"><dt>شناسه نشست</dt><dd class="ltr mono">`))
+			<div class="detail-row"><dt>شناسه نشست</dt><dd class="copy-value ltr mono"><span>`))
 		pages.WriteEscaped(w, s.ID)
+		w.Write([]byte(`</span>`))
+		copyButton(w, s.ID, "شناسه نشست")
 		w.Write([]byte(`</dd></div>
-			<div class="detail-row"><dt>شناسه برنامه</dt><dd class="ltr mono">`))
+			<div class="detail-row"><dt>شناسه برنامه</dt><dd class="copy-value ltr mono"><span>`))
 		pages.WriteEscaped(w, s.AppID)
+		w.Write([]byte(`</span>`))
+		copyButton(w, s.AppID, "شناسه برنامه")
 		w.Write([]byte(`</dd></div>
 			<div class="detail-row"><dt>نام برنامه</dt><dd>`))
 		pages.WriteEscaped(w, s.AppName)
 		w.Write([]byte(`</dd></div>
-			<div class="detail-row"><dt>شناسه کاربر</dt><dd class="ltr">`))
+			<div class="detail-row"><dt>شناسه کاربر</dt><dd class="copy-value ltr"><span>`))
 		pages.WriteEscaped(w, s.Identifier)
+		w.Write([]byte(`</span>`))
+		copyButton(w, s.Identifier, "شناسه کاربر")
 		w.Write([]byte(`</dd></div>
 			<div class="detail-row"><dt>IP</dt><dd class="ltr mono">`))
 		if s.IP != "" {
@@ -237,8 +255,8 @@ func sessionDrawer(id string, s SessionRow) templ.Component {
 		pages.WriteEscaped(w, location)
 		w.Write([]byte(`</dd></div>
 			<div class="detail-row"><dt>دستگاه</dt><dd>`))
-		if s.Device != "" {
-			pages.WriteEscaped(w, deviceLabel(s.Device))
+		if s.UserAgent != "" || s.Device != "" {
+			pages.WriteEscaped(w, humanDeviceName(s.UserAgent, s.Device))
 		} else {
 			w.Write([]byte(`—`))
 		}
@@ -323,6 +341,46 @@ func deviceLabel(device string) string {
 	default:
 		return device
 	}
+}
+
+func humanDeviceName(userAgent, fallback string) string {
+	ua := strings.ToLower(userAgent)
+	switch {
+	case strings.Contains(ua, "ipad"):
+		return "iPad"
+	case strings.Contains(ua, "iphone") || strings.Contains(ua, "ipod"):
+		return "iPhone"
+	}
+
+	browser := browserLabel(userAgent)
+	operatingSystem := ""
+	switch {
+	case strings.Contains(ua, "cros"):
+		operatingSystem = "ChromeOS"
+	case strings.Contains(ua, "windows"):
+		operatingSystem = "Windows"
+	case strings.Contains(ua, "mac os") || strings.Contains(ua, "macintosh"):
+		operatingSystem = "macOS"
+	case strings.Contains(ua, "android"):
+		operatingSystem = "Android"
+	case strings.Contains(ua, "linux"):
+		operatingSystem = "Linux"
+	case strings.Contains(ua, "ios"):
+		operatingSystem = "iOS"
+	}
+	if browser != "نامشخص" && browser != "—" && operatingSystem != "" {
+		return browser + " on " + operatingSystem
+	}
+	if operatingSystem != "" {
+		return operatingSystem
+	}
+	if browser != "نامشخص" && browser != "—" {
+		return browser
+	}
+	if fallback != "" {
+		return deviceLabel(fallback)
+	}
+	return "نامشخص"
 }
 
 // browserLabel extracts the human browser family from a User-Agent string. It

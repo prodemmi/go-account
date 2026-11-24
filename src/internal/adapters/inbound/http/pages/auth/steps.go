@@ -74,8 +74,8 @@ func authCard(data pages.AuthData) templ.Component {
 			retryText = "ارسال دوباره کد"
 		}
 		backText := data.BackText
-		if backText == "" {
-			backText = "تغییر ایمیل یا شماره موبایل"
+		if backText == "" && !data.CopyCustom {
+			backText = pages.EditIdentifierText(data.AllowEmail, data.AllowMobile)
 		}
 
 		length := data.OTPLength
@@ -153,15 +153,7 @@ func authCard(data pages.AuthData) templ.Component {
 			</div>`))
 
 		if data.CaptchaEnabled {
-			w.Write([]byte(`<div class="form-group captcha-group">
-				<div class="arcaptcha" data-site-key="`))
-			pages.WriteEscaped(w, data.CaptchaSiteKey)
-			w.Write([]byte(`" data-lang="fa"`))
-			if data.Theme == app.ThemeDark {
-				w.Write([]byte(` data-theme="dark"`))
-			}
-			w.Write([]byte(`></div>
-			</div>`))
+			writeCaptchaWidget(w, data)
 		}
 
 		w.Write([]byte(`<button type="submit">`))
@@ -262,6 +254,9 @@ func authCard(data pages.AuthData) templ.Component {
 		pages.WriteEscaped(w, data.Identifier)
 		w.Write([]byte(`" />
 			<input type="hidden" name="retry" value="1" />`))
+		if data.CaptchaEnabled {
+			writeCaptchaWidget(w, data)
+		}
 		if data.ReturnTo != "" {
 			w.Write([]byte(`<input type="hidden" name="redirect" value="`))
 			pages.WriteEscaped(w, data.ReturnTo)
@@ -270,19 +265,20 @@ func authCard(data pages.AuthData) templ.Component {
 		w.Write([]byte(`<button type="submit" class="btn-secondary" data-retry-button>`))
 		pages.WriteEscaped(w, retryText)
 		w.Write([]byte(`<span class="retry-countdown" data-retry-countdown></span></button>
-		</form>
-
-		<div class="footer">
+		</form>`))
+		if backText != "" {
+			w.Write([]byte(`<div class="footer">
 			<a href="/auth/login?app_id=`))
-		pages.WriteEscaped(w, data.AppID)
-		if data.ReturnTo != "" {
-			w.Write([]byte(`&redirect=`))
-			pages.WriteEscaped(w, data.ReturnTo)
-		}
-		w.Write([]byte(`" data-auth-back>`))
-		pages.WriteEscaped(w, backText)
-		w.Write([]byte(`</a>
+			pages.WriteEscaped(w, data.AppID)
+			if data.ReturnTo != "" {
+				w.Write([]byte(`&redirect=`))
+				pages.WriteEscaped(w, data.ReturnTo)
+			}
+			w.Write([]byte(`" data-auth-back>`))
+			pages.WriteEscaped(w, backText)
+			w.Write([]byte(`</a>
 		</div>`))
+		}
 
 		if data.FooterText != "" {
 			w.Write([]byte(`<p class="page-note">`))
@@ -299,6 +295,27 @@ func authCard(data pages.AuthData) templ.Component {
 		w.Write([]byte(`</div>`))
 		return nil
 	})
+}
+
+func writeCaptchaWidget(w io.Writer, data pages.AuthData) {
+	w.Write([]byte(`<div class="form-group captcha-group">`))
+	if data.CaptchaProvider == app.CaptchaProviderGoogle {
+		w.Write([]byte(`<div class="g-recaptcha" data-sitekey="`))
+		pages.WriteEscaped(w, data.CaptchaSiteKey)
+		if data.Theme == app.ThemeDark {
+			w.Write([]byte(`" data-theme="dark`))
+		}
+		w.Write([]byte(`"></div>`))
+	} else {
+		w.Write([]byte(`<div class="arcaptcha" data-site-key="`))
+		pages.WriteEscaped(w, data.CaptchaSiteKey)
+		w.Write([]byte(`" data-lang="fa"`))
+		if data.Theme == app.ThemeDark {
+			w.Write([]byte(` data-theme="dark"`))
+		}
+		w.Write([]byte(`></div>`))
+	}
+	w.Write([]byte(`</div>`))
 }
 
 // writeBrand renders the logo and app name using the configured mask and

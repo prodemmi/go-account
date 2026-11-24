@@ -15,6 +15,7 @@ import (
 	"aman/internal/domains/ott"
 	"aman/internal/domains/session"
 	"aman/internal/ports/inbound"
+	"aman/internal/ports/outbound"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
@@ -27,17 +28,19 @@ func TestOTPToOTTCredentialsFlow(t *testing.T) {
 	identifier := "user@example.com"
 
 	appEntity := app.App{
-		ID:             appID,
-		Name:           "Test",
-		Url:            "https://app.example.com",
-		CallbackURL:    "https://app.example.com/auth/callback",
-		OTPChannel:     app.OTPChannelEmail,
-		OTPExpire:      time.Minute,
-		OTTExpire:      30 * time.Second,
-		SessionTimeout: time.Hour,
+		ID:               appID,
+		Name:             "Test",
+		Url:              "https://app.example.com",
+		CallbackURL:      "https://app.example.com/auth/callback",
+		OTPChannel:       app.OTPChannelEmail,
+		OTPExpire:        time.Minute,
+		OTTExpire:        30 * time.Second,
+		SessionTimeout:   time.Hour,
+		AllowedCountries: []string{"CA"},
 	}
 
 	var issued ott.OTT
+	var createdSession session.Session
 	apps := &postgres.MockAppRepository{
 		FindByIDFn: func(id string) (*app.App, error) {
 			require.Equal(t, appID.String(), id)
@@ -48,6 +51,7 @@ func TestOTPToOTTCredentialsFlow(t *testing.T) {
 	sessions := &postgres.MockSessionRepository{
 		CreateFn: func(s session.Session) (session.Session, error) {
 			s.ID = sessionID
+			createdSession = s
 			return s, nil
 		},
 		FindByIDFn: func(id string) (*session.Session, error) {
@@ -101,6 +105,7 @@ func TestOTPToOTTCredentialsFlow(t *testing.T) {
 		&otpgen.MockGenerator{Code: "12345"},
 		notifier,
 		NewWebhookService(sender),
+		staticGeoIP{location: outbound.IPLocation{Country: "CA", City: "Toronto", Region: "Ontario"}},
 	)
 
 	ctx := context.Background()
@@ -109,6 +114,7 @@ func TestOTPToOTTCredentialsFlow(t *testing.T) {
 		AppID:      appID.String(),
 		Identifier: identifier,
 		UserAgent:  userAgent,
+		IP:         "203.0.113.4",
 	})
 	require.NoError(t, err)
 	require.Equal(t, app.OTPChannelEmail, challenge.Channel)
@@ -120,9 +126,13 @@ func TestOTPToOTTCredentialsFlow(t *testing.T) {
 		Code:       "12345",
 		OTPHash:    challenge.OTPHash,
 		UserAgent:  userAgent,
+		IP:         "203.0.113.4",
 	})
 	require.NoError(t, err)
 	require.Equal(t, "https://app.example.com/auth/callback?ott="+result.OTT, result.RedirectURL)
+	require.Equal(t, "CA", createdSession.Country)
+	require.Equal(t, "Toronto", createdSession.City)
+	require.Equal(t, "Ontario", createdSession.Region)
 
 	creds, err := svc.VerifyOTT(ctx, inbound.VerifyOTTCommand{
 		AppID: appID.String(),
@@ -152,6 +162,7 @@ func TestSendOTPRejectsIdentifierForWrongChannel(t *testing.T) {
 		&otpgen.MockGenerator{},
 		&notification.MockNotifier{},
 		NewWebhookService(&webhook.MockSender{}),
+		nil,
 	)
 
 	_, err := svc.SendOTP(context.Background(), inbound.SendOTPCommand{
@@ -159,6 +170,46 @@ func TestSendOTPRejectsIdentifierForWrongChannel(t *testing.T) {
 		Identifier: "user@example.com",
 	})
 	require.Error(t, err)
+}
+
+func TestSendOTPRejectsUnresolvedCountryForAllowlistedApp(t *testing.T) {
+	appID := uuid.New()
+	apps := &postgres.MockAppRepository{
+		FindByIDFn: func(string) (*app.App, error) {
+			return &app.App{ID: appID, AllowedCountries: []string{"CA"}}, nil
+		},
+	}
+	notifier := &notification.MockNotifier{}
+	svc := NewAuthService(
+		apps,
+		&postgres.MockSessionRepository{},
+		&postgres.MockOTPRepository{},
+		&postgres.MockOTTRepository{},
+		&security.MockAuthHash{},
+		&security.MockJWTService{},
+		&otpgen.MockGenerator{Code: "12345"},
+		notifier,
+		NewWebhookService(&webhook.MockSender{}),
+		nil,
+	)
+
+	_, err := svc.SendOTP(context.Background(), inbound.SendOTPCommand{
+		AppID:      appID.String(),
+		Identifier: "user@example.com",
+		Country:    "CA", // Request headers are not authoritative for geo-fencing.
+		IP:         "203.0.113.4",
+	})
+	require.ErrorIs(t, err, app.ErrCountryRestricted)
+	require.Empty(t, notifier.Emails)
+}
+
+type staticGeoIP struct {
+	location outbound.IPLocation
+	err      error
+}
+
+func (s staticGeoIP) Lookup(string) (outbound.IPLocation, error) {
+	return s.location, s.err
 }
 
 func ptrTime(t time.Time) *time.Time { return &t }

@@ -3,7 +3,8 @@ package handlers
 // Request bodies for the public CAS API.
 
 type sendOTPBody struct {
-	Identifier string `json:"identifier" binding:"required" example:"+989130243519"`
+	Identifier   string `json:"identifier" binding:"required" example:"+989130243519"`
+	CaptchaToken string `json:"captcha_token,omitempty" example:"provider-response-token"`
 }
 
 type verifyOTPBody struct {

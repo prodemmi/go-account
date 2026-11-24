@@ -12,10 +12,10 @@ type JWTService interface {
 	ParseToken(token string) (appID string, identifier string, err error)
 }
 
-// AuthHash is the outbound port for the signing/auth hash.
+// AuthHash creates and verifies authenticated OTP challenge tokens.
 type AuthHash interface {
-	CreateAuthHash(a app.App, agent string) string
-	VerifyAuthHash(hash string, a app.App, agent string) bool
+	CreateAuthHash(a app.App, identifier, agent string, expiresAt time.Time) string
+	VerifyAuthHash(hash string, a app.App, identifier, agent string) bool
 }
 
 // PasswordService is the outbound port for password hashing and comparison.

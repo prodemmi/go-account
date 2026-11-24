@@ -4,6 +4,9 @@ definitions:
       identifier:
         example: "+989130243519"
         type: string
+      captcha_token:
+        example: provider-response-token
+        type: string
     required:
     - identifier
     type: object
@@ -53,12 +56,42 @@ paths:
         name: APP-ID
         required: true
         type: string
+      - description: session token
+        in: header
+        name: API-TOKEN
+        type: string
       responses:
+        "200":
+          description: Custom auth mode result
+          schema:
+            additionalProperties: true
+            type: object
         "302":
           description: Location
           schema:
             type: string
       summary: Check CAS session (CAS)
+      tags:
+      - Auth
+  /v1/auth/check-login:
+    get:
+      parameters:
+      - description: app id
+        in: header
+        name: APP-ID
+        required: true
+        type: string
+      - description: session token
+        in: header
+        name: API-TOKEN
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Check a CAS login (CAS)
       tags:
       - Auth
   /v1/auth/logout:
