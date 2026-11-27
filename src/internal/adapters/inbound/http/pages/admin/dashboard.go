@@ -7,7 +7,6 @@ import (
 	"math"
 	"strconv"
 	"strings"
-	"time"
 
 	"aman/internal/adapters/inbound/http/pages"
 	"aman/internal/ports/inbound"
@@ -34,7 +33,6 @@ type DashboardData struct {
 	FilterError string
 	Stats       inbound.SessionStats
 	Daily       []inbound.DailyCount
-	GeneratedAt time.Time
 	Error       string
 }
 
@@ -84,9 +82,7 @@ func Dashboard(data DashboardData) templ.Component {
 		w.Write([]byte(`<section class="page-head dashboard-head">
 	<div>
 		<h2>داشبورد</h2>
-		<p>نمای کلی ورودها، وضعیت نشست‌ها و روند روزانه.</p>
 	</div>
-	<span class="page-date">به‌روزرسانی: ` + faNum(FormatDateTime(data.GeneratedAt)) + `</span>
 </section>
 
 <section class="card dashboard-filter">

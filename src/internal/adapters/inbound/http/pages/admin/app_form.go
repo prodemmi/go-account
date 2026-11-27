@@ -14,12 +14,8 @@ import (
 // carry is exposed here, with a side column for the settings guide.
 func AppForm(data AppFormData, isEdit bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		title := "برنامه جدید"
-		subtitle := "برنامه تازه‌ای را به سرویس احراز هویت وصل کنید."
 		action := "/admin/apps"
 		if isEdit {
-			title = ""
-			subtitle = ""
 			action = "/admin/apps/" + data.ID + "/update"
 		}
 
@@ -37,16 +33,7 @@ func AppForm(data AppFormData, isEdit bool) templ.Component {
 		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
 		بازگشت
 	</a>
-	<div class="form-head-title">
-		<h2>`))
-		pages.WriteEscaped(w, title)
-		w.Write([]byte(`</h2>
-		<p>`))
-		pages.WriteEscaped(w, subtitle)
-		w.Write([]byte(`</p>
-	</div>
 	<div class="form-head-actions">
-		<a href="/admin/apps" class="btn btn-ghost">انصراف</a>
 		<button type="submit" form="app-form" class="btn btn-primary">
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
 			ذخیره برنامه

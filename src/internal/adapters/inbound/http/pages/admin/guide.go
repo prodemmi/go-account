@@ -12,18 +12,8 @@ import (
 // can finish the integration without leaving the panel.
 func Guide() templ.Component {
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		w.Write([]byte(`<section class="page-head">
-	<div>
-		<h2>راهنمای امان</h2>
-		<p>از ساخت برنامه تا برندینگ صفحه ورود و امنیت نشست، در چند دقیقه.</p>
-	</div>
-	<a href="/admin/apps/new" class="btn btn-primary">
-		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-		برنامه جدید
-	</a>
-</section>
-
-<div class="docs-layout">
+		w.Write([]byte(`
+		<div class="docs-layout">
 	<aside class="card docs-nav" aria-label="فهرست راهنما">
 		<span class="docs-nav-title">در این صفحه</span>
 		<a href="#quick-start">شروع سریع</a>

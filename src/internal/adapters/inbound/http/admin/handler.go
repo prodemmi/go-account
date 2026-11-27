@@ -316,7 +316,6 @@ func (h AdminHandler) Dashboard(c *gin.Context) {
 		Stats:       stats,
 		Daily:       fillDaily(counts, chartStart(chartSince, counts, chartEnd), chartDays),
 		ChartDays:   chartDays,
-		GeneratedAt: now,
 		Error:       c.Query("error"),
 	}))
 }

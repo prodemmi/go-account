@@ -18,7 +18,6 @@ func SessionsList(sessions []SessionRow, meta PageMeta, apps []AppOption, errorM
 		w.Write([]byte(`<section class="page-head">
 	<div>
 		<h2>نشست‌ها</h2>
-		<p>همه نشست‌های ساخته‌شده برای برنامه‌ها، با امکان مشاهده جزئیات و ابطال.</p>
 	</div>
 </section>`))
 

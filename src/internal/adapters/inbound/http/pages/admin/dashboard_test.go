@@ -29,7 +29,6 @@ func TestDashboardRendersSelectedStatusAndWeekdayChart(t *testing.T) {
 		Status:      "expired",
 		Days:        7,
 		ChartDays:   7,
-		GeneratedAt: time.Date(2024, time.January, 8, 12, 0, 0, 0, time.UTC),
 		Daily: []inbound.DailyCount{
 			{Day: time.Date(2024, time.January, 6, 0, 0, 0, 0, time.UTC), Count: 3},
 		},

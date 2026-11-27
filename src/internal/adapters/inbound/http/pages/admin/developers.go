@@ -14,7 +14,6 @@ func Developers() templ.Component {
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		w.Write([]byte(`<section class="page-head">	<div>
 		<h2>توسعه‌دهندگان</h2>
-		<p>مسیرهای ورود، تبادل تیکت و مدیریت نشست برای برنامه‌ها.</p>
 	</div>
 	<span class="badge badge-info">نسخه ۱.۰</span>
 </section>
